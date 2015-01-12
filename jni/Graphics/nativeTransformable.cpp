@@ -1,15 +1,9 @@
 #include "nativeTransformable.h"
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Transformable_createTransformable(JNIEnv* jenv, jobject jobj)
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Transformable_createTransformable(JNIEnv* jenv, jclass jcls)
 {
 	Transformable* trans = new Transformable();
 	return (jlong)trans;
-}
-
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Transformable_destroyTransformable(JNIEnv* jenv, jobject jobj, jlong ptr)
-{
-	Transformable* trans = (Transformable*) ptr;
-	delete trans;
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_moveTransformable(JNIEnv* jenv, jobject jobj, jlong transPtr, jfloatArray move)
@@ -17,6 +11,7 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_moveTransformab
 	Transformable* trans = (Transformable*) transPtr;
 	jfloat* m = jenv->GetFloatArrayElements(move, 0);
 	trans->move(glm::vec3(m[0], m[1], m[2]));		
+	jenv->ReleaseFloatArrayElements(move, m, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_setPositionTransformable(JNIEnv* jenv, jobject jobj, jlong transPtr, jfloatArray position)
@@ -24,6 +19,7 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_setPositionTran
 	Transformable* trans = (Transformable*) transPtr;
 	jfloat* p = jenv->GetFloatArrayElements(position, 0);
 	trans->setPosition(glm::vec3(p[0], p[1], p[2]));		
+	jenv->ReleaseFloatArrayElements(position, p, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_rotateTransformable(JNIEnv* jenv, jobject jobj, jlong transPtr, float angle, jfloatArray rotate)
@@ -31,6 +27,7 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_rotateTransform
 	Transformable* trans = (Transformable*) transPtr;
 	jfloat* r = jenv->GetFloatArrayElements(rotate, 0);
 	trans->rotate(angle, glm::vec3(r[0], r[1], r[2]));		
+	jenv->ReleaseFloatArrayElements(rotate, r, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_setRotationTransformable(JNIEnv* jenv, jobject jobj, jlong transPtr, float angle, jfloatArray rotate)
@@ -38,6 +35,7 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_setRotationTran
 	Transformable* trans = (Transformable*) transPtr;
 	jfloat* r = jenv->GetFloatArrayElements(rotate, 0);
 	trans->setRotate(angle, glm::vec3(r[0], r[1], r[2]));		
+	jenv->ReleaseFloatArrayElements(rotate, r, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_scaleTransformable(JNIEnv* jenv, jobject jobj, jlong transPtr, jfloatArray scale)
@@ -45,6 +43,7 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_scaleTransforma
 	Transformable* trans = (Transformable*) transPtr;
 	jfloat* s = jenv->GetFloatArrayElements(scale, 0);
 	trans->scale(glm::vec3(s[0], s[1], s[2]));		
+	jenv->ReleaseFloatArrayElements(scale, s, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_setScaleTransformable(JNIEnv* jenv, jobject jobj, jlong transPtr, jfloatArray scale)
@@ -52,6 +51,7 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_setScaleTransfo
 	Transformable* trans = (Transformable*) transPtr;
 	jfloat* s = jenv->GetFloatArrayElements(scale, 0);
 	trans->setScale(glm::vec3(s[0], s[1], s[2]));		
+	jenv->ReleaseFloatArrayElements(scale, s, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_setSphericCoordinateTransformable(JNIEnv* jenv, jobject jobj, jlong transPtr, float r, float theta, float phi)

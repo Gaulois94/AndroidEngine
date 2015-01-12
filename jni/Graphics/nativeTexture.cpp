@@ -1,34 +1,44 @@
 #include "nativeTexture.h"
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_initTexture(JNIEnv* jenv, jobject jobj, jlong width, jlong height)
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_initTexture(JNIEnv* jenv, jclass jcls, jlong width, jlong height)
 {
 	Texture* texture = new Texture(width, height);
-	return texture;
+	return (jlong)texture;
 }
 
-JNIEXPORT void  JNICALL Java_com_gaulois94_Graphics_Texture_destroyTexture(JNIEnv* jenv, jobject jobj, jlong texture)
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromPixelsTexture(JNIEnv* jenv, jclass jcls, jbyteArray pixels, jlong width, jlong height, jboolean alpha)
 {
-	Texture* ptr = (Texture*) texture;
-	delete ptr;
-}
-
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromPixelsTexture(JNIEnv* jenv, jobject jobj, jFloatArray pixels, jlong width, jlong height, jbool alpha)
-{
-	float* p = jenv->GetFloatArrayElements(pixels, 0);
+	unsigned char* p = (unsigned char*)(jenv->GetByteArrayElements(pixels, 0));
 	Texture* texture = new Texture(p, width, height, alpha);
-	return texture;
+	jenv->ReleaseByteArrayElements(pixels, (jbyte*)p, 0);
+	return (jlong)texture;
 }
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromBitmapTexture(JNIEnv* jenv, jobject jobj, jlong bmp)
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromBitmapTexture(JNIEnv* jenv, jclass jcls, jlong bmp)
 {
 	Texture* texture = new Texture((Bitmap*) bmp);
-	return texture;
+	return (jlong)texture;
+}
+
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromFileTexture(JNIEnv* jenv, jclass jcls, jstring path)
+{
+	//Load the android Bitmap
+	jclass BitmapFactory = jenv->FindClass("android/graphics/BitmapFactory");
+	jmethodID decodeFileMethod = jenv->GetStaticMethodID(BitmapFactory, "decodeFile", "(Ljava/lang/String;)Landroid/graphics/BitmapFactory;");
+	jobject jbmp = jenv->CallStaticObjectMethod(BitmapFactory, decodeFileMethod, path);
+	
+	//Load the texture
+	Bitmap*	bmp = (Bitmap*) Java_com_gaulois94_Graphics_Bitmap_createBitmap(jenv, jcls, jbmp);
+	Texture* texture = new Texture(bmp);
+
+	delete bmp;
+	return (jlong)texture;	
 }
 
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_getIDTexture(JNIEnv* jenv, jobject jobj, jlong texture)
 {
 	Texture* ptr = (Texture*) texture;
-	return ptr->getID();
+	return (jlong) ptr->getID();
 }
 
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_getWidthTexture(JNIEnv* jenv, jobject jobj, jlong texture)

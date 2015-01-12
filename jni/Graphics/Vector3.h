@@ -12,16 +12,43 @@ class Vector3<T>
 			z=c;
 		}
 
+		Vector3<T>(const Vector3<T>& v)
+		{
+			x = v.x;
+			y = v.y;
+			z = v.z;
+		}
+
+		Vector2<T>& operator=(const Vector2<T>& copy)
+		{
+			if(*copy != this)
+			{
+				x = v.x;
+				y = v.y;
+				z = v.z;
+			}
+
+			return *this;
+		}
+
 		T x;
 		T y;
 		T z;
 };
+
 
 template<typename T>
 bool operator==(const Vector3<T> &a, const Vector3<T> &b)
 {
 	return(a.x == b.x && a.y == b.y && a.z == b.z);
 }
+
+template<typename T>
+bool operator!=(const Vector3<T> &a, const Vector3<T> &b)
+{
+	return(!a==b);
+}
+
 
 template<typename T>
 Vector3<T> operator+(const Vector3<T> &a, const Vector3<T> &b)
@@ -54,4 +81,5 @@ Vector3<T> operator/(const Vector3<T> &a, float x)
 }
 
 typedef Vector3<float> Vector3f;
+typedef Vector3<int> Vector3i;
 #endif

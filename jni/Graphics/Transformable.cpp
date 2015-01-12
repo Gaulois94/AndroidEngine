@@ -65,18 +65,18 @@ void Transformable::rotateTheta(float theta)
 	setSphericCoordinate(getRadius(), m_theta + theta, m_phi);
 }
 
-glm::vec3 Transformable::getPosition()
+glm::vec3 Transformable::getPosition() const
 {
 	glm::vec3 v = glm::vec3(m_position[0][3], m_position[1][3], m_position[2][3]);
 	return v;
 }
 
-glm::mat4 Transformable::getMatrix()
+glm::mat4 Transformable::getMatrix() const
 {
 	return m_mvpMatrix;
 }
 
-SphericCoord Transformable::getSphericCoord()
+SphericCoord Transformable::getSphericCoord() const
 {
 	SphericCoord s;
 	s.r = getRadius();
@@ -86,12 +86,12 @@ SphericCoord Transformable::getSphericCoord()
 	return s;
 }
 
-float Transformable::getRadius()
+float Transformable::getRadius() const
 {
 	return getPosition().length();
 }
 
-EulerRotation Transformable::getEulerRotation()
+EulerRotation Transformable::getEulerRotation() const
 {
 	EulerRotation e;
 	e.roll  = atan2(m_rotate[2][0], m_rotate[2][1]);

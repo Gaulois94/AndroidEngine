@@ -1,6 +1,6 @@
 #include "nativeBitmap.h"
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Bitmap_createBitmap(JNIEnv* jenv, jobject jobj, jobject bmp)
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Bitmap_createBitmap(JNIEnv* jenv, jclass jcls, jobject bmp)
 {
 	AndroidBitmapInfo bmpInfo;
 	AndroidBitmap_getInfo(jenv, bmp, &bmpInfo);
@@ -11,16 +11,10 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Bitmap_createBitmap(JNIEnv* 
 	unsigned char* pixels = (unsigned char*) buffer;
 
 	Bitmap* ptr = new Bitmap(pixels, bmpInfo);
+	ptr->invertPixels();
 
 	AndroidBitmap_unlockPixels(jenv, bmp);
-
-	return ptr;
-}
-
-JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Bitmap_destroyBitmap(JNIEnv* jenv, jobject jobj, jlong ptr)
-{
-	Bitmap* bmp = (Bitmap*) ptr;
-	delete bmp;
+	return (jlong)ptr;
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Bitmap_invertPixelsBitmap(JNIEnv* jenv, jobject jobj, jlong ptr)

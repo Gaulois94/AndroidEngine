@@ -10,8 +10,7 @@ public class Vector3<T extends Number>
 
 	public Vector3(Class<T> modelClass)
 	{
-		T v = modelClass(0);
-		this(modelClass, v, v, v);
+		this(modelClass, modelClass.cast(0), modelClass.cast(0), modelClass.cast(0));
 	}
 
 	public Vector3(Class<T> modelClass, T a, T b, T c)

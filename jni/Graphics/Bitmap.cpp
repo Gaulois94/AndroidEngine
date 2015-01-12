@@ -2,26 +2,26 @@
 
 Bitmap::Bitmap(unsigned char* p, AndroidBitmapInfo& inf)
 {
-	pixels = (unsigned char *)malloc(inf.width * inf.height * 4);
-	for(int i=0; i < inf.width; i++)
-		for(int j=0; i < inf.height; j++)
-			for(int k=0; k < 4; j++)
-				m_pixels[4*(i + inf.width*inf.height) + k] = pixels[4*(i + inf.width*inf.height) +k];
+	pixels = (unsigned char*)malloc(4 * inf.width * inf.height * sizeof(unsigned char));
+	for(int i=0; i < inf.height; i++)
+		for(int j=0; j < 4*inf.width; j++)
+			pixels[4*inf.width*i + j] = p[4*inf.width*i + j];
 
 	info = inf;
 }
 
 Bitmap::~Bitmap()
 {
-	free(m_pixels);
+	free(pixels);
 }
 
 void Bitmap::invertPixels()
 {
 	unsigned char* oldPixels = pixels;
-	pixels = (unsigned char *) malloc(info.width * info.height * 4);
+	pixels = (unsigned char*)malloc(4*info.width*info.height*sizeof(unsigned char));
+
 	for(int i=0; i < info.height; i++)
-		for(int j=0; j < info.width; j++)
-			pixels[i*info.width*4 + j] = oldPixels[info.width*4*(info.height-i-1) + j];
+		for(int j=0; j < 4*info.width; j++)
+			pixels[4*info.width*i + j] = oldPixels[4*info.width*(info.height-1-i) + j];
 	free(oldPixels);
 }

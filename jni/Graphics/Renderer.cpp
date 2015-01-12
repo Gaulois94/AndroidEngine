@@ -2,20 +2,35 @@
 
 Renderer::Renderer() : m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT), m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
-	m_camera = glm::mat4(1.0);
+	m_camera.lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 }
 
 Renderer::~Renderer()
 {
-	deleteSurface();
+	terminate();
 }
 
-bool Renderer::initialize(ANativeWindow* window)
+void Renderer::terminate()
 {
-	if(window == NULL)
-		return false;
-	m_window = window;
+	if(m_disp == EGL_NO_DISPLAY)
+		return;
+
+	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+	eglDestroyContext(m_disp, m_context);
+	eglDestroySurface(m_disp, m_surface);
+
+	m_surface = EGL_NO_SURFACE;
+	m_context = EGL_NO_CONTEXT;
+	eglTerminate(m_disp);
+	m_disp = EGL_NO_DISPLAY;
+}
+
+bool Renderer::initializeContext(ANativeWindow* window)
+{
 	m_start = false;
+	m_window = window;
+	terminate();
+
 	//Initialize the egl context
 	const EGLint attribs[] = 
 	{
@@ -25,6 +40,12 @@ bool Renderer::initialize(ANativeWindow* window)
 		EGL_GREEN_SIZE, 8,
 		EGL_RED_SIZE, 8,
 		EGL_ALPHA_SIZE, 8,
+		EGL_NONE
+	};
+
+	const EGLint eglAttribs[] =
+	{
+		EGL_CONTEXT_CLIENT_VERSION, 2,
 		EGL_NONE
 	};
 
@@ -52,22 +73,36 @@ bool Renderer::initialize(ANativeWindow* window)
 		return false;
 	}
 
-	if(!(m_surface = eglCreateWindowSurface(m_disp, m_conf, window, 0)))
-	{
-		LOG_ERROR("Can't create an EGL surface from this window. Error : %d", eglGetError());
-		return false;
-	}
 
-	if(!(m_context = eglCreateContext(m_disp, m_conf, 0, 0)))
+	if(!(m_context = eglCreateContext(m_disp, m_conf, 0, eglAttribs)))
 	{
 		LOG_ERROR("Can't create an EGL context. Error : %d", eglGetError());
 		return false;
 	}
 
+	initializeSurface(window);
+
+	return true;
+}
+
+void Renderer::initializeSurface(ANativeWindow* window)
+{
+	if(window == NULL)
+		return;
+	deleteSurface();
+	m_window = window;
+	m_start = false;
+
+	if(!(m_surface = eglCreateWindowSurface(m_disp, m_conf, window, 0)))
+	{
+		LOG_ERROR("Can't create an EGL surface from this window. Error : %d", eglGetError());
+		return;
+	}
+
 	if(!eglMakeCurrent(m_disp, m_surface, m_surface, m_context))
 	{
 		LOG_ERROR("Can't make this context the current one. Error : %d", eglGetError());
-		return false;
+		return;
 	}
 
 	ANativeWindow_setBuffersGeometry(window, 0, 0, m_format);
@@ -76,11 +111,14 @@ bool Renderer::initialize(ANativeWindow* window)
 	eglQuerySurface(m_disp, m_surface, EGL_HEIGHT, &m_height);
 
 	//Initialize OpenGL
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 	glViewport(0, 0, m_width, m_height);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	m_start = true;
-	return true;
 }
 
 bool Renderer::display()
@@ -98,18 +136,22 @@ void Renderer::deleteSurface()
 {
 	if(m_disp == EGL_NO_DISPLAY)
 		return;
+	if(m_surface == EGL_NO_SURFACE)
+		return;
 
 	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-	eglDestroyContext(m_disp, m_context);
-	eglDestroySurface(m_disp, m_surface);
+	if(m_surface != EGL_NO_SURFACE)
+		eglDestroySurface(m_disp, m_surface);
 
 	m_surface = EGL_NO_SURFACE;
-	m_context = EGL_NO_CONTEXT;
-	eglTerminate(m_disp);
-	m_disp = EGL_NO_DISPLAY;
 }
 
 bool Renderer::hasDisplay()
 {
 	return (m_disp != EGL_NO_DISPLAY);
+}
+
+Camera* Renderer::getCamera()
+{
+	return &m_camera;
 }

@@ -1,20 +1,28 @@
 package com.gaulois94.Graphics;
-
 import com.gaulois94.JniMadeOf;
 
-public class Bitmap implements JniMadeOf
+public class Bitmap extends JniMadeOf
 {
-	private static android.graphics.Bitmap AndroidBitmap = null;
-
-	Bitmap(AndroidBitmap bitmap)
+	public Bitmap(long ptr)
 	{
-		m_ptr = createBitmap(bitmap);
+		super(ptr);
 	}
 
-	static void invertPixels()
+	public Bitmap(android.graphics.Bitmap bmp)
+	{
+		this(createBitmap(bmp));
+	}
+
+	public void invertPixels()
 	{
 		invertPixelsBitmap(m_ptr);
 	}
 
-	native long createBitmap(AndroidBitmap bitmap);
+	private static native long createBitmap(android.graphics.Bitmap bitmap);
+	native void invertPixelsBitmap(long ptr);
+
+	static
+	{
+		System.loadLibrary("graphicsEngine");
+	} 
 }

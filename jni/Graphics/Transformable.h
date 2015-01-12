@@ -8,6 +8,7 @@
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
 #include <cmath>
+#include "JniMadeOf.h"
 
 struct SphericCoord
 {
@@ -23,28 +24,28 @@ struct EulerRotation
 	float yaw;
 };
 
-class Transformable
+class Transformable : JniMadeOf
 {
 	public:
 		Transformable();
 
-		void move(const glm::vec3 &v);
-		void setPosition(const glm::vec3 &v);
-		void rotate(float angle, const glm::vec3 &v);
-		void setRotate(float angle, const glm::vec3 &v);
-		void scale(const glm::vec3 &v);
-		void setScale(const glm::vec3 &v);
+		virtual void move(const glm::vec3 &v);
+		virtual void setPosition(const glm::vec3 &v);
+		virtual void rotate(float angle, const glm::vec3 &v);
+		virtual void setRotate(float angle, const glm::vec3 &v);
+		virtual void scale(const glm::vec3 &v);
+		virtual void setScale(const glm::vec3 &v);
 
-		void setSphericCoordinate(float r, float theta, float phi);
-		void rotatePhi(float phi);
-		void rotateTheta(float theta);
+		virtual void setSphericCoordinate(float r, float theta, float phi);
+		virtual void rotatePhi(float phi);
+		virtual void rotateTheta(float theta);
 
-		glm::vec3 getPosition();
-		glm::mat4 getMatrix();
-		SphericCoord getSphericCoord();
-		float getRadius();
-		EulerRotation getEulerRotation();
-	private:
+		glm::vec3 getPosition() const;
+		glm::mat4 getMatrix() const;
+		SphericCoord getSphericCoord() const;
+		float getRadius() const;
+		EulerRotation getEulerRotation() const;
+	protected:
 		void setMVPMatrix();
 
 		glm::mat4 m_mvpMatrix;

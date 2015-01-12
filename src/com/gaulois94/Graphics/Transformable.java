@@ -5,11 +5,16 @@ import com.gaulois94.Graphics.Vector3f;
 import com.gaulois94.Graphics.EulerRotation;
 import com.gaulois94.Graphics.SphericCoordinate;
 
-class Transformable implements JniMadeOf
+class Transformable extends JniMadeOf
 {
+	public Transformable(long ptr)
+	{
+		super(ptr);
+	}
+
 	public Transformable()
 	{
-		m_ptr = createTransformable();
+		this(createTransformable());
 	}
 
 	public void move(Vector3f v)
@@ -87,28 +92,23 @@ class Transformable implements JniMadeOf
 		return v;
 	}
 
-	public finalize()
-	{
-		destroyTransformable(m_ptr);
-	}
+	protected static native long createTransformable();
 
-	native long createTransformable();
-	native void destroyTransformable(long ptr);
-	native void moveTransformable(long ptr, float[] m);
-	native void setPositionTransformable(long ptr, float[] p);
-	native void rotateTransformable(long ptr, float angle, float[] r);
-	native void setRotateTransformable(long ptr, float angle, float[] r);
-	native void scaleTransformable(long ptr, float[] s);
-	native void setScaleTransformable(long ptr, float[] s);
-	native void rotatePhiTransformable(long ptr, float phi);
-	native void rotateThetaTransformable(long ptr, float theta);
+	protected native void moveTransformable(long ptr, float[] m);
+	protected native void setPositionTransformable(long ptr, float[] p);
 
-	native float[] getPositionTransformable(long ptr);
-	native float[] getSphericCoordinateTransformable(long ptr);
-	native float[] getEulerRotationTransformable(long ptr);
+	protected native void rotateTransformable(long ptr, float angle, float[] r);
+	protected native void setRotateTransformable(long ptr, float angle, float[] r);
 
-	static
-	{
-		System.loadLibrary("graphicsEngine");
-	} 
+	protected native void scaleTransformable(long ptr, float[] s);
+	protected native void setScaleTransformable(long ptr, float[] s);
+
+	protected native void rotatePhiTransformable(long ptr, float phi);
+	protected native void rotateThetaTransformable(long ptr, float theta);
+
+	protected native void setSphericCoordinateTransformable(long ptr, float r, float theta, float phi);
+
+	protected native float[] getPositionTransformable(long ptr);
+	protected native float[] getSphericCoordinateTransformable(long ptr);
+	protected native float[] getEulerRotationTransformable(long ptr);
 }

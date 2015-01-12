@@ -1,5 +1,5 @@
-#ifndef NATIVE_JNI_INCLUDE
-#define NATIVE_JNI_INCLUDE
+#ifndef NATIVE_TRANSFORMABLE_INCLUDE
+#define NATIVE_TRANSFORMABLE_INCLUDE
 
 #define GLM_FORCE_RADIANS
 
@@ -10,8 +10,7 @@
 
 extern "C"
 {
-	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Transformable_createTransformable(JNIEnv* jenv, jobject jobj);
-	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Transformable_destroyTransformable(JNIEnv* jenv, jobject jobj, jlong ptr);
+	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Transformable_createTransformable(JNIEnv* jenv, jclass jcls);
 
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_moveTransformable(JNIEnv* jenv, jobject jobj, jlong transPtr, jfloatArray move);
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_setPositionTransformable(JNIEnv* jenv, jobject jobj, jlong transPtr, jfloatArray position);

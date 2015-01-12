@@ -1,15 +1,18 @@
-#ifndef BITMAP_INCLUDE
-#define BITMAP_INCLUDE
+#ifndef BMP_INCLUDE
+#define BMP_INCLUDE
 
-#include <stdio.h>
+#include <stdlib.h>
 #include <android/bitmap.h>
 #include <jni.h>
+#include "JniMadeOf.h"
+#include "logger.h"
 
-class Bitmap
+class Bitmap : JniMadeOf
 {
 	public:
 		Bitmap(unsigned char* p, AndroidBitmapInfo& info);
-		void invertPixels()
+		~Bitmap();
+		void invertPixels();
 
 		unsigned char* pixels;
 		AndroidBitmapInfo info;
