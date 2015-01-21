@@ -18,12 +18,15 @@ class TriangleShape : public Drawable
 	public:
 		//By default, colors is set to (0,0,0,0).
 		//The uniColor will be the first Color from colors (or (0,0,0,0) if colors = NULL)
-		TriangleShape(const glm::vec3* vertexCoord, int nbVertex, const Color* colors=NULL, bool uniColor=false, GLuint mode=GL_TRIANGLES);
+		TriangleShape(const glm::vec3* vertexCoords, int nbVertex, const Color* colors=NULL, bool uniColor=false, GLuint mode=GL_TRIANGLES);
+		TriangleShape(const float* vertexCoords, int nbVertex, const float* colors=NULL, bool uniColor=false, GLuint mode=GL_TRIANGLES);
 		~TriangleShape();
 
-		virtual void onDraw(Renderer* renderer);
-		void setVertexCoord(const glm::vec3* vertexCoords);
-		void setColors(const Color* colors);
+		virtual void onDraw(Renderer* renderer, glm::mat4& mvp);
+		void setDatas(const glm::vec3* vertexCoords, const Color* colors, int nbVertex, bool uniColor=false);
+		void setDatas(const float* vertexCoords, const float* colors, int nbVertex, bool uniColor=false);
+		void setVertexCoord(const glm::vec3* vertexCoords); //for the same number of vertex
+		void setColors(const Color* colors); //for the same number of vertex
 		void setUniColor(const Color& color); //if you set the uniColor, don't forget to change 'useUniColor'
 		void useUniColor(bool uniColor);
 

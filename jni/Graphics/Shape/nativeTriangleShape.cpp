@@ -5,47 +5,21 @@ JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_cr
 	float* pv = jenv->GetFloatArrayElements(vertexCoords, 0);
 	float* pc = jenv->GetFloatArrayElements(colors, 0);
 
-	Color* c=NULL;
-	if(colors)
-	{
-		if(!useUniColor)
-		{
-			c = (Color*)malloc(nbVertex * sizeof(Color));
-			for(int i=0; i < nbVertex; i++)
-			{
-				c[i].r = pc[4*i + 0];
-				c[i].g = pc[4*i + 1];
-				c[i].b = pc[4*i + 2];
-				c[i].a = pc[4*i + 3];
-			}
-		}
-		else
-		{
-			c = (Color*)malloc(sizeof(Color));
-			c->r = pc[0];
-			c->g = pc[1];
-			c->b = pc[2];
-			c->a = pc[3];
-		}
-	}
-
-	glm::vec3* v = (glm::vec3*)malloc(nbVertex * sizeof(glm::vec3));
-	for(int i=0; i < nbVertex; i++)
-	{
-		v[i].x = pv[3*i + 0];
-		v[i].y = pv[3*i + 1];
-		v[i].z = pv[3*i + 2];
-	}
-
-	TriangleShape* result = new TriangleShape(v, nbVertex, c, useUniColor, mode);
-
-	//Free datas
+	TriangleShape* result = new TriangleShape(pv, nbVertex, pc, useUniColor, mode);
 	jenv->ReleaseFloatArrayElements(vertexCoords, pv, 0);
 	jenv->ReleaseFloatArrayElements(colors, pc, 0);
-	free(v);
-	free(c);
 
 	return (long)result;
+}
+
+JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_setVertexTriangleShape(JNIEnv *jenv, jobject jobj, jlong ptr, jfloatArray vertexCoords, jfloatArray colors, jint nbVertex, jint useUniColor)
+{
+	TriangleShape* triangleShape = (TriangleShape*)	ptr;
+
+	float* pv = jenv->GetFloatArrayElements(vertexCoords, 0);
+	float* pc = jenv->GetFloatArrayElements(colors, 0);
+
+	triangleShape->setDatas(pv, pc, nbVertex, useUniColor);
 }
 
 JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_setVertexTriangleShape(JNIEnv *jenv, jobject jobj, jlong ptr, jfloatArray vertexCoords)

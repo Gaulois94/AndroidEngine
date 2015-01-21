@@ -28,44 +28,24 @@ public class TriangleShape extends Drawable
 		this(initPtr(vertexCoords, colors, useUniColor, mode));
 	}
 
+	public void setDatas(Vector3f[] vertexCoords, Color[] colors, int useUniColor)
+	{
+		setDatasTriangleShape(m_ptr, Vector3f.getArrayFromVertexArray(vertexCoords), Color.getArrayFromColorArray(colors), vertexCoords.length, useUniColor);
+	}
+
 	public void setVertex(Vector3f[] vertexCoords)
 	{
-		float[] v = new float[3*vertexCoords.length];
-
-		for(int i=0; i < vertexCoords.length; i++)
-		{
-			v[3*i + 0] = vertexCoords[i].x;
-			v[3*i + 1] = vertexCoords[i].y;
-			v[3*i + 2] = vertexCoords[i].z;
-		}
-
-		setVertexTriangleShape(m_ptr, v);
+		setVertexTriangleShape(m_ptr, Vector3f.getArrayFromVertexArray(vertexCoords));
 	}
 
 	public void setColors(Color[] colors)
 	{
-		float[] c = new float[4*colors.length];
-		for(int i=0; i < colors.length; i++)
-		{
-			c[4*i + 0] = colors[i].r;
-			c[4*i + 1] = colors[i].g;
-			c[4*i + 2] = colors[i].b;
-			c[4*i + 3] = colors[i].a;
-		}
-
-		setColorsTriangleShape(m_ptr, c);
+		setColorsTriangleShape(m_ptr, Color.getArrayFromColorArray(colors));
 	}
 
 	public void setUniColor(Color uniColor)
 	{
-		float[] c = new float[4];
-
-		c[0] = uniColor.r;
-		c[1] = uniColor.g;
-		c[2] = uniColor.b;
-		c[3] = uniColor.a;
-
-		setUniColorTriangleShape(m_ptr, c);
+		setUniColorTriangleShape(m_ptr, uniColor.getFloatArray());
 	}
 
 	public void useUniColor(int use)
@@ -98,14 +78,7 @@ public class TriangleShape extends Drawable
 
 	private static long initPtr(Vector3f[] vertexCoords, Color[] colors, int useUniColor, int mode)
 	{
-		float[] v = new float[3*vertexCoords.length];
-
-		for(int i=0; i < vertexCoords.length; i++)
-		{
-			v[3*i + 0] = vertexCoords[i].x;
-			v[3*i + 1] = vertexCoords[i].y;
-			v[3*i + 2] = vertexCoords[i].z;
-		}
+		float[] v = Vector3f.getArrayFromVertexArray(vertexCoords);
 
 		float[] c=null;
 
@@ -114,9 +87,7 @@ public class TriangleShape extends Drawable
 			colorLength = colors.length;
 
 		if(colors != null)
-		{
 			c = new float[4*colorLength];
-		}
 
 		for(int i=0; i < colorLength; i++)
 		{
@@ -130,6 +101,7 @@ public class TriangleShape extends Drawable
 	}
 
 	private static native long createTriangleShape(float[] vertexCoords, float[] colors, int nbVertex, int useUniColor, int mode);
+	private native void setDatasTriangleShape(long ptr, float[] vertexCoords, float[] colors, int nbVertex, int useUniColor);
 	private native void setVertexTriangleShape(long ptr, float[] vertexCoords);
 	private native void setColorsTriangleShape(long ptr, float[] colors);
 	private native void setUniColorTriangleShape(long ptr, float[] color);

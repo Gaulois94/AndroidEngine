@@ -1,53 +1,19 @@
 #include "Shape/TriangleShape.h"
 
-TriangleShape::TriangleShape(const glm::vec3* vertexCoord, int nbVertex, const Color* colors, bool uniColor, GLuint mode) : Drawable(Drawable::shaders.get("colorshader")), m_nbVertex(nbVertex), m_useUniColor(uniColor), m_mode(mode)
+TriangleShape::TriangleShape(const glm::vec3* vertexCoords, int nbVertex, const Color* colors, bool uniColor, GLuint mode) : Drawable(Drawable::shaders.get("colorshader")), m_nbVertex(nbVertex), m_useUniColor(uniColor), m_mode(mode)
 {
 	m_uniColor = (float*)malloc(4*sizeof(float));
-	if(colors != NULL)
-	{
-		m_uniColor[0] = colors[0].r;	
-		m_uniColor[1] = colors[0].g;	
-		m_uniColor[2] = colors[0].b;	
-		m_uniColor[3] = colors[0].a;	
-	}
-	else
-		for(int i=0; i < 4; i++)
-			m_uniColor[i] = 0.0f;
+	for(int i=0; i < 4; i++)
+		m_uniColor[i] = 0.0f;
+	setDatas(vertexCoords, colors, nbVertex, uniColor);
+}
 
-	float* c=NULL;
-	if(!uniColor)
-	{
-		c = (float*)malloc(4*m_nbVertex*sizeof(float));
-		if(colors != NULL)
-		{
-			for(int i=0; i < m_nbVertex; i++)
-			{
-				c[4*i+0] = colors[i].r;	
-				c[4*i+1] = colors[i].g;	
-				c[4*i+2] = colors[i].b;	
-				c[4*i+3] = colors[i].a;	
-			}
-		}
-
-		else
-			for(int i=0; i < 4*m_nbVertex; i++)
-				c[i] = 0.0f;
-	}
-
-	float* v=(float*)malloc(3*m_nbVertex*sizeof(float));
-	if(vertexCoord == NULL)
-		for(int i=0; i < 3*m_nbVertex; i++)
-			v[i] = 0.0f;
-
-	else
-		for(int i=0; i < m_nbVertex; i++)
-			for(int j=0; j < 3; j++)
-				v[3*i+j] = vertexCoord[i][j];
-
-	initVbos(v, c);
-	free(v);
-	if(c != NULL)
-		free(c);
+TriangleShape::TriangleShape(const float* vertexCoords, int nbVertex, const float* colors, bool uniColor, GLuint mode) : Drawable(Drawable::shaders.get("colorshader")), m_nbVertex(nbVertex), m_useUniColor(uniColor), m_mode(mode)
+{
+	m_uniColor = (float*)malloc(4*sizeof(float));
+	for(int i=0; i < 4; i++)
+		m_uniColor[i] = 0.0f;
+	setDatas(vertexCoords, colors, nbVertex, uniColor);
 }
 
 TriangleShape::~TriangleShape()
@@ -56,9 +22,8 @@ TriangleShape::~TriangleShape()
 	free(m_uniColor);
 }
 
-void TriangleShape::onDraw(Renderer* renderer)
+void TriangleShape::onDraw(Renderer* renderer, glm::mat4& mvp)
 {
-	glm::mat4 mvp = renderer->getCamera()->getMatrix() * getMatrix();
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
 		GLuint vPosition = glGetAttribLocation(m_shader->getProgramID(), "vPosition");
@@ -84,6 +49,40 @@ void TriangleShape::onDraw(Renderer* renderer)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void TriangleShape::setDatas(const glm::vec3* vertexCoords, const Color* colors, int nbVertex, bool uniColor)
+{
+	m_nbVertex = nbVertex;
+	m_useUniColor = uniColor;
+
+	int size = m_nbVertex * sizeof(float) * (3+4);
+
+	deleteVbos();
+	glGenBuffers(1, &m_vboID);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
+	{
+		glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	setVertexCoord(vertexCoords);
+	if(uniColor == false && colors != NULL)
+		setColors(colors);
+	else if(colors != NULL)
+		setUniColor(colors[0]);
+}
+
+void TriangleShape::setDatas(const float* vertexCoords, const float* colors, int nbVertex, bool uniColor)
+{
+	m_nbVertex = nbVertex;
+	m_useUniColor = uniColor;
+
+	if(uniColor && colors != NULL)
+		for(int i=0; i < 4; i++)
+			m_uniColor[i] = colors[i];
+
+	initVbos(vertexCoords, colors);
+}
+
 void TriangleShape::setVertexCoord(const glm::vec3* vertexCoord)
 {
 	float* v=(float*)malloc(3*m_nbVertex*sizeof(float));
@@ -93,7 +92,7 @@ void TriangleShape::setVertexCoord(const glm::vec3* vertexCoord)
 
 	else
 		for(int i=0; i < m_nbVertex; i++)
-			for(int j=0; j < 3; i++)
+			for(int j=0; j < 3; j++)
 				v[3*i+j] = vertexCoord[i][j];
 	setArrayVertex(v);
 	free(v);
@@ -102,23 +101,21 @@ void TriangleShape::setVertexCoord(const glm::vec3* vertexCoord)
 void TriangleShape::setColors(const Color* colors)
 {
 	float* c = (float*)malloc(4*m_nbVertex*sizeof(float));
-	for(int i=0; i < m_nbVertex; i++)
-	{
-		c[4*i+0] = colors[i].r;	
-		c[4*i+1] = colors[i].g;	
-		c[4*i+2] = colors[i].b;	
-		c[4*i+3] = colors[i].a;	
-	}
+	if(colors != NULL)
+		for(int i=0; i < m_nbVertex; i++)
+			colors[i].getFloatArray(&(c[4*i]));
+	else
+		for(int i=0; i < m_nbVertex; i++)
+			for(int j=0; j < 4; j++)
+				c[4*i + j] = 0.0f;
+
 	setArrayColor(c);
 	free(c);
 }
 
 void TriangleShape::setUniColor(const Color& color)
 {
-	m_uniColor[0] = color.r;	
-	m_uniColor[1] = color.g;	
-	m_uniColor[2] = color.b;	
-	m_uniColor[3] = color.a;	
+	color.getFloatArray(m_uniColor);
 }
 
 void TriangleShape::useUniColor(bool uniColor)
