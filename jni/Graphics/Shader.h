@@ -8,6 +8,7 @@
 #include <string>
 #include <map>
 #include <stdio.h>
+#include "ResourcesManager.h"
 #include "logger.h"
 #include "File.h"
 #include "JniMadeOf.h"
@@ -17,15 +18,17 @@ class Shader : JniMadeOf
 	public:
 		Shader();
 		~Shader();
-		int getProgramID();
-		int getVertexID();
-		int getFragID();
+		int getProgramID() const;
+		int getVertexID() const;
+		int getFragID() const;
 
 		static Shader* loadFromFiles(File vertexFile, File fragFile);
 		static Shader* loadFromFiles(File vertexFile, File fragFile, const std::map<std::string, int>& attrib); 
 
 		static Shader* loadFromStrings(const std::string& vertexString, const std::string& fragString);
 		static Shader* loadFromStrings(const std::string& vertexString, const std::string& fragString, const std::map<std::string, int>& attrib);
+
+		static ResourcesManager<Shader*> shaders; 
 
 	private:
 		GLuint m_programID;

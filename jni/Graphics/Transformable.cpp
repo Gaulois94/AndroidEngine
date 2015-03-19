@@ -10,9 +10,12 @@ void Transformable::move(const glm::vec3 &v)
 	setMVPMatrix();
 }
 
-void Transformable::setPosition(const glm::vec3 &v)
+void Transformable::setPosition(const glm::vec3 &v, bool useScale)
 {
-	m_position = glm::translate(glm::mat4(1.0f), v);
+	if(useScale == false)
+		m_position = glm::translate(glm::mat4(1.0f), v/getScale());
+	else
+		m_position = glm::translate(glm::mat4(1.0f), v);
 	setMVPMatrix();
 }
 
@@ -65,9 +68,16 @@ void Transformable::rotateTheta(float theta)
 	setSphericCoordinate(getRadius(), m_theta + theta, m_phi);
 }
 
-glm::vec3 Transformable::getPosition() const
+glm::vec3 Transformable::getScale() const
+{
+	return glm::vec3(m_scale[0][0], m_scale[1][1], m_scale[2][2]);
+}
+
+glm::vec3 Transformable::getPosition(bool useScale) const
 {
 	glm::vec3 v = glm::vec3(m_position[0][3], m_position[1][3], m_position[2][3]);
+	if(!useScale)
+		v = v/getScale();
 	return v;
 }
 

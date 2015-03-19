@@ -8,24 +8,29 @@
 #include "Transformable.h"
 #include "Shader.h"
 #include "Renderer.h"
-#include "ResourcesManager.h"
+#include "Materials/Material.h"
 #include <GLES2/gl2.h>
 
 class Drawable : public Transformable
 {
 	public:
-		Drawable(Shader* shader);
+		Drawable(Material* material);
+		~Drawable();
 		virtual void draw(Renderer* renderer);
-		virtual void onDraw(Renderer* renderer)=0;
+		virtual void onDraw(Renderer* renderer, glm::mat4& mvp)=0;
+		void staticToCamera(bool s);
+		void setCanDraw(bool d);
+		void setMaterial(Material* material);
 		bool canDraw() const;
+		const Material* getMaterial() const;
+		bool isStaticToCamera() const;
 
-		static ResourcesManager<Shader*> shaders; 
 	protected:
-		virtual void initVbos()=0;
-		void deleteVbos();
-		Shader* m_shader;
+		virtual void deleteVbos();
+		Material* m_material;
 		GLuint m_vboID;
 		bool m_canDraw;
+		bool m_staticToCamera;
 };
 
 #endif

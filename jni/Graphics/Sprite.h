@@ -17,7 +17,7 @@
 class Sprite : public Drawable
 {
 	public:
-		Sprite(const Texture* texture);
+		Sprite(Material* material, const Texture* texture);
 
 		void onDraw(Renderer* renderer, glm::mat4& mvp);
 		void setTexture(const Texture* texture, bool resetSubTextureRect=true);

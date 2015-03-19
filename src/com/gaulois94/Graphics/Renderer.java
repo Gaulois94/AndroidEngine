@@ -3,6 +3,12 @@ package com.gaulois94.Graphics;
 import com.gaulois94.JniMadeOf;
 import com.gaulois94.Graphics.Text;
 import com.gaulois94.Graphics.Font;
+import com.gaulois94.Graphics.Color;
+import com.gaulois94.Graphics.Vector3f;
+import com.gaulois94.Graphics.Shape.TriangleShape;
+import com.gaulois94.Graphics.Shape.Circle;
+import com.gaulois94.Graphics.Sprite;
+import com.gaulois94.Graphics.Materials.UniColorMaterial;
 
 import android.app.Activity;
 import android.view.Surface;
@@ -24,6 +30,11 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 	private long m_ptr;
 	private Text m_text;
 	private Font m_font;
+	private TriangleShape m_triangleShape;
+	private Circle m_circle;
+	private Sprite m_sprite;
+	private Boolean m_isCreated;
+	private int m_nbEdge;
 
     public Renderer(Activity activity)
     {
@@ -32,49 +43,66 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 		m_ptr         = 0;
 		m_text        = null;
 		m_font        = null;
+		m_triangleShape = null;
+		m_circle      = null;
+		m_sprite      = null;
 		m_open        = false;
 		m_isInit      = false;
 		m_reInit      = false;
 		m_thread      = null;
+		m_isCreated   = false;
+		m_nbEdge      = 3;
 
 		getHolder().addCallback(this);
     }
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
 	{
-		destroySurfaceRenderer(m_ptr);
-		m_isInit = false;
-		m_reInit = true;
+		onChanged(getHolder().getSurfaceFrame());
 	}
 
 	public void surfaceCreated(SurfaceHolder holder)
 	{
-		m_ptr = createRenderer(holder.getSurface());
-		Drawable.loadShaders();
-		onCreated();
+		if(m_isCreated == false)
+		{
+			m_isCreated = true;
+			m_ptr = createRenderer(holder.getSurface());
+			Drawable.loadShaders();
+			onCreated();
+		}
+		m_isInit = false;
+		m_reInit = true;
 	}
 
 	public void surfaceDestroyed(SurfaceHolder holder)
 	{
-		destroyRenderer(m_ptr);
-		m_ptr = 0;
 		m_isInit = false;
 		onDestroyed();
 	}
 
 	public void onCreated()
 	{
-		m_font = new Font("fonts/dejavusansmono.ttf");
-		float[] color = {1.0f, 0.0f, 0.0f, 1.0f};
-		m_text = new Text(m_font, "test", color);
+		Color[] color = new Color[]{new Color(1.0f, 0.0f, 0.0f, 1.0f)};
+		Vector3f[] v = new Vector3f[]{new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(-1.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, -1.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(-1.0f, 0.0f, 0.0f)};
+		UniColorMaterial material = new UniColorMaterial(color[0]);
+
+//		m_triangleShape = new TriangleShape(material, v);
+//		m_font          = new Font("fonts/dejavusansmono.ttf", 3, 3, 126);
+//		m_text          = new Text(m_font, "Text", color[0]);
+		m_circle        = new Circle(material, 0.5f, 16);
+//		m_sprite        = new Sprite(m_font.getTexture());
+//		m_sprite.setScale(new Vector3f(2.0f, 2.0f, 1.0f));
+//		m_sprite.setPosition(new Vector3f(-0.5f, -0.5f, 0.0f));
 	}
 
 	public void onChanged(Rect rect)
 	{
+		GLES20.glViewport(0, 0, rect.right-rect.left, rect.bottom-rect.top);
 	}
 
 	public void onDestroyed()
 	{
+		destroySurfaceRenderer(m_ptr);
 	}
 
 	public void run()
@@ -88,7 +116,6 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 		
 				m_reInit = false;
 				m_isInit = true;
-				onChanged(getHolder().getSurfaceFrame());
 			}
 
 			if(m_isInit)
@@ -99,7 +126,23 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 	public void draw()
 	{
 		clear();
-		m_text.draw(this);
+		UniColorMaterial material = new UniColorMaterial(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+		m_circle.setMaterial(material);
+
+		m_circle.draw(this);
+		m_circle.move(new Vector3f(0.0f, 1.0f, 0.0f));
+
+		m_circle.draw(this);
+		m_circle.move(new Vector3f(-1.0f, 0.0f, 0.0f));
+
+		UniColorMaterial material2 = new UniColorMaterial(new Color(0.0f, 0.0f, 1.0f, 1.0f));
+		m_circle.setMaterial(material2);
+
+		m_circle.draw(this);
+		m_circle.move(new Vector3f(0.0f, -1.0f, 0.0f));
+
+		m_circle.draw(this);
+		m_circle.move(new Vector3f(1.0f, 0.0f, 0.0f));
 		display();
 	}
 
@@ -129,6 +172,11 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 	{
 		destroyRenderer(m_ptr);
 		m_ptr = 0;
+	}
+
+	public void finalize()
+	{
+		destroyRenderer(m_ptr);
 	}
 
 	public long getPtr()

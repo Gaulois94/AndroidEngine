@@ -14,6 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Texture.h"
 #include "Bitmap.h"
+#include "Color.h"
 
 struct FontMetrics
 {

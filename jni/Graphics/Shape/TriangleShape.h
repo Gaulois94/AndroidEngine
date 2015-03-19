@@ -4,8 +4,12 @@
 #define GL_GLEXT_PROTOTYPES
 #define GLM_FORCE_RADIANS
 
+#define COORD_PER_TRIANGLES
+
 #include "Drawable.h"
 #include "Color.h"
+#include "Materials/Material.h"
+#include "Texture.h"
 #include <vector>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -16,36 +20,37 @@
 class TriangleShape : public Drawable
 {
 	public:
-		//By default, colors is set to (0,0,0,0).
-		//The uniColor will be the first Color from colors (or (0,0,0,0) if colors = NULL)
-		TriangleShape(const glm::vec3* vertexCoords, int nbVertex, const Color* colors=NULL, bool uniColor=false, GLuint mode=GL_TRIANGLES);
-		TriangleShape(const float* vertexCoords, int nbVertex, const float* colors=NULL, bool uniColor=false, GLuint mode=GL_TRIANGLES);
-		~TriangleShape();
+		TriangleShape(Material* material, const glm::vec3* vertexCoords, const glm::vec3* normalCoords, int nbVertex, GLuint mode=GL_TRIANGLES);
+		TriangleShape(Material* material, const float* vertexCoords, const float* normalCoords, int nbVertex, GLuint mode=GL_TRIANGLES);
 
 		virtual void onDraw(Renderer* renderer, glm::mat4& mvp);
-		void setDatas(const glm::vec3* vertexCoords, const Color* colors, int nbVertex, bool uniColor=false);
-		void setDatas(const float* vertexCoords, const float* colors, int nbVertex, bool uniColor=false);
-		void setVertexCoord(const glm::vec3* vertexCoords); //for the same number of vertex
-		void setColors(const Color* colors); //for the same number of vertex
-		void setUniColor(const Color& color); //if you set the uniColor, don't forget to change 'useUniColor'
-		void useUniColor(bool uniColor);
+		void setDatas(const glm::vec3* vertexCoords, const glm::vec3* normalCoords, int nbVertex);
+		void setDatas(const float* vertexCoords, const float* normalCoords, int nbVertex);
 
-		bool isUsingUniColor();
-		Color getUniColor();
+		void setDrawOrder(const unsigned int* drawOrder, int size);
+		void setVertexCoord(const glm::vec3* vertexCoord);
+		void setNormalCoord(const glm::vec3* normalCoord);
 
 		int getNbVertex();
-		
-		Color getColor(int vertex);
-		glm::vec3 getPosition(int vertex);
-	private:
-		void initVbos(const float* vertexCoords, const float* colors);
-		void setArrayVertex(const float* vertex);
-		void setArrayColor(const float* colors);
+		glm::vec3 getPositionVertex(int vertex);
+		void deleteDrawOrder();
 
-		int    m_nbVertex;
-		float* m_uniColor;
-		bool   m_useUniColor;
-		int    m_mode;
+		bool useDrawOrder();
+	protected:
+		void initVbos(const float* vertexCoords, const float* normalCoords);
+		void deleteVbos();
+		void setArrayVertex(const float* vertex);
+		void setArrayNormal(const float* normal);
+
+		int      m_nbVertex;
+		int      m_mode;
+		GLuint   m_drawOrderVboID;
+		int      m_drawOrderLength;
 };
+
+float*     makeNormalCoords(const glm::vec3* vertexCoords, int nbVertex);
+float*     makeNormalCoords(const float* vertexCoords, int nbVertex);
+glm::vec3* convertFloatToGlm3(const float* vertexCoords, int nbVertex);
+float* convertGlm3ToFloat(const glm::vec3* vertexCoords, int nbVertex);
 
 #endif

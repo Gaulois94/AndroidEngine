@@ -2,7 +2,6 @@
 
 Renderer::Renderer() : m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT), m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
-	m_camera.lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 }
 
 Renderer::~Renderer()
@@ -15,6 +14,7 @@ void Renderer::terminate()
 	if(m_disp == EGL_NO_DISPLAY)
 		return;
 
+	eglReleaseThread();
 	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	eglDestroyContext(m_disp, m_context);
 	eglDestroySurface(m_disp, m_surface);
@@ -102,6 +102,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	if(!eglMakeCurrent(m_disp, m_surface, m_surface, m_context))
 	{
 		LOG_ERROR("Can't make this context the current one. Error : %d", eglGetError());
+		initializeSurface(window);
 		return;
 	}
 
@@ -116,7 +117,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glViewport(0, 0, m_width, m_height);
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	m_start = true;
 }
@@ -134,11 +135,7 @@ void Renderer::clear()
 
 void Renderer::deleteSurface()
 {
-	if(m_disp == EGL_NO_DISPLAY)
-		return;
-	if(m_surface == EGL_NO_SURFACE)
-		return;
-
+	eglReleaseThread();
 	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	if(m_surface != EGL_NO_SURFACE)
 		eglDestroySurface(m_disp, m_surface);
@@ -154,4 +151,9 @@ bool Renderer::hasDisplay()
 Camera* Renderer::getCamera()
 {
 	return &m_camera;
+}
+
+Color Renderer::getAmbientColor()
+{
+	return Color::BLACK;
 }

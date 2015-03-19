@@ -21,6 +21,11 @@ public class Vector3<T extends Number>
 		m_modelClass = modelClass;
 	}
 
+	public Vector3(Vector3<T> copy)
+	{
+		this(copy.m_modelClass, copy.x, copy.y, copy.z);
+	}
+
 	public Class<T> getModelClass()
 	{
 		return m_modelClass;
@@ -36,4 +41,5 @@ public class Vector3<T extends Number>
 
 		return v;
 	}
+
 }

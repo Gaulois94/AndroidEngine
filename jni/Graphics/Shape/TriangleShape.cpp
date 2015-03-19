@@ -1,62 +1,66 @@
 #include "Shape/TriangleShape.h"
 
-TriangleShape::TriangleShape(const glm::vec3* vertexCoords, int nbVertex, const Color* colors, bool uniColor, GLuint mode) : Drawable(Drawable::shaders.get("colorshader")), m_nbVertex(nbVertex), m_useUniColor(uniColor), m_mode(mode)
+TriangleShape::TriangleShape(Material* material, const glm::vec3* vertexCoords, const glm::vec3* normalCoords, int nbVertex, GLuint mode) : Drawable(material), m_nbVertex(nbVertex), m_mode(mode), m_drawOrderLength(0)
 {
-	m_uniColor = (float*)malloc(4*sizeof(float));
-	for(int i=0; i < 4; i++)
-		m_uniColor[i] = 0.0f;
-	setDatas(vertexCoords, colors, nbVertex, uniColor);
+	if(normalCoords)
+		setDatas(vertexCoords, normalCoords, nbVertex);
+	else
+	{
+		float* nc = makeNormalCoords(vertexCoords, nbVertex);
+		float* vc = convertGlm3ToFloat(vertexCoords, nbVertex);
+		setDatas(vc, nc, nbVertex);
+
+		free(vc);
+		free(nc);
+	}
 }
 
-TriangleShape::TriangleShape(const float* vertexCoords, int nbVertex, const float* colors, bool uniColor, GLuint mode) : Drawable(Drawable::shaders.get("colorshader")), m_nbVertex(nbVertex), m_useUniColor(uniColor), m_mode(mode)
+TriangleShape::TriangleShape(Material* material, const float* vertexCoords, const float* normalCoords, int nbVertex, GLuint mode) : Drawable(material), m_nbVertex(nbVertex), m_mode(mode), m_drawOrderLength(0)
 {
-	m_uniColor = (float*)malloc(4*sizeof(float));
-	for(int i=0; i < 4; i++)
-		m_uniColor[i] = 0.0f;
-	setDatas(vertexCoords, colors, nbVertex, uniColor);
-}
-
-TriangleShape::~TriangleShape()
-{
-	Drawable::~Drawable();
-	free(m_uniColor);
+	if(normalCoords)
+		setDatas(vertexCoords, normalCoords, nbVertex);
+	else
+	{
+		float* nc = makeNormalCoords(vertexCoords, nbVertex);
+		setDatas(vertexCoords, nc, nbVertex);
+		free(nc);
+	}
 }
 
 void TriangleShape::onDraw(Renderer* renderer, glm::mat4& mvp)
 {
+	if(!m_material)
+		return;
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
-		GLuint vPosition = glGetAttribLocation(m_shader->getProgramID(), "vPosition");
-		GLuint vColor    = glGetAttribLocation(m_shader->getProgramID(), "vColor");
+		m_material->init(renderer);
+		if(glIsBuffer(m_drawOrderVboID))
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_drawOrderVboID);
 
-		GLuint uMvp      = glGetUniformLocation(m_shader->getProgramID(), "uMVP");
-		GLuint uUseColor = glGetUniformLocation(m_shader->getProgramID(), "uUseColor");
+		GLint vPosition = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
+		GLint uMvp      = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
 
 		glEnableVertexAttribArray(vPosition);
-		glEnableVertexAttribArray(vColor);
 
 		glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, 0, BUFFER_OFFSET(0));
-		glVertexAttribPointer(vColor, 4, GL_FLOAT, false, 0, BUFFER_OFFSET(m_nbVertex * 3*sizeof(float)));
-		if(m_uniColor)
-		{
-			GLuint uColor    = glGetUniformLocation(m_shader->getProgramID(), "uColor");
-			glUniform4fv(uColor, 1, m_uniColor);
-		}
 		glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
-		glUniform1i(uUseColor, m_useUniColor);
-		glDrawArrays(m_mode, 0, m_nbVertex);
+
+		if(glIsBuffer(m_drawOrderVboID))
+			glDrawElements(m_mode, m_drawOrderLength, GL_UNSIGNED_INT, 0);
+		else
+			glDrawArrays(m_mode, 0, m_nbVertex);
 	}
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void TriangleShape::setDatas(const glm::vec3* vertexCoords, const Color* colors, int nbVertex, bool uniColor)
+void TriangleShape::setDatas(const glm::vec3* vertexCoords, const glm::vec3* normalCoords, int nbVertex)
 {
 	m_nbVertex = nbVertex;
-	m_useUniColor = uniColor;
 
-	int size = m_nbVertex * sizeof(float) * (3+4);
+	int size = sizeof(float) * (m_nbVertex * 3 + m_nbVertex);
 
-	deleteVbos();
+	Drawable::deleteVbos();
 	glGenBuffers(1, &m_vboID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
@@ -65,79 +69,41 @@ void TriangleShape::setDatas(const glm::vec3* vertexCoords, const Color* colors,
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	setVertexCoord(vertexCoords);
-	if(uniColor == false && colors != NULL)
-		setColors(colors);
-	else if(colors != NULL)
-		setUniColor(colors[0]);
+	if(normalCoords)
+		setNormalCoord(normalCoords);
+	else
+	{
+		float* nc = makeNormalCoords(vertexCoords, nbVertex);
+		setArrayNormal(nc);
+		free(nc);
+	}
 }
 
-void TriangleShape::setDatas(const float* vertexCoords, const float* colors, int nbVertex, bool uniColor)
+void TriangleShape::setDatas(const float* vertexCoords, const float* normalCoords, int nbVertex)
 {
 	m_nbVertex = nbVertex;
-	m_useUniColor = uniColor;
-
-	if(uniColor && colors != NULL)
-		for(int i=0; i < 4; i++)
-			m_uniColor[i] = colors[i];
-
-	initVbos(vertexCoords, colors);
+	if(normalCoords)
+		initVbos(vertexCoords, normalCoords);
+	else
+	{
+		float* nc = makeNormalCoords(vertexCoords, nbVertex);
+		initVbos(vertexCoords, nc);
+		free(nc);
+	}
 }
 
-void TriangleShape::setVertexCoord(const glm::vec3* vertexCoord)
+void TriangleShape::setVertexCoord(const glm::vec3* vertexCoords)
 {
-	float* v=(float*)malloc(3*m_nbVertex*sizeof(float));
-	if(vertexCoord == NULL)
-		for(int i=0; i < 3*m_nbVertex; i++)
-			v[i] = 0.0f;
-
-	else
-		for(int i=0; i < m_nbVertex; i++)
-			for(int j=0; j < 3; j++)
-				v[3*i+j] = vertexCoord[i][j];
+	float* v=convertGlm3ToFloat(vertexCoords, m_nbVertex);
 	setArrayVertex(v);
 	free(v);
 }
 
-void TriangleShape::setColors(const Color* colors)
+void TriangleShape::setNormalCoord(const glm::vec3* normalCoords)
 {
-	float* c = (float*)malloc(4*m_nbVertex*sizeof(float));
-	if(colors != NULL)
-		for(int i=0; i < m_nbVertex; i++)
-			colors[i].getFloatArray(&(c[4*i]));
-	else
-		for(int i=0; i < m_nbVertex; i++)
-			for(int j=0; j < 4; j++)
-				c[4*i + j] = 0.0f;
-
-	setArrayColor(c);
-	free(c);
-}
-
-void TriangleShape::setUniColor(const Color& color)
-{
-	color.getFloatArray(m_uniColor);
-}
-
-void TriangleShape::useUniColor(bool uniColor)
-{
-	m_useUniColor = uniColor;
-}
-
-bool TriangleShape::isUsingUniColor()
-{
-	return m_uniColor;
-}
-
-Color TriangleShape::getUniColor()
-{
-	Color c;
-
-	c.r = m_uniColor[0];
-	c.g = m_uniColor[1];
-	c.b = m_uniColor[2];
-	c.a = m_uniColor[3];
-
-	return c;
+	float* n=convertGlm3ToFloat(normalCoords, m_nbVertex);
+	setArrayNormal(n);
+	free(n);
 }
 
 int TriangleShape::getNbVertex()
@@ -145,20 +111,7 @@ int TriangleShape::getNbVertex()
 	return m_nbVertex;
 }
 
-Color TriangleShape::getColor(int vertex)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
-	//m_nbVertex*3 are the offset of colors on the buffer
-	float *colors = (float*) glMapBufferOES(GL_ARRAY_BUFFER, GL_WRITE_ONLY_OES) + (m_nbVertex*3);
-
-	Color c(colors[4*vertex], colors[4*vertex + 1], colors[4*vertex + 2], colors[4*vertex + 3]);
-	glUnmapBufferOES(GL_ARRAY_BUFFER);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	return c;
-}
-
-glm::vec3 TriangleShape::getPosition(int vertex)
+glm::vec3 TriangleShape::getPositionVertex(int vertex)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	float* position = (float*) glMapBufferOES(GL_ARRAY_BUFFER, GL_WRITE_ONLY_OES);
@@ -170,36 +123,122 @@ glm::vec3 TriangleShape::getPosition(int vertex)
 	return v;
 }
 
-void TriangleShape::initVbos(const float* vertexCoord, const float* colors)
+void TriangleShape::initVbos(const float* vertexCoords, const float* normalCoords)
 {
-	int size = m_nbVertex * sizeof(float) * (3+4);
-	deleteVbos();
+	int size = (m_nbVertex * 3 * 2) * sizeof(float);
+	Drawable::deleteVbos();
 	glGenBuffers(1, &m_vboID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
-	{
 		glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
-	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	setArrayVertex(vertexCoord);
-	if(!m_useUniColor)
-		setArrayColor(colors);
+	setArrayVertex(vertexCoords);
+	if(normalCoords)
+		setArrayNormal(normalCoords);
+	else
+	{
+		float* nc = makeNormalCoords(vertexCoords, m_nbVertex);
+		setArrayNormal(nc);
+		free(nc);
+	}
 }
 
 void TriangleShape::setArrayVertex(const float* vertexCoords)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
-	{
 		glBufferSubData(GL_ARRAY_BUFFER, 0, 3*m_nbVertex*sizeof(float), vertexCoords);
-	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void TriangleShape::setArrayColor(const float* colors)
+void TriangleShape::setArrayNormal(const float* normalCoords)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
-	{
-		glBufferSubData(GL_ARRAY_BUFFER, 3*m_nbVertex*sizeof(float), 4*m_nbVertex*sizeof(float), colors);
-	}
+		glBufferSubData(GL_ARRAY_BUFFER, 3*m_nbVertex*sizeof(float), 3*m_nbVertex*sizeof(float), normalCoords);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void TriangleShape::setDrawOrder(const unsigned int* drawOrder, int size)
+{
+	deleteDrawOrder();
+	if(drawOrder == NULL)
+	{
+		m_drawOrderLength = 0;
+		return;
+	}
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_drawOrderVboID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size*sizeof(int), drawOrder, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	m_drawOrderLength = size;
+}
+
+bool TriangleShape::useDrawOrder()
+{
+	return glIsBuffer(m_drawOrderVboID);
+}
+
+void TriangleShape::deleteVbos()
+{
+	Drawable::deleteVbos();
+	deleteDrawOrder();
+}
+
+void TriangleShape::deleteDrawOrder()
+{
+	if(glIsBuffer(m_drawOrderVboID))
+		glDeleteBuffers(1, &m_drawOrderVboID);
+}
+
+float* makeNormalCoords(const glm::vec3* vertexCoords, int nbVertex)
+{
+	float* normalCoords = (float*)malloc(nbVertex * sizeof(float));
+	for(int i=0; i < nbVertex; i++)
+	{
+		glm::vec3 c = glm::cross(vertexCoords[i*3+1] - vertexCoords[i*3], 
+								 vertexCoords[i*3+2] - vertexCoords[i*3]);
+
+		//Because 1 normal per vertex
+		for(int j=0; j < 3; j++)
+			for(int k=0; k < 3; k++)
+				normalCoords[i*9+j*3+k] = c[k];
+	}
+	return normalCoords;
+}
+
+float* makeNormalCoords(const float* vertexCoords, int nbVertex)
+{
+	glm::vec3* vc = convertFloatToGlm3(vertexCoords, nbVertex);
+	float* normalCoords = makeNormalCoords(vc, nbVertex);
+	free(vc);
+	return normalCoords;
+}
+
+glm::vec3* convertFloatToGlm3(const float* vertexCoords, int nbVertex)
+{
+	glm::vec3* vc = (glm::vec3*)malloc(sizeof(glm::vec3) * nbVertex);
+	if(vertexCoords)
+		for(int i=0; i < nbVertex; i++)
+			for(int j=0; j < 3; j++)
+				vc[i][j] = vertexCoords[i*3+j];
+	else
+		for(int i=0; i < nbVertex; i++)
+			for(int j=0; j < 3; j++)
+				vc[i][j] = 0.0f;
+	return vc;
+}
+
+float* convertGlm3ToFloat(const glm::vec3* vertexCoords, int nbVertex)
+{
+	float* vc = (float*)malloc(3*nbVertex*sizeof(float));
+	if(vertexCoords)
+		for(int i=0; i < nbVertex; i++)
+			for(int j=0; j < 3; j++)
+				vc[i*3+j] = vertexCoords[i][j];
+	else
+		for(int i=0; i < nbVertex; i++)
+			for(int j=0; j < 3; j++)
+				vc[i*3+j] = 0.0f;
+
+	return vc;
 }

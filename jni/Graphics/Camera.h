@@ -10,8 +10,8 @@ class Camera : public Transformable
 		Camera();
 		glm::vec3 getLateral() const;
 		void lookAt(const glm::vec3& camera, const glm::vec3& target);
-		virtual glm::vec3 getPosition() const;
-		virtual void setPosition(const glm::vec3& pos);
+		virtual glm::vec3 getPosition(bool useScale=false) const;
+		virtual void setPosition(const glm::vec3& pos, bool useScale=false);
 		void setOrientation(const glm::vec3& orientation);
 };
 

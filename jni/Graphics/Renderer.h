@@ -11,6 +11,7 @@
 #include <android/native_window.h>
 #include "logger.h"
 #include "Camera.h"
+#include "Color.h"
 
 class Renderer
 {
@@ -26,6 +27,7 @@ class Renderer
 		bool hasDisplay();
 
 		Camera* getCamera();
+		Color getAmbientColor();
 	private:
 		void terminate();
 		EGLDisplay m_disp;

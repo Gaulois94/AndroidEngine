@@ -3,7 +3,7 @@ package com.gaulois94.Graphics;
 import com.gaulois94.JniMadeOf;
 import com.gaulois94.Graphics.Bitmap;
 
-class Texture extends JniMadeOf
+public class Texture extends JniMadeOf
 {
 	public Texture(long ptr)
 	{

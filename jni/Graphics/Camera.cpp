@@ -13,14 +13,14 @@ void Camera::lookAt(const glm::vec3& camera, const glm::vec3& target)
 	setOrientation(target - camera);
 }
 
-glm::vec3 Camera::getPosition() const
+glm::vec3 Camera::getPosition(bool useScale) const
 {
-	return -1.0f * Transformable::getPosition();
+	return -1.0f * Transformable::getPosition(useScale);
 }
 
-void Camera::setPosition(const glm::vec3& pos)
+void Camera::setPosition(const glm::vec3& pos, bool useScale)
 {
-	Transformable::setPosition(-1.0f*pos);
+	Transformable::setPosition(-1.0f*pos, useScale);
 }
 
 void Camera::setOrientation(const glm::vec3& orientation)

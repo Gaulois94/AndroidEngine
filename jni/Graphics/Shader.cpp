@@ -1,5 +1,7 @@
 #include "Shader.h"
 
+ResourcesManager<Shader*> Shader::shaders;
+
 Shader::Shader() : m_programID(0), m_vertexID(0), m_fragID(0)
 {}
 
@@ -105,17 +107,17 @@ void Shader::bindAttribLocation(const std::map<std::string, int>& attrib)
 		glBindAttribLocation(m_programID, it->second, it->first.c_str());
 }
 
-int Shader::getProgramID()
+int Shader::getProgramID() const
 {
 	return m_programID;
 }
 
-int Shader::getVertexID()
+int Shader::getVertexID() const
 {
 	return m_vertexID;
 }
 
-int Shader::getFragID()
+int Shader::getFragID() const
 {
 	return m_fragID;
 }

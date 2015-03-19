@@ -30,7 +30,7 @@ class Transformable : JniMadeOf
 		Transformable();
 
 		virtual void move(const glm::vec3 &v);
-		virtual void setPosition(const glm::vec3 &v);
+		virtual void setPosition(const glm::vec3 &v, bool useScale=false);
 		virtual void rotate(float angle, const glm::vec3 &v);
 		virtual void setRotate(float angle, const glm::vec3 &v);
 		virtual void scale(const glm::vec3 &v);
@@ -40,7 +40,8 @@ class Transformable : JniMadeOf
 		virtual void rotatePhi(float phi);
 		virtual void rotateTheta(float theta);
 
-		glm::vec3 getPosition() const;
+		glm::vec3 getPosition(bool useScale=false) const;
+		glm::vec3 getScale() const;
 		glm::mat4 getMatrix() const;
 		SphericCoord getSphericCoord() const;
 		float getRadius() const;

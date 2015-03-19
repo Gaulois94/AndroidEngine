@@ -1,8 +1,8 @@
 #include "nativeSprite.h"
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Sprite_createSprite(JNIEnv *jenv, jclass jcls, jlong texturePtr)
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Sprite_createSprite(JNIEnv *jenv, jclass jcls, jlong material, jlong texturePtr)
 {
-	Sprite* sprite = new Sprite((Texture*)texturePtr);
+	Sprite* sprite = new Sprite((Material*)material, (Texture*)texturePtr);
 	return (long)sprite;
 }
 

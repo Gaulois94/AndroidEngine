@@ -2,7 +2,7 @@
 
 short Sprite::drawOrder[6] = {0, 1, 2, 0, 2, 3};
 
-Sprite::Sprite(const Texture* texture) : Drawable(Drawable::shaders.get("texture")), m_subTextureRect(0.0f, 0.0f, 1.0f, 1.0f), m_texture(texture)
+Sprite::Sprite(Material* material, const Texture* texture) : Drawable(material), m_subTextureRect(0.0f, 0.0f, 1.0f, 1.0f), m_texture(texture)
 {
 	float vertexCoords[] = {0.0f, 1.0f, 0.0f,
 							0.0f, 0.0f, 0.0f,
@@ -21,14 +21,16 @@ Sprite::Sprite(const Texture* texture) : Drawable(Drawable::shaders.get("texture
 
 void Sprite::onDraw(Renderer* renderer, glm::mat4& mvp)
 {
-	glBindTexture(GL_TEXTURE_2D, m_texture->getID());
+	if(!m_material)
+		return;
+	m_material->bindTexture(m_texture);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
-		GLuint vPosition     = glGetAttribLocation(m_shader->getProgramID(), "vPosition");
-		GLuint vTextureCoord = glGetAttribLocation(m_shader->getProgramID(), "vTextureCoord");
+		GLuint vPosition     = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
+		GLuint vTextureCoord = glGetAttribLocation(m_material->getShader()->getProgramID(), "vTextureCoord");
 
-		GLuint uMvp          = glGetUniformLocation(m_shader->getProgramID(), "uMVP");
-		GLuint uTextureHandle = glGetUniformLocation(m_shader->getProgramID(), "uTexture");
+		GLuint uMvp          = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
+		GLuint uTextureHandle = glGetUniformLocation(m_material->getShader()->getProgramID(), "uTexture");
 
 		glEnableVertexAttribArray(vPosition);
 		glEnableVertexAttribArray(vTextureCoord);
@@ -42,7 +44,7 @@ void Sprite::onDraw(Renderer* renderer, glm::mat4& mvp)
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, Sprite::drawOrder);
 	}	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	m_material->unbindTexture();
 }
 
 void Sprite::setTexture(const Texture* texture, bool resetSubTextureRect)

@@ -9,4 +9,3 @@ void main()
 	gl_Position = uMVP * vec4(vPosition, 1.0);
 	vary_textureCoord = vTextureCoord;
 };
-

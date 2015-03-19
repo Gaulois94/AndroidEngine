@@ -4,7 +4,6 @@
 #define GLM_FORCE_RADIANS
 
 #include <GLES2/gl2.h>
-#include <EGL/egl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -18,25 +17,20 @@
 class Text : public Drawable
 {
 	public:
-		Text(Font* font, const char* text, const Color& color);
+		Text(Material* material, Font* font, const char* text);
 		Text();
 		~Text();
 
-		virtual void onDraw(Renderer* renderer);
+		virtual void onDraw(Renderer* renderer, glm::mat4& mvp);
 		void setFont(Font* font);
 		void setText(const char* text);
-		void setColor(const Color& color);
 
-		const Font* getFont();
-		const char* getText();
-		const Color& getColor();
+		const Font* getFont() const;
+		const char* getText() const;
 	protected:
-		virtual void initVbos();
-		float* m_letterCoords;
-		float* m_textureCoords;
-		Font* m_font;
-		char* m_text;
-		Color m_color;
+		void initVbos(float* letterCoords, float* textureCoord);
+		Font*  m_font;
+		char*  m_text;
 
 		static short drawOrder[6];
 };

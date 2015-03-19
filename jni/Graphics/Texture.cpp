@@ -1,6 +1,14 @@
 #include "Texture.h"
 
-Texture::Texture(int width, int height) : m_width(width), m_height(height)
+Texture::Texture(int width, int height, int id, const Color& maskColor) : m_width(width), m_height(height), m_id(0), m_maskColor(maskColor)
+{
+	if(glIsTexture(id))
+		m_id = id;
+	else
+		Texture(width, height, maskColor);
+}
+
+Texture::Texture(int width, int height, const Color& maskColor) : m_width(width), m_height(height), m_maskColor(maskColor)
 {
 	int format = GL_RGBA;
 	glGenTextures(1, &m_id);
@@ -14,7 +22,7 @@ Texture::Texture(int width, int height) : m_width(width), m_height(height)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Texture::Texture(const unsigned char* pixels, int width, int height, bool alpha) : m_width(width), m_height(height)
+Texture::Texture(const unsigned char* pixels, int width, int height, bool alpha, const Color& maskColor) : m_width(width), m_height(height), m_maskColor(maskColor)
 {
 	int internalFormat = GL_RGBA;
 	int format = GL_RGBA;
@@ -34,13 +42,18 @@ Texture::Texture(const unsigned char* pixels, int width, int height, bool alpha)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Texture::Texture(const Bitmap* bmp) : Texture(bmp->pixels, bmp->info.width, bmp->info.height, true)
+Texture::Texture(const Bitmap* bmp, const Color& maskColor) : Texture(bmp->pixels, bmp->info.width, bmp->info.height, true, maskColor)
 {
 }
 
 Texture::~Texture()
 {
 	glDeleteTextures(1, &m_id);
+}
+
+void Texture::setMaskColor(const Color& mask)
+{
+	m_maskColor = mask;
 }
 
 glm::vec2 Texture::pixelsToTextureCoord(const glm::vec2& pos) const
@@ -74,4 +87,9 @@ int Texture::getWidth() const
 int Texture::getHeight() const
 {
 	return m_height;
+}
+
+Color Texture::getMaskColor() const
+{
+	return m_maskColor;
 }

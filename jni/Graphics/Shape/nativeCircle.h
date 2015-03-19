@@ -8,10 +8,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Shape/Circle.h"
+#include "Materials/Material.h"
 
 extern "C" {
-	JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_Circle_createCircle(JNIEnv *, jclass, jfloatArray, jint);
+	JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_Circle_createCircle(JNIEnv *, jclass, jlong, jfloat, jint);
 	JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_Circle_setNbEdgeCircle(JNIEnv *, jobject, jlong, jint);
+	JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Shape_Circle_getCenterCircle(JNIEnv *jenv, jobject jobj, jlong ptr);
 	JNIEXPORT int         JNICALL Java_com_gaulois94_Graphics_Shape_Circle_getNbEdgeCircle(JNIEnv *, jobject, jlong);
 }
 #endif

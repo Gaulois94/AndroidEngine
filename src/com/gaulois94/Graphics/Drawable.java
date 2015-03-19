@@ -4,6 +4,7 @@ import com.gaulois94.JniMadeOf;
 import com.gaulois94.Graphics.Transformable;
 import com.gaulois94.Graphics.Renderer;
 import com.gaulois94.Graphics.Shader;
+import com.gaulois94.Graphics.Materials.Material;
 
 import android.content.Context;
 
@@ -25,13 +26,37 @@ public abstract class Drawable extends Transformable
 		return;
 	}
 
+	public void setCanDraw(Boolean d)
+	{
+		setCanDrawDrawable(m_ptr, d ? 1 : 0);
+	}
+
 	public Boolean canDraw()
 	{
 		return canDrawDrawable(m_ptr) != 0;
 	}
 
+	public void staticToCamera(Boolean s)
+	{
+		staticToCameraDrawable(m_ptr, s ? 1:0);
+	}
+	
+	public Boolean isStaticToCamera()
+	{
+		return isStaticToCameraDrawable(m_ptr) != 0;
+	}
 
-	//Functions for manage shaders
+	public void setMaterial(Material material)
+	{
+		setMaterialDrawable(m_ptr, material.getPtr());
+	}
+
+	public Material getMaterial()
+	{
+		return new Material(getMaterialDrawable(m_ptr));
+	}
+
+	//Functions for managing shaders
 	public static void addShader(String key, Shader shader)
 	{
 		addShaderDrawable(key, shader.getPtr());
@@ -68,8 +93,8 @@ public abstract class Drawable extends Transformable
 		loadShadersDrawable(JniMadeOf.context);
 	}
 
-	public    static native void   cleanShadersDrawable();
-	public    static native int    getNumberOfShadersDrawable();
+	public    static native void   cleanShaders();
+	public    static native int    getNumberOfShaders();
 	protected static native void   addShaderDrawable(String key, long shaderPtr);
 	protected static native long   getShaderDrawable(String key);
 	protected static native String getKeyShaderDrawable(long shader);
@@ -79,5 +104,11 @@ public abstract class Drawable extends Transformable
 	protected static native void   loadShadersDrawable(Context context);
 
 	protected native void drawDrawable(long ptr, long rendererPtr);
+
+	protected native void setCanDrawDrawable(long ptr, int d);
 	protected native int canDrawDrawable(long ptr);
+	protected native void staticToCameraDrawable(long ptr, int s);
+	protected native int isStaticToCameraDrawable(long ptr);
+	protected native long getMaterialDrawable(long ptr);
+	protected native void setMaterialDrawable(long ptr, long materialPtr);
 }

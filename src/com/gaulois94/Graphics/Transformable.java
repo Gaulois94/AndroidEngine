@@ -25,8 +25,13 @@ class Transformable extends JniMadeOf
 
 	public void setPosition(Vector3f v)
 	{
+		setPosition(v, 0);
+	}
+
+	public void setPosition(Vector3f v, int useScale)
+	{
 		float[] p = new float[]{v.x, v.y, v.z};
-		setPositionTransformable(m_ptr, p);
+		setPositionTransformable(m_ptr, p, useScale);
 	}
 
 	public void rotate(float angle, Vector3f v)
@@ -70,7 +75,12 @@ class Transformable extends JniMadeOf
 
 	public Vector3f getPosition()
 	{
-		float[] p = getPositionTransformable(m_ptr);
+		return getPosition(0);
+	}
+
+	public Vector3f getPosition(int useScale)
+	{
+		float[] p = getPositionTransformable(m_ptr, useScale);
 		Vector3f v = new Vector3f(p[0], p[1], p[2]);
 
 		return v;
@@ -95,7 +105,7 @@ class Transformable extends JniMadeOf
 	protected static native long createTransformable();
 
 	protected native void moveTransformable(long ptr, float[] m);
-	protected native void setPositionTransformable(long ptr, float[] p);
+	protected native void setPositionTransformable(long ptr, float[] p, int setScale);
 
 	protected native void rotateTransformable(long ptr, float angle, float[] r);
 	protected native void setRotateTransformable(long ptr, float angle, float[] r);
@@ -108,7 +118,7 @@ class Transformable extends JniMadeOf
 
 	protected native void setSphericCoordinateTransformable(long ptr, float r, float theta, float phi);
 
-	protected native float[] getPositionTransformable(long ptr);
+	protected native float[] getPositionTransformable(long ptr, int useScale);
 	protected native float[] getSphericCoordinateTransformable(long ptr);
 	protected native float[] getEulerRotationTransformable(long ptr);
 }

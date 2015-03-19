@@ -12,6 +12,7 @@ Font::Font(Texture* texture, int* charWidth, int* charHeight, int* posX, int* po
 	m_pad     = glm::vec2(padX, padY);
 
 	m_texture = texture;
+	m_texture->setMaskColor(Color::TRANSPARENT);
 	m_fontMetrics = fontMetrics;
 }
 

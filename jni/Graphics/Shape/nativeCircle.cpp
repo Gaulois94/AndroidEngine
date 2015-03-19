@@ -1,10 +1,8 @@
 #include "nativeCircle.h"
 
-JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_Circle_createCircle(JNIEnv *jenv, jclass jcls, jfloatArray colors, jint nbEdge)
+JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_Circle_createCircle(JNIEnv *jenv, jclass jcls, jlong material, jfloat radius, jint nbEdge)
 {
-	float* pc = jenv->GetFloatArrayElements(colors, 0);
-	Circle* circle = new Circle(Color(pc[0], pc[1], pc[2], pc[3]), nbEdge);
-	jenv->ReleaseFloatArrayElements(colors, pc, 0);
+	Circle* circle = new Circle((Material*)material, radius, nbEdge);
 
 	return (long)circle;
 }
@@ -13,6 +11,17 @@ JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_Circle_setNbEdge
 {
 	Circle* circle = (Circle*) ptr;
 	circle->setNbEdge(nbEdge);
+}
+
+JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Shape_Circle_getCenterCircle(JNIEnv *jenv, jobject jobj, jlong ptr)
+{
+	Circle* circle   = (Circle*)ptr;
+	glm::vec3 center = circle->getCenter();
+
+	jfloatArray result = jenv->NewFloatArray(3);
+	jenv->SetFloatArrayRegion(result, 0, 3, glm::value_ptr(center));
+
+	return result;
 }
 
 JNIEXPORT int         JNICALL Java_com_gaulois94_Graphics_Shape_Circle_getNbEdgeCircle(JNIEnv *jenv, jobject jobj, jlong ptr)

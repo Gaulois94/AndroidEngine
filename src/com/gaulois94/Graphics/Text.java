@@ -1,8 +1,10 @@
 package com.gaulois94.Graphics;
 
 import com.gaulois94.JniMadeOf;
+import com.gaulois94.Graphics.Materials.Material;
 import com.gaulois94.Graphics.Drawable;
 import com.gaulois94.Graphics.Font;
+import com.gaulois94.Graphics.Color;
 
 public class Text extends Drawable
 {
@@ -11,9 +13,9 @@ public class Text extends Drawable
 		super(ptr);
 	}
 
-	public Text(Font font, String text, float[] color)
+	public Text(Material material, Font font, String text)
 	{
-		super(createText(font.getPtr(), text, color));
+		super(createText(material.getPtr(), font.getPtr(), text));
 	}
 
 	public void setFont(Font font)
@@ -26,14 +28,21 @@ public class Text extends Drawable
 		setTextText(m_ptr, text);
 	}
 
-	public void setColor(Vector3f color)
+	public Font getFont()
 	{
-		float[] c = {color.x, color.y, color.z};
-		setColorText(m_ptr, c);
+		long fontPtr = getFontText(m_ptr);
+		return new Font(fontPtr);
 	}
 
-	private static native long createText(long font, String text, float[] color);
+	public String getText()
+	{
+		return getTextText(m_ptr);
+	}	
+
+	private static native long createText(long material, long font, String text);
 	private native void setTextText(long ptr, String text);
-	private native void setColorText(long ptr, float[] color);
 	private native void setFontText(long ptr, long font);
+
+	private native long getFontText(long ptr);
+	private native String getTextText(long ptr);
 }

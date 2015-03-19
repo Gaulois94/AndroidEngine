@@ -23,7 +23,7 @@ class Rectangle2
 
 		Rectangle2<T>& operator=(const Rectangle2<T>& r)
 		{
-			if(this != r)
+			if(this != &r)
 			{
 				x = r.x;
 				y = r.y;
