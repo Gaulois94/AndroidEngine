@@ -6,7 +6,7 @@ Transformable::Transformable() : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f
 
 void Transformable::move(const glm::vec3 &v)
 {
-	m_position = glm::translate(m_position, v);
+	setPosition(getPosition()+v);
 	setMVPMatrix();
 }
 
@@ -75,7 +75,7 @@ glm::vec3 Transformable::getScale() const
 
 glm::vec3 Transformable::getPosition(bool useScale) const
 {
-	glm::vec3 v = glm::vec3(m_position[0][3], m_position[1][3], m_position[2][3]);
+	glm::vec3 v = glm::vec3(m_position[3][0], m_position[3][1], m_position[3][2]);
 	if(!useScale)
 		v = v/getScale();
 	return v;
@@ -104,14 +104,15 @@ float Transformable::getRadius() const
 EulerRotation Transformable::getEulerRotation() const
 {
 	EulerRotation e;
-	e.roll  = atan2(m_rotate[2][0], m_rotate[2][1]);
+	e.roll  = atan2(m_rotate[0][2], m_rotate[1][2]);
 	e.pitch = acos(m_rotate[2][2]);
-	e.yaw   = -atan2(m_rotate[0][2], m_rotate[1][3]);
+	e.yaw   = -atan2(m_rotate[2][0], m_rotate[2][1]);
 
 	return e;
 }
 
 void Transformable::setMVPMatrix()
-{	m_mvpMatrix = m_scale * m_rotate;
+{	
+	m_mvpMatrix = m_scale * m_rotate;
 	m_mvpMatrix = m_mvpMatrix * m_position;
 }

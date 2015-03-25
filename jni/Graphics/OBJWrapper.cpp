@@ -156,7 +156,6 @@ OBJWrapper::OBJWrapper(JNIEnv* jenv, jobject jcontext, File& file) : Drawable(NU
 
 void OBJWrapper::onDraw(Renderer* renderer, glm::mat4& mvp)
 {
-	glm::mat4 inverseMVP = glm::inverse(mvp);
 	for(std::map<std::string, OBJDatas*>::iterator itOBJ = m_objDatas.begin(); itOBJ != m_objDatas.end(); ++itOBJ)
 	{
 		OBJDatas* currentDatas = itOBJ->second;
@@ -172,12 +171,12 @@ void OBJWrapper::onDraw(Renderer* renderer, glm::mat4& mvp)
 				if(!m_material)
 				{
 					currentMaterial->enableShader();
-					currentMaterial->init(renderer);
+					currentMaterial->init(renderer, mvp);
 					shader = currentMaterial->getShader();
 				}
 				else
 				{
-					m_material->init(renderer);
+					m_material->init(renderer, mvp);
 					shader = m_material->getShader();
 				}
 
@@ -189,10 +188,6 @@ void OBJWrapper::onDraw(Renderer* renderer, glm::mat4& mvp)
 				//Send the uniform attribute
 				GLint mvpMatrixHandle = glGetUniformLocation(shader->getProgramID(), "uMVP");
 				glUniformMatrix4fv(mvpMatrixHandle, 1, false, glm::value_ptr(mvp));
-
-				GLint inverseMVPMatrixHandle = glGetUniformLocation(shader->getProgramID(), "uInverseMVP");
-				if(inverseMVPMatrixHandle != -1)
-					glUniformMatrix4fv(inverseMVPMatrixHandle, 1, false, glm::value_ptr(inverseMVP));
 
 				//Draw the triangles.
 				glDrawArrays(GL_TRIANGLES, offset, itSeries->second);
@@ -206,4 +201,9 @@ void OBJWrapper::onDraw(Renderer* renderer, glm::mat4& mvp)
 OBJWrapper::~OBJWrapper()
 {
 
+}
+
+void OBJWrapper::setMaterial(Material* material)
+{
+	Drawable::setMaterial(material);
 }

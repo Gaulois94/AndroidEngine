@@ -14,7 +14,7 @@ class Material : public JniMadeOf
 		~Material();
 		void enableShader();
 		void bindTexture(const Texture* texture);
-		virtual void init(Renderer* renderer);
+		virtual void init(Renderer* renderer, const glm::mat4& mvp);
 		void unbindTexture();
 		void disableShader();
 		const Shader* getShader() const;

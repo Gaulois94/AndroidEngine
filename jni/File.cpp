@@ -47,6 +47,7 @@ File::File(JNIEnv* env, jobject context, int id, const char* mode)
 File::File(JNIEnv* env, jobject context, const char* path, const char* mode)
 {
 	m_pos  = 0;
+	m_path = std::string(path);
 	//Get the file descriptor
 	jclass contextClass      = env->GetObjectClass(context);
 	jclass fdClass           = env->FindClass("android/content/res/AssetFileDescriptor");
@@ -86,7 +87,6 @@ File::File(JNIEnv* env, jobject context, const char* path, const char* mode)
 	}
 }
 
-
 File::~File()
 {
 	if(m_file != NULL)
@@ -120,4 +120,9 @@ char File::readChar()
 		return '\0';
 	m_pos++;
 	return fgetc(m_file);
+}
+
+const std::string& File::getPath() const
+{
+	return m_path;
 }

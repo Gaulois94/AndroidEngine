@@ -8,21 +8,35 @@ ObjMaterial::ObjMaterial(const Color& diffuseColor, const Color& specularColor, 
 	bindTexture(texture);
 }
 
-void ObjMaterial::init(Renderer* renderer)
+void ObjMaterial::init(Renderer* renderer, const glm::mat4& mvp)
 {
 	GLint ambientColorHandle      = glGetUniformLocation(m_shader->getProgramID(), "uAmbientColor");
 	GLint diffuseColorHandle      = glGetUniformLocation(m_shader->getProgramID(), "uDiffuseColor");
 	GLint specularColorHandle     = glGetUniformLocation(m_shader->getProgramID(), "uSpecularColor");
 	GLint transparentHandle       = glGetUniformLocation(m_shader->getProgramID(), "uTransparent");
 	GLint specularHighlightHandle = glGetUniformLocation(m_shader->getProgramID(), "uSpecularHighlight");
+	GLint cameraMvpHandle         = glGetUniformLocation(m_shader->getProgramID(), "uCameraMVP");
+	GLint inverseCameraMvpHandle  = glGetUniformLocation(m_shader->getProgramID(), "uInverseCameraMVP");
+	GLint uInverseMvp             = glGetUniformLocation(m_shader->getProgramID(), "uInverseMVP");
+	GLint uTransposeMvp           = glGetUniformLocation(m_shader->getProgramID(), "uTransposeInverseMVP");
+	GLint uTransformation         = glGetUniformLocation(m_shader->getProgramID(), "uTransformationMVP");
 
 	Color aC = renderer->getAmbientColor();
-	float ambientColor[3] = {aC.r, aC.g, aC.b};
+	glm::mat4 inverseMvp    = glm::inverse(mvp);
+	glm::mat4 inverseCamera = glm::inverse(renderer->getCamera()->getMatrix());
+
+	float ambientColor[3]   = {0.25, 0.25, 0.25};
 	glUniform3fv(ambientColorHandle, 1, ambientColor);
 	glUniform3fv(diffuseColorHandle, 1, m_diffuseColor);
 	glUniform3fv(specularColorHandle, 1, m_specularColor);
 	glUniform1f(transparentHandle, transparent);
 	glUniform1f(specularHighlightHandle, specularHighlight);
+	glUniformMatrix4fv(cameraMvpHandle, 1, false, glm::value_ptr(renderer->getCamera()->getMatrix()));
+	glUniformMatrix4fv(inverseCameraMvpHandle, 1, false, glm::value_ptr(inverseCamera));
+
+	glUniformMatrix4fv(uInverseMvp, 1, false, glm::value_ptr(inverseMvp));
+	glUniformMatrix4fv(uTransposeMvp, 1, false, glm::value_ptr(glm::transpose(inverseMvp)));
+	glUniformMatrix4fv(uTransformation, 1, false, glm::value_ptr(inverseCamera * mvp));
 }
 
 void ObjMaterial::setDiffuseColor(const Color& diffuseColor)

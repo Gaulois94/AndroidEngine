@@ -21,7 +21,7 @@ int Circle::getNbEdge() const
 
 glm::vec3 Circle::getCenter() const
 {
-	return getPosition() + glm::vec3(1.0f, -1.0f, 0.0f);
+	return getPosition();
 }
 
 glm::vec3* Circle::initVertex(float radius, int nbEdge)
@@ -31,9 +31,9 @@ glm::vec3* Circle::initVertex(float radius, int nbEdge)
 	for(int i=0; i < nbEdge; i++)
 	{
 		float pos[] = {
-			radius, 0.0f, 0.0f,
-			radius + radius*(float)cos(i*2*PI/nbEdge), radius*(float)sin(i*2*PI/nbEdge), 0.0f,
-			radius + radius*(float)cos((i+1)*2*PI/nbEdge), radius*(float)sin((i+1)*2*PI/nbEdge), 0.0f};
+			0.0f, 0.0f, 0.0f,
+			radius*(float)cos(i*2*PI/nbEdge), radius*(float)sin(i*2*PI/nbEdge), 0.0f,
+			radius*(float)cos((i+1)*2*PI/nbEdge), radius*(float)sin((i+1)*2*PI/nbEdge), 0.0f};
 
 		for(int j=0; j < 9; j++)
 			vertexCoord[3*i+j/3][j%3] = pos[j];

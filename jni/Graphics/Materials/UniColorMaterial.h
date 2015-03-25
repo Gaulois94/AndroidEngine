@@ -12,7 +12,7 @@ class UniColorMaterial : public Material
 
 		~UniColorMaterial();
 
-		virtual void init(Renderer* renderer);
+		virtual void init(Renderer* renderer, const glm::mat4& mvp);
 		void setColor(const Color& color);
 		void setColor(const float* color);
 		Color getColor() const;

@@ -15,16 +15,16 @@ class Drawable : public Transformable
 {
 	public:
 		Drawable(Material* material);
-		~Drawable();
-		virtual void draw(Renderer* renderer);
+		virtual ~Drawable();
+		//Transformation is applied BEFORE the camera and the Transformation (from Transformable class) of the Drawable.
+		virtual void draw(Renderer* renderer, const glm::mat4& transformation=glm::mat4(1.0));
 		virtual void onDraw(Renderer* renderer, glm::mat4& mvp)=0;
-		void staticToCamera(bool s);
-		void setCanDraw(bool d);
-		void setMaterial(Material* material);
-		bool canDraw() const;
-		const Material* getMaterial() const;
-		bool isStaticToCamera() const;
-
+		virtual void staticToCamera(bool s);
+		virtual void setCanDraw(bool d);
+		virtual void setMaterial(Material* material);
+		virtual bool canDraw() const;
+		virtual const Material* getMaterial() const;
+		virtual bool isStaticToCamera() const;
 	protected:
 		virtual void deleteVbos();
 		Material* m_material;

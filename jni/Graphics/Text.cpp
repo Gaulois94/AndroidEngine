@@ -92,6 +92,10 @@ void Text::onDraw(Renderer* renderer, glm::mat4& mvp)
 	if(m_font == NULL || m_text == NULL || m_material == NULL)
 		return;
 
+	if(!m_material)
+		return;
+	m_material->init(renderer, mvp);
+
 	glBindTexture(GL_TEXTURE_2D, m_font->getTexture()->getID());
 	m_material->bindTexture(m_font->getTexture());
 	{

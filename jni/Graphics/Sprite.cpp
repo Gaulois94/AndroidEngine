@@ -23,6 +23,8 @@ void Sprite::onDraw(Renderer* renderer, glm::mat4& mvp)
 {
 	if(!m_material)
 		return;
+	m_material->init(renderer, mvp);
+
 	m_material->bindTexture(m_texture);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{

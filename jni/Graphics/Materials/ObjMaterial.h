@@ -26,7 +26,7 @@ class ObjMaterial : public Material
 		Color getDiffuseColor() const;
 		Color getSpecularColor() const;
 
-		void init(Renderer* renderer);
+		void init(Renderer* renderer, const glm::mat4& mvp);
 
 		float transparent;
 		float specularHighlight;

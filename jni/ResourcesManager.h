@@ -38,6 +38,7 @@ class ResourcesManager
 {
 	typedef std::string keyType;
 	typedef CT cleanning_traits;
+	typedef typename std::map<std::string, T>::iterator iterator;
 public:
 	ResourcesManager();
 	~ResourcesManager();
@@ -53,6 +54,15 @@ public:
 	void clean();
 
 	int getSize() const;
+	iterator begin()
+	{
+		return m_resources.begin();
+	}
+
+	iterator end()
+	{
+		return m_resources.end();
+	}
 protected:
 	std::map <std::string, T> m_resources;
 };

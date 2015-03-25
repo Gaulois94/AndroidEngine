@@ -19,7 +19,7 @@ class ColorMaterial : public Material
 		ColorMaterial(const Color* color, int nbVertex);
 		ColorMaterial(const float* color, int nbVertex);
 
-		virtual void init(Renderer* renderer);
+		virtual void init(Renderer* renderer, const glm::mat4& mvp);
 
 		void setColor(const Color* colors, int nbVertex);
 		void setColor(const float* colors, int nbVertex);

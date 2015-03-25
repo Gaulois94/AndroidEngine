@@ -18,11 +18,14 @@ class File
 		~File();
 		char* readLine();
 		char readChar();
+
+		const std::string& getPath() const;
 	private:
 		FILE* m_file;
 		int   m_size;
 		int   m_offset;
 		int   m_pos;
+		std::string m_path;
 };
 
 #endif

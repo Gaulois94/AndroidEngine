@@ -33,20 +33,28 @@ void TriangleShape::onDraw(Renderer* renderer, glm::mat4& mvp)
 		return;
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
-		m_material->init(renderer);
+		m_material->init(renderer, mvp);
 		if(glIsBuffer(m_drawOrderVboID))
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_drawOrderVboID);
 
-		GLint vPosition = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
-		GLint uMvp      = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
+		GLint vPosition         = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
+		GLint vNormal           = glGetAttribLocation(m_material->getShader()->getProgramID(), "vNormal");
+		GLint uMvp              = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
 
 		glEnableVertexAttribArray(vPosition);
+		glEnableVertexAttribArray(vNormal);
 
 		glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, 0, BUFFER_OFFSET(0));
+		glVertexAttribPointer(vNormal, 3, GL_FLOAT, false, 0, BUFFER_OFFSET(sizeof(float)*3*m_nbVertex));
 		glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
 
+
 		if(glIsBuffer(m_drawOrderVboID))
-			glDrawElements(m_mode, m_drawOrderLength, GL_UNSIGNED_INT, 0);
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_drawOrderVboID);
+			glDrawElements(m_mode, m_drawOrderLength, GL_UNSIGNED_INT, NULL);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		}
 		else
 			glDrawArrays(m_mode, 0, m_nbVertex);
 	}
@@ -58,7 +66,7 @@ void TriangleShape::setDatas(const glm::vec3* vertexCoords, const glm::vec3* nor
 {
 	m_nbVertex = nbVertex;
 
-	int size = sizeof(float) * (m_nbVertex * 3 + m_nbVertex);
+	int size = sizeof(float) * (m_nbVertex * 3*2);
 
 	Drawable::deleteVbos();
 	glGenBuffers(1, &m_vboID);
@@ -146,14 +154,14 @@ void TriangleShape::initVbos(const float* vertexCoords, const float* normalCoord
 void TriangleShape::setArrayVertex(const float* vertexCoords)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, 3*m_nbVertex*sizeof(float), vertexCoords);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, COORD_PER_TRIANGLES*m_nbVertex*sizeof(float), vertexCoords);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void TriangleShape::setArrayNormal(const float* normalCoords)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
-		glBufferSubData(GL_ARRAY_BUFFER, 3*m_nbVertex*sizeof(float), 3*m_nbVertex*sizeof(float), normalCoords);
+		glBufferSubData(GL_ARRAY_BUFFER, COORD_PER_TRIANGLES*m_nbVertex*sizeof(float), COORD_PER_TRIANGLES*m_nbVertex*sizeof(float), normalCoords);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -165,9 +173,10 @@ void TriangleShape::setDrawOrder(const unsigned int* drawOrder, int size)
 		m_drawOrderLength = 0;
 		return;
 	}
-
+	
+	glGenBuffers(1, &m_drawOrderVboID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_drawOrderVboID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size*sizeof(int), drawOrder, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size*sizeof(unsigned int), drawOrder, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	m_drawOrderLength = size;
@@ -192,11 +201,11 @@ void TriangleShape::deleteDrawOrder()
 
 float* makeNormalCoords(const glm::vec3* vertexCoords, int nbVertex)
 {
-	float* normalCoords = (float*)malloc(nbVertex * sizeof(float));
-	for(int i=0; i < nbVertex; i++)
+	float* normalCoords = (float*)malloc(COORD_PER_TRIANGLES*nbVertex * sizeof(float));
+	for(int i=0; i < nbVertex/3; i++)
 	{
-		glm::vec3 c = glm::cross(vertexCoords[i*3+1] - vertexCoords[i*3], 
-								 vertexCoords[i*3+2] - vertexCoords[i*3]);
+		glm::vec3 c = glm::normalize(glm::cross(vertexCoords[i*3+1] - vertexCoords[i*3], 
+												vertexCoords[i*3+2] - vertexCoords[i*3]));
 
 		//Because 1 normal per vertex
 		for(int j=0; j < 3; j++)

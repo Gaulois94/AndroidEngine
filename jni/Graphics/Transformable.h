@@ -5,6 +5,7 @@
 #define GLM_FORCE_RADIANS
 
 #include <glm/glm.hpp>
+#include "logger.h"
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
 #include <cmath>
@@ -40,12 +41,12 @@ class Transformable : JniMadeOf
 		virtual void rotatePhi(float phi);
 		virtual void rotateTheta(float theta);
 
-		glm::vec3 getPosition(bool useScale=false) const;
-		glm::vec3 getScale() const;
-		glm::mat4 getMatrix() const;
-		SphericCoord getSphericCoord() const;
-		float getRadius() const;
-		EulerRotation getEulerRotation() const;
+		virtual glm::vec3 getPosition(bool useScale=false) const;
+		virtual glm::vec3 getScale() const;
+		virtual glm::mat4 getMatrix() const;
+		virtual SphericCoord getSphericCoord() const;
+		virtual float getRadius() const;
+		virtual EulerRotation getEulerRotation() const;
 	protected:
 		void setMVPMatrix();
 

@@ -4,7 +4,7 @@
 #define GL_GLEXT_PROTOTYPES
 #define GLM_FORCE_RADIANS
 
-#define COORD_PER_TRIANGLES
+#define COORD_PER_TRIANGLES 3
 
 #include "Drawable.h"
 #include "Color.h"

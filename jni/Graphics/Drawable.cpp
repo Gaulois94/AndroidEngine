@@ -2,6 +2,7 @@
 
 Drawable::Drawable(Material* material) : Transformable(), m_material(material), m_vboID(0), m_canDraw(true)
 {
+	setMaterial(m_material);
 }
 
 Drawable::~Drawable()
@@ -9,7 +10,7 @@ Drawable::~Drawable()
 	deleteVbos();
 }
 
-void Drawable::draw(Renderer* renderer)
+void Drawable::draw(Renderer* renderer, const glm::mat4& transformation)
 {
 	if(!m_canDraw)
 		return;
@@ -19,7 +20,7 @@ void Drawable::draw(Renderer* renderer)
 
 	glm::mat4 mvp = getMatrix();
 	if(!m_staticToCamera)
-		mvp = renderer->getCamera()->getMatrix() * mvp;
+		mvp = renderer->getCamera()->getMatrix() * transformation * mvp;
 	onDraw(renderer, mvp);
 
 	if(m_material)

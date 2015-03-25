@@ -12,10 +12,13 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Materials_Material_bindTextur
 	material->bindTexture((Texture*)texturePtr);
 }
 
-JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Materials_Material_initMaterial(JNIEnv *jenv, jobject jobj, jlong ptr, jlong rendererPtr)
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Materials_Material_initMaterial(JNIEnv *jenv, jobject jobj, jlong ptr, jlong rendererPtr, jfloatArray mvp)
 {
 	Material* material = (Material*)ptr;
-	material->init((Renderer*)rendererPtr);
+
+	jfloat* m = jenv->GetFloatArrayElements(mvp, 0);
+	material->init((Renderer*)rendererPtr, glm::make_mat4(m));
+	jenv->ReleaseFloatArrayElements(mvp, m, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Materials_Material_unbindTextureMaterial(JNIEnv *jenv, jobject jobj, jlong ptr)
