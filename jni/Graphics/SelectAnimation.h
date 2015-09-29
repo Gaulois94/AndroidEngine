@@ -11,11 +11,13 @@ class SelectAnimation : public Animation
 		 * \param material the animation material
 		 * \param texture the animation texture
 		 * \param rectAnimation array of information (size + position) for each sprites part of the animation*/
-		PatternAnimation(Material* material, const Texture* texture, const std::vector<Rectangle2i>& rectAnimation);
+		PatternAnimation(Material* material, const Texture* texture, const std::vector<Rectangle2ui>& rectAnimation);
+
+		virtual void setSubNSpriteCoords(uint32_t n)=0;
 
 		~PatternAnimation();
 	private:
-		Rectangle2i* m_rectPatternAnimation;/** <Store the border of each animation. If null, we will use the other information about the animation (pad, ...)*/
+		Rectangle2ui* m_rectAnimation;/** <Store the border of each animation. If null, we will use the other information about the animation (pad, ...)*/
 }
 
 #endif
