@@ -4,9 +4,15 @@
 #include "TriangleShape.h"
 #include <cmath>
 
+/** \brief a Sphere class*/
 class Sphere : public TriangleShape
 {
 	public:
+		/** \brief Sphere constructor.
+		 * \param material its material
+		 * \param radius its radius
+		 * \param nbLongitude its number of longitude. Must be superior than 3
+		 * \param nbLatitude its number of latitude. Must be superior than 3*/
 		Sphere(Material* material, float radius=1.0f, unsigned int nbLongitude=16, unsigned int nbLatitude=32);
 	private:
 		static glm::vec3*    initVertex(float radius, unsigned int nbLongitude, unsigned int nbLatitude);
