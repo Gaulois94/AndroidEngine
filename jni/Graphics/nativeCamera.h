@@ -10,7 +10,6 @@ extern "C" {
 
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Camera_createCamera(JNIEnv *, jclass);
 JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Camera_getPositionCamera(JNIEnv *, jobject, jlong);
-JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Camera_getLateralCamera(JNIEnv *, jobject, jlong);
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Camera_lookAtCamera(JNIEnv *, jobject, jlong, jfloatArray, jfloatArray);
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Camera_setPositionCamera(JNIEnv *, jobject, jlong, jfloatArray);
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Camera_setOrientationCamera(JNIEnv *, jobject, jlong, jfloatArray);

@@ -14,12 +14,18 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
+/** \brief Create a list of material from a material file.*/
 class MaterialWrapper
 {
 	public:
+		/** \brief Create all the material contained on the file.
+		 * \param file The file where materials are serialized*/
 		MaterialWrapper(File& file);
 		~MaterialWrapper();
 
+		/** \brief get the material stored in the list.
+		 * \param name the material key name
+		 * \return the material associated with the key. If the key doesn't exist, returns null.*/
 		ObjMaterial* getMaterial(const std::string& name);
 	private:
 		ResourcesManager<ObjMaterial*> m_mtl;

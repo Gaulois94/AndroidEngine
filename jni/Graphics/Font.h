@@ -16,6 +16,7 @@
 #include "Bitmap.h"
 #include "Color.h"
 
+/** \brief The edges (or the metrics) of the Font */
 struct FontMetrics
 {
 	float ascent;
@@ -27,9 +28,21 @@ struct FontMetrics
 	jobject fontMetrics;
 };
 
+/** \brief The font object generate by a font file. */
 class Font
 {
 	public:
+		/** \brief Init the font generated before and store in the texture.
+		 * \param texture Where the characters of the font is graphicly stored.
+		 * \param charWidth Array of the width of each characters.
+		 * \param charHeight Array of the height of each characters.
+		 * \param posX Array of the x position of each characters.
+		 * \param posY Array of the y position of each characters.
+		 * \param maxHeight the maximum character height.
+		 * \param maxWidth the maximum character width.
+		 * \param padX the width space between each character's columns.
+		 * \param padY the height space between each character's rows
+		 * \param fontMetrics the font metrics of this font.*/
 		Font(Texture* texture, int* charWidth, int* charHeight, int* posX, int* posY, int maxWidth, int maxHeight, int padX, int padY, FontMetrics& fontMetrics);
 
 		glm::vec2 getPosition(char character) const;

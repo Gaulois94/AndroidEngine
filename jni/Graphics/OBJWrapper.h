@@ -27,14 +27,15 @@
 
 #define COORDS_PER_VERTEX 3
 
+/** \brief the datas of one OBJ object */
 struct OBJDatas
 {
-	int vertexPositionLength;
-	int vertexNormalLength;
-	GLuint vboID;
-	MaterialWrapper* mtlWrapper;
+	int vertexPositionLength; /** <The length of the position vector.*/
+	int vertexNormalLength;/** <The length of the normal vector.*/
+	GLuint vboID;/** <The vertex buffer object where the vertex positions and normals are stored*/
+	MaterialWrapper* mtlWrapper;/** <The material wrapper associated with this OBJ */
 
-	std::map<std::string, int> materialSerie;
+	std::map<std::string, int> materialSerie;/** <How many vertex the material associated with the key string must be actived*/
 };
 
 class OBJWrapper : public Drawable

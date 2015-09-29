@@ -13,19 +13,40 @@
 #include "Camera.h"
 #include "Color.h"
 
+class Explosion;
+
+/** \brief The renderer class. It is a representative of the screen. */
 class Renderer
 {
 	public:
+		/** \brief create an uninitialized renderer */
 		Renderer();
 		virtual ~Renderer();
 
+		/** \brief initialise the renderer's context
+		 * \param window the android screen
+		 * \return tell if the initialisation is successful */
 		bool initializeContext(ANativeWindow* window);
+
+		/** \brief initialise the renderer's surface
+		 * \param window the android screen*/
 		void initializeSurface(ANativeWindow *window);
+
+		/** \brief update the screen*/
 		bool display();
+
+		/** \brief clear the screen*/
 		void clear();
+
+		/** \brief delete the current surface of the screen*/
 		void deleteSurface();
+
+		/** \brief tell if the renderer has a display where it can draw to. 
+		 * \return return if it has a display where it can draw to.*/
 		bool hasDisplay();
 
+		/** \brief get the renderer camera
+		 * \return the renderer camera*/
 		Camera* getCamera();
 		Color getAmbientColor();
 	private:

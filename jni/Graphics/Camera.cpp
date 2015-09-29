@@ -2,20 +2,15 @@
 
 Camera::Camera(){}
 
-glm::vec3 Camera::getLateral() const
-{
-	return glm::vec3(cos(m_theta) * cos(m_phi), 0, -sin(m_theta) * sin(m_phi));
-}
-
 void Camera::lookAt(const glm::vec3& camera, const glm::vec3& target)
 {
 	setPosition(camera);
 	setOrientation(target - camera);
 }
 
-glm::vec3 Camera::getPosition(bool useScale) const
+glm::vec3 Camera::getPosition() const
 {
-	return -1.0f * Transformable::getPosition(useScale);
+	return -1.0f * Transformable::getPosition();
 }
 
 void Camera::setPosition(const glm::vec3& pos, bool useScale)

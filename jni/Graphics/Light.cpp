@@ -1,6 +1,6 @@
 #include "Light.h"
 
-Light::Light(const Color& color, const glm::vec3& position, float i, const glm::vec3& p, const glm::vec3& t) : phi(p), theta(t), position(pos), intensity(i)
+Light::Light(const Color& color, const glm::vec3& position, float i, float p, float t) : phi(p), theta(t), position(pos), intensity(i)
 {
 	setColor(color);
 }
@@ -19,7 +19,7 @@ void setColor(const Color& color)
 	color.getFloatArray(m_color);
 }
 
-Color& Light::getColor() const
+Color Light::getColor() const
 {
 	return Color(m_color);
 }

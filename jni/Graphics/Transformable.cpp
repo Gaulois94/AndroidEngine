@@ -19,16 +19,19 @@ void Transformable::setPosition(const glm::vec3 &v, bool useScale)
 	setMVPMatrix();
 }
 
-void Transformable::rotate(float angle, const glm::vec3 &v)
+void Transformable::rotate(float angle, const glm::vec3 &v, const glm::vec3 &origin)
 {
+	glm::vec3 moveOut = getPosition() - origin;
+	m_rotate = glm::translate(m_rotate, moveOut);
 	m_rotate = glm::rotate(m_rotate, angle, v);
+	m_rotate = glm::translate(m_rotate, -moveOut);
 	setMVPMatrix();
 }
 
-void Transformable::setRotate(float angle, const glm::vec3 &v)
+void Transformable::setRotate(float angle, const glm::vec3 &v, const glm::vec3 &origin)
 {
-	m_rotate = glm::rotate(glm::mat4(1.0f), angle, v);
-	setMVPMatrix();
+	m_rotate = glm::mat4(1.0f);
+	rotate(angle, v, origin);
 }
 
 void Transformable::scale(const glm::vec3 &v)
@@ -75,9 +78,12 @@ glm::vec3 Transformable::getScale() const
 
 glm::vec3 Transformable::getPosition(bool useScale) const
 {
+	if(useScale)
+	{
+		glm::vec3 v = glm::vec3(m_mvpMatrix[3][0], m_mvpMatrix[3][1], m_mvpMatrix[3][2]);
+		return v;
+	}
 	glm::vec3 v = glm::vec3(m_position[3][0], m_position[3][1], m_position[3][2]);
-	if(!useScale)
-		v = v/getScale();
 	return v;
 }
 
@@ -113,6 +119,6 @@ EulerRotation Transformable::getEulerRotation() const
 
 void Transformable::setMVPMatrix()
 {	
-	m_mvpMatrix = m_scale * m_rotate;
-	m_mvpMatrix = m_mvpMatrix * m_position;
+	m_mvpMatrix = m_scale * m_position;
+	m_mvpMatrix = m_mvpMatrix * m_rotate;
 }

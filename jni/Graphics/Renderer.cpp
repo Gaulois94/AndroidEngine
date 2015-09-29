@@ -3,6 +3,8 @@
 #include "Shape/Sphere.h"
 #include "Materials/ObjMaterial.h"
 #include "Materials/UniColorMaterial.h"
+#include "Materials/ExplosionMaterial.h"
+#include "Effect/Explosion.h"
 
 Renderer::Renderer() : m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT), m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
@@ -128,14 +130,6 @@ void Renderer::initializeSurface(ANativeWindow* window)
 
 bool Renderer::display()
 {
-	ObjMaterial m(Color::BLUE, Color::WHITE);
-	m_camera.setPosition(glm::vec3(0.0, 0.0, 1.5));
-	m_camera.rotate(PI/256, glm::vec3(0.0, 1.0, 0.0));
-	m.specularHighlight = 128;
-	Cylinder cylindre(&m, 0.5f, 1.0f);
-	Sphere sphere(&m, 1.0f, 16, 32);
-	cylindre.rotate(PI/2, glm::vec3(1.0, 0.0, 0.0));
-	cylindre.draw(this);
 	eglSwapBuffers(m_disp, m_surface);
 	return true;
 }

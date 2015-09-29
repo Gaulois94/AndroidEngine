@@ -9,7 +9,9 @@ LOCAL_SRC_FILES := nativeBitmap.cpp Bitmap.cpp nativeRenderer.cpp Renderer.cpp n
 
 LOCAL_SRC_FILES += Shape/TriangleShape.cpp Shape/nativeTriangleShape.cpp Shape/Circle.cpp Shape/nativeCircle.cpp Shape/Rectangle.cpp Shape/Sphere.cpp Shape/LateralCylinder.cpp Shape/Cylinder.cpp
 
-LOCAL_SRC_FILES += Materials/Material.cpp Materials/ColorMaterial.cpp Materials/UniColorMaterial.cpp Materials/nativeMaterial.cpp Materials/nativeUniColorMaterial.cpp Materials/ObjMaterial.cpp MaterialWrapper.cpp
+LOCAL_SRC_FILES += Effect/Explosion.cpp Effect/Effect.cpp
+
+LOCAL_SRC_FILES += Materials/Material.cpp Materials/ColorMaterial.cpp Materials/UniColorMaterial.cpp Materials/nativeMaterial.cpp Materials/nativeUniColorMaterial.cpp Materials/ObjMaterial.cpp MaterialWrapper.cpp Materials/EffectMaterial.cpp Materials/ExplosionMaterial.cpp
 
 LOCAL_C_INCLUDES := $(NDK_APP_PROJECT_PATH)/jni/
 LOCAL_SHARED_LIBRARIES := engine

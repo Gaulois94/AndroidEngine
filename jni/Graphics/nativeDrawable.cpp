@@ -60,8 +60,8 @@ JNIEXPORT jint JNICALL Java_com_gaulois94_Graphics_Drawable_existShaderFromKeyDr
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(JNIEnv *jenv, jclass jcls, jobject context)
 {
-	std::string files[]          = {"basic", "color", "obj", "text", "texture"};
-	int size                     = 5;
+	std::string files[]          = {"basic", "color", "obj", "text", "texture", "effect/explosion"};
+	int size                     = 6;
 
 	for(int i = 0; i < size; i++)
 	{
@@ -98,6 +98,13 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(
 		{
 			std::string attribsKey[] = {"vPosition", "vTextureCoord"};
 			for(int k=0; k < 2; k++)
+				attribs.insert(std::pair<std::string, int>(attribsKey[k], k));
+		}
+
+		else if(files[i] == "effect/explosion")
+		{
+			std::string attribsKey[] = {"vPosition"};
+			for(int k=0; k < 1; k++)
 				attribs.insert(std::pair<std::string, int>(attribsKey[k], k));
 		}
 

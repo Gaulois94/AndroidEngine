@@ -13,17 +13,35 @@
 #include "Texture.h"
 #include "Rectangle2.h"
 
-//Square with a Texture. If Texture==NULL, it will show a white square.
+/** \brief Square with a Texture.*/
 class Sprite : public Drawable
 {
 	public:
+		/** \brief Initialise the sprite by taking the whole texture.
+		 * \param material The Sprite material.
+		 * \param texture A pointer to the Sprite texture.*/
 		Sprite(Material* material, const Texture* texture);
 
+		/** \brief draw the sprite. If the texture is null, the function will draw a white square.
+		 * \param renderer The renderer where the drawable will be drawn
+		 * \param transformation Transform the coord of the drawable itself transformed by the renderer's camera before.*/
 		void onDraw(Renderer* renderer, glm::mat4& mvp);
+
+		/** \brief Set the sprite texture.
+		 * \param texture the new texture.
+		 * \param resetSubTextureRect reset the sprite texture rectangle (the rectangle from where the sprite will draw the pixels). */
 		void setTexture(const Texture* texture, bool resetSubTextureRect=true);
+
+		/** \brief set the texture rect.
+		 * \param subTextureRect the subtexture rect. */
 		void setSubTextureRect(const FloatRect2& subTextureRect);
 
+		/** \brief get the texture from which the sprite is associated.
+		 * \return the sprite texture. */
 		const Texture* getTexture() const;
+
+		/** \brief get the subtexture rectangle of the sprite.
+		 * \return the subtexture rect.*/
 		const FloatRect2& getSubTextureRect() const;
 	private:
 		static short drawOrder[6];

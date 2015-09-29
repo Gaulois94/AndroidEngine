@@ -126,23 +126,6 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 	public void draw()
 	{
 		clear();
-		UniColorMaterial material = new UniColorMaterial(new Color(1.0f, 0.0f, 0.0f, 1.0f));
-		m_circle.setMaterial(material);
-
-		m_circle.draw(this);
-		m_circle.move(new Vector3f(0.0f, 1.0f, 0.0f));
-
-		m_circle.draw(this);
-		m_circle.move(new Vector3f(-1.0f, 0.0f, 0.0f));
-
-		UniColorMaterial material2 = new UniColorMaterial(new Color(0.0f, 0.0f, 1.0f, 1.0f));
-		m_circle.setMaterial(material2);
-
-		m_circle.draw(this);
-		m_circle.move(new Vector3f(0.0f, -1.0f, 0.0f));
-
-		m_circle.draw(this);
-		m_circle.move(new Vector3f(1.0f, 0.0f, 0.0f));
 		display();
 	}
 

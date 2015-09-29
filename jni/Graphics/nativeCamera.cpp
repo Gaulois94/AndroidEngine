@@ -18,18 +18,6 @@ JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Camera_getPositionCame
 	return result;
 }
 
-JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Camera_getLateralCamera(JNIEnv *jenv, jobject jobj, jlong ptr)
-{
-	Camera* camera     = (Camera*) ptr;
-	glm::vec3 lateral  = camera->getLateral();
-
-	jfloatArray result = jenv->NewFloatArray(3);
-	float l[3]         = {lateral.x, lateral.y, lateral.z};
-	jenv->SetFloatArrayRegion(result, 0, 3, l);
-
-	return result;
-}
-
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Camera_lookAtCamera(JNIEnv *jenv, jobject jobj, jlong ptr, jfloatArray position, jfloatArray target)
 {
 	float* p = jenv->GetFloatArrayElements(position, 0);

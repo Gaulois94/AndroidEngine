@@ -14,18 +14,36 @@
 #include "Font.h"
 #include "Renderer.h"
 
+/** \brief manage a text on the screen. */
 class Text : public Drawable
 {
 	public:
+		/** \brief Create a Text object from a font and a string.
+		 * \param material The text material
+		 * \param font the text font
+		 * \param text the text string*/
 		Text(Material* material, Font* font, const char* text);
+
+		/** \brief Create an empty text.*/
 		Text();
 		~Text();
 
 		virtual void onDraw(Renderer* renderer, glm::mat4& mvp);
+
+		/** \brief set the font of the text
+		 * \param font the new font. The user should store the font somewhere (for example on a ResourcesManager) */
 		void setFont(Font* font);
+
+		/** \brief set the text string.
+		 * \param text the new string */
 		void setText(const char* text);
 
+		/** \brief get the text font.
+		 * \return the font associated with the text.*/
 		const Font* getFont() const;
+
+		/** \brief get the text string.
+		 * \return the text string.*/
 		const char* getText() const;
 	protected:
 		void initVbos(float* letterCoords, float* textureCoord);

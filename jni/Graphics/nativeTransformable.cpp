@@ -75,7 +75,7 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_rotateThetaTran
 JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Transformable_getPositionTranformable(JNIEnv* jenv, jobject jobj, jlong transPtr, jint useScale)
 {
 	Transformable* trans = (Transformable*) transPtr;
-	glm::vec3          s = trans->getPosition(useScale);
+	glm::vec3          s = trans->getPosition();
 
 	jfloatArray result;
 	result = jenv->NewFloatArray(3);

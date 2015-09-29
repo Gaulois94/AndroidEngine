@@ -8,18 +8,30 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+/** \brief Define a Light by a color, an intensity, an orientation and a position.*/
 class Light
 {
 	public:
-		Light(const Color& color, const glm::vec3& position, float intensity=0.25f, const glm::vec2& phi = glm::vec2(-PI/2, PI/2), const glm::vec2& theta = glm::vec2(0, 2*PI));
+		/** \brief Init the Light.
+		 * \param color the light's color
+		 * \param position the light's position
+		 * \param intensity the light's intensity
+		 * \param phi the phi angle
+		 * \param theta the theta angle*/
+		Light(const Color& color, const glm::vec3& position, float intensity=0.25f, float phi = PI/2, float theta = 0);
 		~Light();
 
-		glm::vec2 m_phi;
-		glm::vec2 m_theta;
+		float m_phi;
+		float m_theta;
 		glm::vec2 m_intensity;
 		glm::vec3 m_position;
 
+		/** \brief Set the light's position.
+		 * \param color the light's color */
 		void setColor(const Color& color);
+
+		/** \brief return the light's color.
+		 * \return the light's color */
 		Color getColor() const;
 	private:
 		float* m_color;

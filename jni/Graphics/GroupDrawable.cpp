@@ -9,6 +9,7 @@ void GroupDrawable::onDraw(Renderer* renderer, glm::mat4& mvp)
 		it->second->draw(renderer, mvp);
 }
 
+//It set all the material of the drawables
 void GroupDrawable::setMaterial(Material* material)
 {
 	Drawable::setMaterial(material);
