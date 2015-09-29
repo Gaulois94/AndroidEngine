@@ -14,8 +14,9 @@ void GroupDrawable::draw(Renderer* renderer, glm::mat4& transformation)
 	if(!m_canDraw)
 		return;
 
+	glm::mat4 mvp = getMatrix() * transformation;
 	for(std::map<std::string, Drawable*>::iterator it = m_drawables.begin(); it != m_drawables.end(); it++)
-		it->second->draw(renderer, transformation);
+		it->second->draw(renderer, mvp);
 }
 
 void GroupDrawable::staticToCamera(bool s)
