@@ -58,7 +58,8 @@ bool operator!=(const Rectangle2<T> &a, const Rectangle2<T> &b)
 	return(!(a==b));
 }
 
-typedef Rectangle2<float> FloatRect2;
-typedef Rectangle2<int>   IntRect2;
+typedef Rectangle2<float>        FloatRect2;
+typedef Rectangle2<int>          IntRect2;
+typedef Rectangle2<unsigned int> Rectangle2ui;
 
 #endif
