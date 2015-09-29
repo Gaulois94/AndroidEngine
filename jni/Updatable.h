@@ -5,9 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "JniMadeOf.h"
-
-class Renderer
-{};
+#include "Graphics/Renderer.h"
 
 /** \brief basic class for updating components*/
 class Updatable
