@@ -10,6 +10,12 @@ Drawable::~Drawable()
 	deleteVbos();
 }
 
+void Drawable::update(Renderer* renderer)
+{
+	draw(renderer);
+	Updatable::update(renderer);
+}
+
 void Drawable::draw(Renderer* renderer, const glm::mat4& transformation)
 {
 	if(!m_canDraw)

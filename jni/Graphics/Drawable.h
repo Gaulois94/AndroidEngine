@@ -6,13 +6,14 @@
 #endif
 
 #include "Transformable.h"
+#include "Updatable.h"
 #include "Shader.h"
 #include "Renderer.h"
 #include "Materials/Material.h"
 #include <GLES2/gl2.h>
 
 /** \brief Basic class drawable */
-class Drawable : public Transformable
+class Drawable : public Transformable, public Updatable
 {
 	public:
 		/** \brief create a Drawable associated with a material (thus a shader)
@@ -25,6 +26,8 @@ class Drawable : public Transformable
 		 * \param renderer The renderer where the drawable will be drawn
 		 * \param transformation Transform the coord of the drawable itself transformed by the renderer's camera before.*/
 		virtual void draw(Renderer* renderer, const glm::mat4& transformation=glm::mat4(1.0));
+
+		virtual void update(Renderer* renderer);
 
 		/** \brief is called by draw.
 		 * \param renderer The renderer where the drawable will be drawn.
