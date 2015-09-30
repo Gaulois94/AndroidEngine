@@ -19,10 +19,11 @@ class Text : public Drawable
 {
 	public:
 		/** \brief Create a Text object from a font and a string.
+		 * \param parent its parent
 		 * \param material The text material
 		 * \param font the text font
 		 * \param text the text string*/
-		Text(Material* material, Font* font, const char* text);
+		Text(Updatable* parent, Material* material, Font* font, const char* text);
 
 		/** \brief Create an empty text.*/
 		Text();

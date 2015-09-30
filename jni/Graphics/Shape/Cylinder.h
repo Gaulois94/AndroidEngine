@@ -1,12 +1,12 @@
 #ifndef DEF_CYLINDER_INCLUDE
 #define DEF_CYLINDER_INCLUDE
 
+#include "GroupDrawable.h"
 #include "Shape/Circle.h"
 #include "Shape/LateralCylinder.h"
-#include "GroupDrawable.h"
 #include "Materials/Material.h"
 
-/** \brief The Cylinder class. It's only 2 circle plus the lateral face of the cylinder (LateralCylinder*/
+/** \brief The Cylinder class. It's only 2 circle plus the lateral face of the cylinder (LateralCylinder)*/
 class Cylinder : public GroupDrawable
 {
 	public:

@@ -9,11 +9,12 @@ class Sphere : public TriangleShape
 {
 	public:
 		/** \brief Sphere constructor.
+		 * \param parent its parent
 		 * \param material its material
 		 * \param radius its radius
 		 * \param nbLongitude its number of longitude. Must be superior than 3
 		 * \param nbLatitude its number of latitude. Must be superior than 3*/
-		Sphere(Material* material, float radius=1.0f, unsigned int nbLongitude=16, unsigned int nbLatitude=32);
+		Sphere(Updatable* parent, Material* material, float radius=1.0f, unsigned int nbLongitude=16, unsigned int nbLatitude=32);
 	private:
 		static glm::vec3*    initVertex(float radius, unsigned int nbLongitude, unsigned int nbLatitude);
 		static unsigned int* initOrder(unsigned int nbLongitude, unsigned int nbLatitude);

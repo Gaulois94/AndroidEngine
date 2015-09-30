@@ -18,9 +18,10 @@ class Sprite : public Drawable
 {
 	public:
 		/** \brief Initialise the sprite by taking the whole texture.
+		 * \param parent The sprite parent
 		 * \param material The Sprite material.
 		 * \param texture A pointer to the Sprite texture.*/
-		Sprite(Material* material, const Texture* texture);
+		Sprite(Updatable* parent, Material* material, const Texture* texture);
 
 		/** \brief draw the sprite. If the texture is null, the function will draw a white square.
 		 * \param renderer The renderer where the drawable will be drawn

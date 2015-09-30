@@ -1,7 +1,9 @@
 #include "Transformable.h"
 
-Transformable::Transformable() : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f), m_position(1.0f), m_theta(0.0f), m_phi(0.0f)
+Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f), m_position(1.0f), m_theta(0.0f), m_phi(0.0f)
 {
+	m_defaultPos = glm::vec3(defaultConf.x, defaultConf.y, defaultConf.z);
+	m_defaultSize = glm::vec3(defaultConf.width, defaultConf.height, defaultConf.depth);
 }
 
 void Transformable::move(const glm::vec3 &v, bool useScale)
@@ -59,6 +61,22 @@ void Transformable::setScale(const glm::vec3 &v)
 	scale(getScale()/v);
 }
 
+void Transformable::setDefaultPos(const glm::vec3 &p)
+{
+	m_defaultPos = p;
+}
+
+void Transformable::setDefaultSize(const glm::vec3 &s)
+{
+	m_defaultSize = s;
+}
+
+void Transformable::setDefaultConf(const glm::vec3 &dc)
+{
+	setDefaultPos(glm::vec3(dc.x, dc.y, dc.z));
+	setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
+}
+
 void Transformable::setSphericCoordinate(float r, float theta, float phi)
 {
 	float x = r * sin(theta) * sin(phi);
@@ -94,10 +112,25 @@ glm::vec3 Transformable::getPosition(bool useScale) const
 	if(useScale)
 	{
 		glm::vec3 v = glm::vec3(m_mvpMatrix[3][0], m_mvpMatrix[3][1], m_mvpMatrix[3][2]);
-		return v;
+		return v+defaultPosition;
 	}
 	glm::vec3 v = glm::vec3(m_position[3][0], m_position[3][1], m_position[3][2]);
-	return v;
+	return v+defaultPosition;
+}
+
+const glm::vec3& Transformable::getDefaultPos() const
+{
+	return m_defaultPos;
+}
+
+const glm::vec3& Transformable::getDefaultSize() const
+{
+	return m_defaultSize;
+}
+
+Rectangle3f Transformable::getDefaultConf() const
+{
+	return Rectangle3f(m_defaultPos, m_defaultSize);
 }
 
 glm::mat4 Transformable::getMatrix() const

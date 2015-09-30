@@ -1,18 +1,24 @@
 #include "OBJWrapper.h"
 
-OBJWrapper::OBJWrapper(JNIEnv* jenv, jobject jcontext, File& file) : Drawable(NULL)
+OBJWrapper::OBJWrapper(JNIEnv* jenv, jobject jcontext, File& file) : Drawable(parent, NULL)
 {
+	//Information for the Transformation::defaultConf
+	glm::vec3 defaultPositionMax;
+	glm::vec3 defaultPositionMin;
+	bool defaultPositionInit=false;
+
+	//The vertex values for a specific OBJ
 	std::vector<float> vertexPosition;
 	std::vector<float> vertexNormal;
 	std::vector<int>   vertexDrawOrder;
 	std::vector<int>   vertexNormalOrder;
 
+	//Associated an material (by its key str) to its number of vertices when it is being used
 	std::map<std::string, int> materialSerie;
+	int faceSerie = 0; //The serie of the material
 
-	int faceSerie = 0;
-
-	std::string currentMaterial;
-	bool currentMaterialInit = false;
+	std::string currentMaterial; //the current material key
+	bool currentMaterialInit = false; 
 
 	OBJDatas* currentDatas = NULL;
 
@@ -26,6 +32,7 @@ OBJWrapper::OBJWrapper(JNIEnv* jenv, jobject jcontext, File& file) : Drawable(NU
 			line = std::string(buffer);
 			unsigned int loc;
 			
+			//Replace two spaces by one
 			while((loc = line.find("  ")) != std::string::npos) //Two spaces here
 				line.replace(loc,2," "); //Single space in quotes
 			if(std::regex_match(line, std::regex("^ *#$")))
@@ -39,15 +46,45 @@ OBJWrapper::OBJWrapper(JNIEnv* jenv, jobject jcontext, File& file) : Drawable(NU
 			{
   				currentDatas->vertexPositionLength = COORDS_PER_VERTEX * vertexDrawOrder.size();
 			    currentDatas->vertexNormalLength   = COORDS_PER_VERTEX * vertexNormalOrder.size();
+
 				//fill datas
 				float* vertexPositionArray = (float*) malloc(sizeof(float) * currentDatas->vertexPositionLength);
 				float* vertexNormalArray   = (float*) malloc(sizeof(float) * currentDatas->vertexNormalLength);
 
+				//Get the value of the position switch the order we get
 				for(unsigned int i=0; i < vertexDrawOrder.size(); i++)
 				{
 					int offset = vertexDrawOrder[i] * COORDS_PER_VERTEX;
 					for(int j=0; j < COORDS_PER_VERTEX; j++)
+					{
+						glm::vec3& vPos = vertexPosition[offset + j];
+						//get the default position min and max
+						//First init the position
+						if(!defaultPositionInit)
+						{
+							defaultPositionInit = true;
+							defaultPositionMin = defaultPositionMax = vPos;
+						}
+
+						//then get the x value
+						else if(defaultPositionMin.x > vPos.x)
+							defaultPositionMin.x = vPos.x;
+						else if(defaultPositionMax.x < vPos.x)
+							defaultPositionMax.x = vPos.x;
+						//the y value
+						else if(defaultPositionMin.y > vPos.y)
+							defaultPositionMin.y = vPos.y;
+						else if(defaultPositionMax.y < vPos.y)
+							defaultPositionMax.y = vPos.y;
+						//and the z value
+						else if(defaultPositionMin.z > vPos.z)
+							defaultPositionMin.z = vPos.z;
+						else if(defaultPositionMax.z < vPos.z)
+							defaultPositionMax.z = vPos.z;
+
+						//Store the vertex position get by the order in the vertexPositionArray
 						vertexPositionArray[COORDS_PER_VERTEX*i + j] = vertexPosition[offset + j];
+					}
 				}
 
 				for(unsigned int i=0; i < vertexNormalOrder.size(); i++)
@@ -57,7 +94,7 @@ OBJWrapper::OBJWrapper(JNIEnv* jenv, jobject jcontext, File& file) : Drawable(NU
 						vertexNormalArray[COORDS_PER_VERTEX*i + j] = vertexNormal[offset + j];
 				}
 
-				//create and fill VBO
+				//create and fill VBOs
 				glGenBuffers(1, &(currentDatas->vboID));
 				glBindBuffer(GL_ARRAY_BUFFER, currentDatas->vboID);
 				{
@@ -152,6 +189,7 @@ OBJWrapper::OBJWrapper(JNIEnv* jenv, jobject jcontext, File& file) : Drawable(NU
 		if(buffer != NULL)
 			free(buffer);
 	}
+	setDefaultConf(Rectangle3f(defaultPositionMin, defaultPositionMax-defaultPositionMin);
 }
 
 void OBJWrapper::onDraw(Renderer* renderer, glm::mat4& mvp)
@@ -201,9 +239,4 @@ void OBJWrapper::onDraw(Renderer* renderer, glm::mat4& mvp)
 OBJWrapper::~OBJWrapper()
 {
 
-}
-
-void OBJWrapper::setMaterial(Material* material)
-{
-	Drawable::setMaterial(material);
 }

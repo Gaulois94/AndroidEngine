@@ -1,6 +1,6 @@
 #include "Shape/Cube.h"
 
-Cube::Cube(Material* material, float width, float height, float depth) : TriangleShape(buffer=initVertex(width, height, depth), NULL, 36)
+Cube::Cube(Updatable* parent, Material* material, float width, float height, float depth) : TriangleShape(parent, buffer=initVertex(width, height, depth), NULL, 36)
 {
 	free(buffer);
 }

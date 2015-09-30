@@ -10,10 +10,11 @@ class Circle : public TriangleShape
 {
 	public:
 		/** \brief The Circle constructor
+		 * \param parent its parent
 		 * \param material the material of the circle
 		 * \param radius the radius of the circle. Set the scale for setting the futur radius or setNbEdge with the same number of edge than before.
 		 * \param nbEdge the number of *edge* of this circle. My be superior than 3. This number can be used to create any regular polygons from 3 to infinity number of edges*/
-		Circle(Material* material, float radius=1, int nbEdge=16); //size must be superior than 3. By default, radius is set to 1.0f. Set scale for setting radius.
+		Circle(Updatable* parent, Material* material, float radius=1, int nbEdge=16); //size must be superior than 3. By default, radius is set to 1.0f. Set scale for setting radius.
 
 		/** \brief set the number of edges of this circle. Can be call 'reconfigure' too
 		 * \param nbEdge the new number of edges

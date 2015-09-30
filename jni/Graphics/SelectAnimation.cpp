@@ -1,6 +1,6 @@
 #include "SelectAnimation.h"
 
-SelectAnimation::SelectAnimation(Material* material, const Texture* texture, const std::vector<Rectangle2ui> rectAnimation) : animation(material, texture, rectAnimation.size()), m_rectAnimation(NULL)
+SelectAnimation::SelectAnimation(Updatable* parent, Material* material, const Texture* texture, const std::vector<Rectangle2ui> rectAnimation) : animation(parent, material, texture, rectAnimation.size()), m_rectAnimation(NULL)
 {
 	m_rectAnimation = (Rectangle2ui*)malloc(rectAnimation.size()*sizeof(Rectangle2ui));
 	for(uint32_t i=0; i < rectAnimation.size(); i++)

@@ -1,6 +1,6 @@
 #include "Shape/Rectangle.h"
 
-Rectangle::Rectangle(Material* material, const glm::vec2& size) : TriangleShape(material, buffer=initVertex(size), NULL, 4), m_size(size)
+Rectangle::Rectangle(Updatable* parent, Material* material, const glm::vec2& size) : TriangleShape(parent, material, buffer=initVertex(size), NULL, 4), m_size(size)
 {
 	free(buffer);
 	buffer=NULL;

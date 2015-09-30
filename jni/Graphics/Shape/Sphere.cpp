@@ -1,6 +1,6 @@
 #include "Shape/Sphere.h"
 
-Sphere::Sphere(Material* material, float radius, unsigned int nbLongitude, unsigned int nbLatitude) : TriangleShape::TriangleShape(material, buffer=initVertex(radius, nbLongitude, nbLatitude), NULL, nbLongitude*nbLatitude), m_nbLongitude(nbLongitude), m_nbLatitude(nbLatitude)
+Sphere::Sphere(Updatable* parent, Material* material, float radius, unsigned int nbLongitude, unsigned int nbLatitude) : TriangleShape(parent, material, buffer=initVertex(radius, nbLongitude, nbLatitude), NULL, nbLongitude*nbLatitude), m_nbLongitude(nbLongitude), m_nbLatitude(nbLatitude)
 {
 	//Normalize normales
 	for(unsigned int i=0; i < nbLongitude*nbLatitude; i++)

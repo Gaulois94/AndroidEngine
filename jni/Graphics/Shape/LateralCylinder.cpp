@@ -1,6 +1,6 @@
 #include "LateralCylinder.h"
 
-LateralCylinder::LateralCylinder(Material* material, float radius, float height, int nbMeridian) : TriangleShape(material, buffer=initVertex(radius, height, nbMeridian), NULL, 6*nbMeridian), m_nbMeridian(nbMeridian)
+LateralCylinder::LateralCylinder(Updatable* parent, Material* material, float radius, float height, int nbMeridian) : TriangleShape(parent, material, buffer=initVertex(radius, height, nbMeridian), NULL, 6*nbMeridian), m_nbMeridian(nbMeridian)
 {
 	free(buffer);
 	buffer = initNormal(nbMeridian);

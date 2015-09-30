@@ -10,11 +10,12 @@ class LateralCylinder : public TriangleShape
 {
 	public:
 		/** \brief the LateralCylinder constructor.
+		 * \param parent its parent
 		 * \param material its material
 		 * \param radius its radius
 		 * \param height its height
 		 * \param nbMeridian its number of meridians. Must be superior than 3*/
-		LateralCylinder(Material* material, float radius=1.0f, float height=2.0f, int nbMeridian=16);
+		LateralCylinder(Updatable* parent, Material* material, float radius=1.0f, float height=2.0f, int nbMeridian=16);
 
 		/** \brief get the number of meridian of this LateralCylinder
 		 * \return the number of meridians*/

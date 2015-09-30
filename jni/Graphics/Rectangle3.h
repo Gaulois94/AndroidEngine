@@ -23,6 +23,16 @@ class Rectangle3<T>
 			depth  = d;
 		}
 
+		Rectangle3<T>(const glm::vec3& pos, const glm::vec3& size)
+		{
+			x      = pos.x;
+			y      = pos.y;
+			z      = pos.z;
+			width  = size.x;
+			height = size.y;
+			depth  = size.z;
+		}
+
 		T x;
 		T y;
 		T z;
@@ -45,5 +55,8 @@ bool operator!=(const Rectangle3<T> &a, const Rectangle3<T> &b)
 
 typedef Rectangle3<float> FloatRect3;
 typedef Rectangle3<int>   IntRect3;
+
+typedef Rectangle3<float> Rectangle3f;
+typedef Rectangle3<int>   Rectangle3i;
 
 #endif

@@ -38,13 +38,18 @@ struct OBJDatas
 	std::map<std::string, int> materialSerie;/** <How many vertex the material associated with the key string must be actived*/
 };
 
+/** \brief OBJWrapper class. This class read an .obj file and extract all the information about the obj 3d object (vertex, normal), associate them with their own material (via MaterialWrapper)*/
 class OBJWrapper : public Drawable
 {
 	public:
-		OBJWrapper(JNIEnv* jenv, jobject context, File& file);
+		/** \brief Basic constructor of OBJWrapper
+		 * \param parent its parent
+		 * \param jenv the java environment, used for reading the android file.
+		 * \param context the android context, used for reading the android file
+		 * \param file the file to being parsed*/
+		OBJWrapper(Updatable* parent, JNIEnv* jenv, jobject context, File& file);
 		~OBJWrapper();
 		virtual void onDraw(Renderer* renderer, glm::mat4& mvp);
-		void setMaterial(Material* mtl); //set the material FOR ALL OBJ's.
 	private:
 		ResourcesManager<MaterialWrapper*> m_mtlWrapper;
 		ResourcesManager<OBJDatas*> m_objDatas;

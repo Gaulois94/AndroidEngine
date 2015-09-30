@@ -17,8 +17,9 @@ class Drawable : public Transformable, public Updatable
 {
 	public:
 		/** \brief create a Drawable associated with a material (thus a shader)
+		 * \param parent the Drawable parent
 		 * \param material The drawable material*/
-		Drawable(Updatable *parent, Material* material);
+		Drawable(Updatable *parent, Material* material, const Rectangle3f& defaultConfiguration=Rectangle3f(0, 0, 0, 0, 0, 0));
 
 		virtual ~Drawable();
 

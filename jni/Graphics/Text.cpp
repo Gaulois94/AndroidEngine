@@ -2,7 +2,7 @@
 
 short Text::drawOrder[6] = {0, 1, 2, 0, 2, 3};
 
-Text::Text(Material* material, Font* font, const char* text) : Drawable(material), m_font(font), m_text(NULL)
+Text::Text(Updatable* parent, Material* material, Font* font, const char* text) : Drawable(parent, material), m_font(font), m_text(NULL)
 {
 	setText(text);
 }
@@ -28,16 +28,21 @@ void Text::setText(const char* text)
 	if(m_text)
 		free(m_text);
 
+	//A text is just a number of letter drawn one by one
 	float *textureCoords = (float*) malloc(strlen(text) * 4 * 2 * sizeof(float));
 	float *letterCoords = (float*) malloc(strlen(text) * 4 * 3 * sizeof(float));
 
+	//We copy the new text and store it
 	m_text = (char*) malloc(strlen(text)*sizeof(char));
 	strcpy(m_text, text);
+
+	//We start at the position (0.0, 0.0)
 	float posX = 0.0f;
 	float posY = 0.0f;
 
 	for(unsigned int i=0; i < strlen(text); i++)
 	{
+		//If the character is \n, we jump to the next line (posY -= m_font->getLineHeight())
 		if(text[i] == CHAR_NL)
 		{
 			posX = 0;
@@ -83,6 +88,7 @@ void Text::setText(const char* text)
 	}
 
 	initVbos(letterCoords, textureCoords);
+	setDefaultSize(glm::vec3(posX, posY, 0.0f));//We readjust the default size of the text
 	free(letterCoords);
 	free(textureCoords);
 }

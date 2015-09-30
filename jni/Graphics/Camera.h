@@ -9,8 +9,9 @@
 class Camera : public Transformable
 {
 	public:
-		/** \brief Create a basic camera, which modifies nothing (unity matrix) */
-		Camera();
+		/** \brief Create a basic camera, which modifies nothing (unity matrix) 
+		 * \param defaultPos the position of the Camera*/
+		Camera(const glm::vec3& defaultPos=glm::vec3(0.0f));
 
 		/** \brief Set the camera position and configure the orientation for looking at the target
 		 * \param camera the camera position 

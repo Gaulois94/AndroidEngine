@@ -30,11 +30,12 @@ struct EulerRotation
 /** \brief Transformable is the class which manage all the transformation (rotations, translations, scales) of a matrix. It is mainly used for all the drawable and the Camera.
  * Firstly we apply the rotation, then the scale and after the rotation of the object.
  * The onScale, onRotate and onMove do nothing for this class. They are used if you want to do something during a transformation (without recreate move, scale or rotate function)*/
-class Transformable : public Updatable
+class Transformable
 {
 	public:
-		/** \brief create an unity matrix */
-		Transformable();
+		/** \brief create an unity matrix
+		 * \param defaultConf the default size and position of this transformable */
+		Transformable(const Rectangle3f& defaultConf=Rectangle3f(0, 0, 0, 0, 0, 0));
 
 		/** \brief translate the transformable
 		 * \param v the vector from where the object must be translated
@@ -101,6 +102,18 @@ class Transformable : public Updatable
 		 * \return the position of the object, considering or not the object scale*/
 		virtual glm::vec3 getPosition(bool useScale=false) const;
 
+		/** \brief return the size of the transformable with a scale at (1, 1, 1)
+		 * \return the size by default of the object*/
+		virtual const glm::vec3& getDefaultSize() const;
+
+		/** \brief return the default position of this transformable
+		 * \return the default position of the transformable*/
+		virtual const glm::vec3& getDefaultPos() const;
+
+		/** \brief get the default configuration of this transformable
+		 * \return the default configuration*/
+		virtual Rectangle3f getDefaultConf() const;
+
 		/** \brief get the scale of the object
 		 * \return value the scale value of the object of the x, y and z coordinates */
 		virtual glm::vec3 getScale() const;
@@ -124,10 +137,27 @@ class Transformable : public Updatable
 		/** \brief create the new matrix result from the position, the scale and the rotation. */
 		void setMVPMatrix();
 
+		//These functions are privates because it is irelevant to the nature of the drawable, and not by the user wishes
+		/** \brief set the default size of the object (the size when the scale is (1, 1, 1))
+		 * \param s the new default size*/
+		virtual void setDefaultSize(const glm::vec3& s);
+
+		/** \brief set the default position of the object
+		 * \param p the new default position*/
+		virtual void setDefaultPos(const glm::vec3& p);
+
+		/** \brief set the default configuration of the object : default position and default size
+		 * \param dc the new defaultConf*/
+		virtual void setDefaultConf(const Rectangle3& dc);
+
 		glm::mat4 m_mvpMatrix;
 		glm::mat4 m_rotate;
 		glm::mat4 m_scale;
 		glm::mat4 m_position;
+
+		glm::vec3 m_defaultSize;
+		glm::vec3 m_defaultPos;
+
 		float     m_theta;
 		float     m_phi;
 };

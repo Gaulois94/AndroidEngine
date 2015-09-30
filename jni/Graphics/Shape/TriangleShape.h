@@ -27,7 +27,7 @@ class TriangleShape : public Drawable
 		 * \param normalCoords the normal value of the vertex.
 		 * \param nbVertex the number of vertex
 		 * \param mode the mode used by the vertex. See the mode accorded by OpenGL. By default its GL_TRIANGLES*/
-		TriangleShape(Material* material, const glm::vec3* vertexCoords, const glm::vec3* normalCoords, int nbVertex, GLuint mode=GL_TRIANGLES);
+		TriangleShape(Updatable* parent, Material* material, const glm::vec3* vertexCoords, const glm::vec3* normalCoords, int nbVertex, GLuint mode=GL_TRIANGLES);
 
 		/** \brief Create the TriangleShape object from float array
 		 * \param material its material

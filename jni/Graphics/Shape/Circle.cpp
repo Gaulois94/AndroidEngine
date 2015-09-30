@@ -1,6 +1,6 @@
 #include "Circle.h"
 
-Circle::Circle(Material* material, float radius, int nbEdge) : TriangleShape::TriangleShape(material, buffer=initVertex(radius, nbEdge), NULL, 3*nbEdge), m_radius(radius)
+Circle::Circle(Updatable* parent, Material* material, float radius, int nbEdge) : TriangleShape(parent, material, buffer=initVertex(radius, nbEdge), NULL, 3*nbEdge), m_radius(radius)
 {
 	free(buffer);
 	buffer=NULL;
