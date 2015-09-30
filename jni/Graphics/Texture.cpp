@@ -74,6 +74,11 @@ FloatRect2 Texture::getRect(const glm::vec2& pos, const glm::vec2& size) const
 	return rect;
 }
 
+FloatRect2 getRect(const Rectangle2ui& rect)
+{
+	return getRect(glm::vec2(rect.x, rect.y), glm::vec2(rect.width, rect.height));
+}
+
 GLuint Texture::getID() const
 {
 	return m_id;
