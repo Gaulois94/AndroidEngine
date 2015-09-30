@@ -3,8 +3,9 @@
 
 #include "Drawable.h"
 
-/** \brief basic class for all the widgets*/
-class Widget : public Drawable
+/** \brief basic class for all the widgets.
+ * Because a Widget could be composed of many sub drawables, it is considerated as a GroupDrawable*/
+class Widget : public GroupDrawable
 {
 	public:
 		/** \brief Widget constructor. Initialise its material and its parent

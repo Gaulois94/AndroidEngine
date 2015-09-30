@@ -1,3 +1,3 @@
 #include "Widget.h"
 
-Widget::Widget(Updatable* parent, Material* material) : Drawable(parent, material)
+Widget::Widget(Updatable* parent, Material* material) : GroupDrawable(parent, material)
