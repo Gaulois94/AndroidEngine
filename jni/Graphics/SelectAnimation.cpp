@@ -1,6 +1,6 @@
 #include "SelectAnimation.h"
 
-SelectAnimation::SelectAnimation(Updatable* parent, Material* material, const Texture* texture, const std::vector<Rectangle2ui> rectAnimation) : animation(parent, material, texture, rectAnimation.size()), m_rectAnimation(NULL)
+SelectAnimation::SelectAnimation(Updatable* parent, Material* material, const Texture* texture, const std::vector<Rectangle2ui> rectAnimation) : Animation(parent, material, texture, rectAnimation.size()), m_rectAnimation(NULL)
 {
 	m_rectAnimation = (Rectangle2ui*)malloc(rectAnimation.size()*sizeof(Rectangle2ui));
 	for(uint32_t i=0; i < rectAnimation.size(); i++)
@@ -10,5 +10,5 @@ SelectAnimation::SelectAnimation(Updatable* parent, Material* material, const Te
 void SelectAnimation::setSubNSpriteCoords(uint32_t n)
 {
 	m_currentN = n%m_maxN;
-	Sprite::setSubTextureRect(*m_rectAnimation[m_currentN]);
+	Sprite::setSubTextureRect(m_texture.getRect(*m_rectAnimation[m_currentN]));
 }
