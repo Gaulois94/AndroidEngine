@@ -8,7 +8,7 @@
 #include "Graphics/Renderer.h"
 
 /** \brief basic class for updating components*/
-class Updatable
+class Updatable : public JniMadeOf
 {
 	public:
 		Updatable(Updatable *parent);
