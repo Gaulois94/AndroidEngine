@@ -11,7 +11,7 @@ class GroupDrawable : public Drawable
 	public:
 		/** \brief Init the GroupDrawable with the same material for each drawables.
 		 * \param material The drawables material.*/
-		GroupDrawable(Material* material);
+		GroupDrawable(Updatable* parent, Material* material);
 
 		void update(Renderer* renderer);
 

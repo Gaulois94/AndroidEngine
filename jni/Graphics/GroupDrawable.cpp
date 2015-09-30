@@ -1,6 +1,6 @@
 #include "GroupDrawable.h"
 
-GroupDrawable::GroupDrawable(Material* material) : Drawable(material)
+GroupDrawable::GroupDrawable(Updatable *parent, material* material) : Drawable(parent, material)
 {}
 
 void GroupDrawable::update(Renderer* renderer)
