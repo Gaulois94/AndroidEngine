@@ -28,16 +28,24 @@ struct EulerRotation
 };
 
 /** \brief Transformable is the class which manage all the transformation (rotations, translations, scales) of a matrix. It is mainly used for all the drawable and the Camera.
- * Firstly we apply the scale, then the position and after the rotation of the object.*/
-class Transformable : JniMadeOf
+ * Firstly we apply the rotation, then the scale and after the rotation of the object.
+ * The onScale, onRotate and onMove do nothing for this class. They are used if you want to do something during a transformation (without recreate move, scale or rotate function)*/
+class Transformable : public Updatable
 {
 	public:
 		/** \brief create an unity matrix */
 		Transformable();
 
 		/** \brief translate the transformable
-		 * \param v the vector from where the object must be translated*/
-		virtual void move(const glm::vec3 &v);
+		 * \param v the vector from where the object must be translated
+		 * \param useScale tell if the move statement should take care of the actual scale
+		 * */
+		virtual void move(const glm::vec3 &v, bool useScale=false);
+
+		/** \brief Function called during a translation
+		 * \param v the vector or the translation
+		 * \param useScale if the translation should take care of the scale*/
+		virtual void onMove(const glm::vec3 &v, bool useScale=false);
 
 		/** \brief Set the position of the object
 		 * \param v the new position of the object
@@ -50,6 +58,12 @@ class Transformable : JniMadeOf
 		 * \param origin the origin of the rotation */
 		virtual void rotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f));
 
+		/** \brief Function called during a rotation
+		 * \param angle the angle of the rotation
+		 * \param v the axis of the rotation
+		 * \param origin the origin of the rotation */
+		virtual void onRotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f));
+
 		/** \brief set the rotation of the object
 		 * \param angle the angle of the new rotation
 		 * \param v the axis of the rotation
@@ -59,6 +73,10 @@ class Transformable : JniMadeOf
 		/** \brief scale the object
 		 * \param v values of the scale (x, y, z)*/
 		virtual void scale(const glm::vec3 &v);
+
+		/** \brief function called during a scaling
+		 * \param v values of the scale (x, y, z)*/
+		virtual void onScale(const glm::vec3 &v);
 
 		/** \brief set the scale the object
 		 * \param v values of the scale (x, y, z)*/

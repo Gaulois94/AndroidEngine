@@ -4,19 +4,25 @@ Transformable::Transformable() : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f
 {
 }
 
-void Transformable::move(const glm::vec3 &v)
+void Transformable::move(const glm::vec3 &v, bool useScale)
 {
-	setPosition(getPosition()+v);
+	if(useScale == false)
+		m_position = glm::translate(m_position, v/getScale());
+	else
+		m_position = glm::translate(m_position, v);
+	onMove(v, useScale);
 	setMVPMatrix();
 }
+
+void Transformable::onMove(const glm::vec3 &v, bool useScale)
+{}
 
 void Transformable::setPosition(const glm::vec3 &v, bool useScale)
 {
 	if(useScale == false)
-		m_position = glm::translate(glm::mat4(1.0f), v/getScale());
+		move(getPosition(useScale) - v/getScale());
 	else
-		m_position = glm::translate(glm::mat4(1.0f), v);
-	setMVPMatrix();
+		move(getPosition(useScale) - v);
 }
 
 void Transformable::rotate(float angle, const glm::vec3 &v, const glm::vec3 &origin)
@@ -25,8 +31,12 @@ void Transformable::rotate(float angle, const glm::vec3 &v, const glm::vec3 &ori
 	m_rotate = glm::translate(m_rotate, moveOut);
 	m_rotate = glm::rotate(m_rotate, angle, v);
 	m_rotate = glm::translate(m_rotate, -moveOut);
+	onRotate(angle, v, origin);
 	setMVPMatrix();
 }
+
+void Transformable::onRotate(float angle, const glm::vec3 &v, const glm::vec3 &origin)
+{}
 
 void Transformable::setRotate(float angle, const glm::vec3 &v, const glm::vec3 &origin)
 {
@@ -37,13 +47,16 @@ void Transformable::setRotate(float angle, const glm::vec3 &v, const glm::vec3 &
 void Transformable::scale(const glm::vec3 &v)
 {
 	m_scale = glm::scale(m_scale, v);
+	onScale(v);
 	setMVPMatrix();
 }
 
+void Transformable::onScale(const glm::vec3 &v)
+{}
+
 void Transformable::setScale(const glm::vec3 &v)
 {
-	m_scale = glm::scale(glm::mat4(1.0f), v);
-	setMVPMatrix();
+	scale(getScale()/v);
 }
 
 void Transformable::setSphericCoordinate(float r, float theta, float phi)
