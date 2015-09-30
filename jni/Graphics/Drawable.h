@@ -18,7 +18,7 @@ class Drawable : public Transformable, public Updatable
 	public:
 		/** \brief create a Drawable associated with a material (thus a shader)
 		 * \param material The drawable material*/
-		Drawable(Material* material);
+		Drawable(Updatable *parent, Material* material);
 
 		virtual ~Drawable();
 
@@ -37,6 +37,10 @@ class Drawable : public Transformable, public Updatable
 		 */
 		virtual void onDraw(Renderer* renderer, glm::mat4& mvp)=0;
 
+		virtual void onMove(const glm::vec3& v, bool useScale);
+		virtual void onRotate(float angle, const glm::vec3& axis, const glm::vec3& origin);
+		virtual void onScale(const glm::vec3& );
+
 		/** \brief Be static from the camera. If true, the next calls on draw function will ignore the camera.
 		 * \param s the value of the staticity of the object.*/
 		virtual void staticToCamera(bool s);
@@ -49,6 +53,10 @@ class Drawable : public Transformable, public Updatable
 		 * \param material the new material associated with the Drawable. */
 		virtual void setMaterial(Material* material);
 
+		/** \brief set all the transformation to children
+		 * \param t transformation is applied to children or not*/
+		virtual void setTransToChildren(bool t);
+
 		/** \brief Tell if the drawable can be drawn.
 		 * \return the drawacity of the object.*/
 		virtual bool canDraw() const;
@@ -60,12 +68,17 @@ class Drawable : public Transformable, public Updatable
 		/** \brief Tell if the Drawable is static to the Camera
 		 * \return the staticity of the Drawable*/
 		virtual bool isStaticToCamera() const;
+
+		/** \brief Tell if the transformation should be passed to all the children
+		 * \return transformation is applied to children or not*/
+		virtual bool getSetTransToChildren() const;
 	protected:
 		virtual void deleteVbos();
 		Material* m_material;
 		GLuint m_vboID;
 		bool m_canDraw;
 		bool m_staticToCamera;
+		bool m_setTransToChildren;
 };
 
 #endif

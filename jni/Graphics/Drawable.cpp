@@ -1,6 +1,6 @@
 #include "Drawable.h"
 
-Drawable::Drawable(Material* material) : Transformable(), m_material(material), m_vboID(0), m_canDraw(true)
+Drawable::Drawable(Updatable* parent, Material* material) : Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_setTransToChildren(false)
 {
 	setMaterial(m_material);
 }
@@ -33,6 +33,30 @@ void Drawable::draw(Renderer* renderer, const glm::mat4& transformation)
 		m_material->disableShader();
 }
 
+void Drawable::onMove(const glm::vec3& v, bool useScale)
+{
+	if(m_setTransToChildren)
+		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
+			if(Drawable* drawableChild = dynamic_cast<Drawable*>(*it))
+				drawableChild.move(v, useScale);
+}
+
+void Drawable::onRotate(float angle, const glm::vec3& axis, const glm::vec3& origin)
+{
+	if(m_setTransToChildren)
+		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
+			if(Drawable* drawableChild = dynamic_cast<Drawable*>(*it))
+				drawableChild.onRotate(s);
+}
+
+void Drawable::onScale(const glm::vec3& s)
+{
+	if(m_setTransToChildren)
+		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
+			if(Drawable* drawableChild = dynamic_cast<Drawable*>(*it))
+				drawableChild.scale(s);
+}
+
 void Drawable::setCanDraw(bool d)
 {
 	m_canDraw = d;
@@ -43,6 +67,11 @@ void Drawable::setMaterial(Material* material)
 	m_material = material;
 }
 
+void Drawable::setTransToChildren(bool t)
+{
+	m_setTransToChildren = t;
+}
+
 void Drawable::staticToCamera(bool s)
 {
 	m_staticToCamera = s;
@@ -51,6 +80,11 @@ void Drawable::staticToCamera(bool s)
 bool Drawable::isStaticToCamera() const
 {
 	return m_staticToCamera;
+}
+
+bool Drawable::getSetTransToChildren() const
+{
+	return m_setTransToChildren;
 }
 
 bool Drawable::canDraw() const
