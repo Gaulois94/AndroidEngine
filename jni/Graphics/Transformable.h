@@ -5,11 +5,12 @@
 #define GLM_FORCE_RADIANS
 
 #include <glm/glm.hpp>
-#include "logger.h"
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
 #include <cmath>
+#include "logger.h"
 #include "JniMadeOf.h"
+#include "Rectangle3.h"
 
 /** \brief contains the spheric coordinates */
 struct SphericCoord
@@ -148,7 +149,7 @@ class Transformable
 
 		/** \brief set the default configuration of the object : default position and default size
 		 * \param dc the new defaultConf*/
-		virtual void setDefaultConf(const Rectangle3& dc);
+		virtual void setDefaultConf(const Rectangle3f& dc);
 
 		glm::mat4 m_mvpMatrix;
 		glm::mat4 m_rotate;

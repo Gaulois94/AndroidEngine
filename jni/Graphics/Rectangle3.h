@@ -3,7 +3,7 @@
 
 /** \brief the 3D rectangle operations.*/
 template<typename T>
-class Rectangle3<T>
+class Rectangle3
 {
 	public:
 		/** \brief Init the 3D rectangle coordinates.

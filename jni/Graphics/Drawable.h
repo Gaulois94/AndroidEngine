@@ -26,9 +26,9 @@ class Drawable : public Transformable, public Updatable
 		/** \brief draw the drawable
 		 * \param renderer The renderer where the drawable will be drawn
 		 * \param transformation Transform the coord of the drawable itself transformed by the renderer's camera before.*/
-		virtual void draw(Renderer* renderer, const glm::mat4& transformation=glm::mat4(1.0));
+		virtual void draw(Renderer& renderer, const glm::mat4& transformation=glm::mat4(1.0));
 
-		virtual void update(Renderer* renderer);
+		virtual void update(Renderer& renderer);
 
 		/** \brief is called by draw.
 		 * \param renderer The renderer where the drawable will be drawn.
@@ -36,7 +36,7 @@ class Drawable : public Transformable, public Updatable
 		 *
 		 * This function called the shader and gives it the parameters.
 		 */
-		virtual void onDraw(Renderer* renderer, glm::mat4& mvp)=0;
+		virtual void onDraw(Renderer& renderer, glm::mat4& mvp)=0;
 
 		virtual void onMove(const glm::vec3& v, bool useScale);
 		virtual void onRotate(float angle, const glm::vec3& axis, const glm::vec3& origin);

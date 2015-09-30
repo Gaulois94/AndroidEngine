@@ -10,13 +10,13 @@ Drawable::~Drawable()
 	deleteVbos();
 }
 
-void Drawable::update(Renderer* renderer)
+void Drawable::update(Renderer& renderer)
 {
 	draw(renderer);
 	Updatable::update(renderer);
 }
 
-void Drawable::draw(Renderer* renderer, const glm::mat4& transformation)
+void Drawable::draw(Renderer& renderer, const glm::mat4& transformation)
 {
 	if(!m_canDraw)
 		return;
@@ -26,7 +26,7 @@ void Drawable::draw(Renderer* renderer, const glm::mat4& transformation)
 
 	glm::mat4 mvp = getMatrix();
 	if(!m_staticToCamera)
-		mvp = renderer->getCamera()->getMatrix() * transformation * mvp;
+		mvp = renderer.getCamera()->getMatrix() * transformation * mvp;
 	onDraw(renderer, mvp);
 
 	if(m_material)

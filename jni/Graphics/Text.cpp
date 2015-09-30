@@ -7,7 +7,7 @@ Text::Text(Updatable* parent, Material* material, Font* font, const char* text) 
 	setText(text);
 }
 
-Text::Text() : Drawable(NULL), m_font(0), m_text(0)
+Text::Text() : Drawable(NULL, NULL), m_font(0), m_text(0)
 {
 }
 

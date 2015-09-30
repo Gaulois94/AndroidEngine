@@ -71,7 +71,7 @@ void Transformable::setDefaultSize(const glm::vec3 &s)
 	m_defaultSize = s;
 }
 
-void Transformable::setDefaultConf(const glm::vec3 &dc)
+void Transformable::setDefaultConf(const Rectangle3f &dc)
 {
 	setDefaultPos(glm::vec3(dc.x, dc.y, dc.z));
 	setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
@@ -112,10 +112,10 @@ glm::vec3 Transformable::getPosition(bool useScale) const
 	if(useScale)
 	{
 		glm::vec3 v = glm::vec3(m_mvpMatrix[3][0], m_mvpMatrix[3][1], m_mvpMatrix[3][2]);
-		return v+defaultPosition;
+		return v+m_defaultPos;
 	}
 	glm::vec3 v = glm::vec3(m_position[3][0], m_position[3][1], m_position[3][2]);
-	return v+defaultPosition;
+	return v+m_defaultPos;
 }
 
 const glm::vec3& Transformable::getDefaultPos() const

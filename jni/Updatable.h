@@ -61,7 +61,7 @@ class Updatable : public JniMadeOf
 		/** \brief extract a list of T object from the Updatable child's list(Widget for example)
 		 * \return a list of all T objects from Updatable's children*/
 		template <typename T>
-		std::list<T*> extractFromUpdatableChild() const
+		std::list<T*> extractFromUpdatableChild()
 		{
 			return extractFromUpdatableList<T>(m_child);
 		}
@@ -69,7 +69,7 @@ class Updatable : public JniMadeOf
 		/** \brief extract a list of T object from the Updatable list.
 		 * \return a list of all T objects from Updatable list*/
 		template <typename T>
-		static std::list<T*> extractFromUpdatableList(std::list<Updatable*> fromExtract) const
+		static std::list<T*> extractFromUpdatableList(std::list<Updatable*> fromExtract)
 		{
 			std::list<T*> list;
 			for(std::list<Updatable*>::const_iterator it = fromExtract.begin(); it != fromExtract.end(); ++it)
