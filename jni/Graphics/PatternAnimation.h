@@ -19,7 +19,7 @@ class PatternAnimation : public Animation
 		 * \param nSprite the number of sprites*/
 		PatternAnimation(Updatable* parent, Material* material, const Texture* texture, const Vector2ui& pos, const Vector2ui& pad, const Vector2ui& size, const Vector2ui& n, uint32_t nSprite);
 	private:
-		uint32_t m_posX, m_posY, m_padX, m_padY, m_width, m_height, m_nX, m_nY;
+		uint32_t m_posX, m_posY, m_padX, m_padY, m_width, m_height, m_nX;
 };
 
 #endif
