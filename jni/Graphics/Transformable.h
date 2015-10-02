@@ -5,11 +5,12 @@
 #define GLM_FORCE_RADIANS
 
 #include <glm/glm.hpp>
-#include "logger.h"
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
 #include <cmath>
+#include "logger.h"
 #include "JniMadeOf.h"
+#include "Rectangle3.h"
 
 /** \brief contains the spheric coordinates */
 struct SphericCoord
@@ -89,6 +90,10 @@ class Transformable
 		 * \param phi the angle between the plan (x, y) and the vector (origin, position). The zero is on the plan (x=0)*/
 		virtual void setSphericCoordinate(float r, float theta, float phi);
 
+		/** \brief set the applyTransformation. This variable is used if you want to transform he object only a few times with the same type of matrix
+		 * \param transformation the new applyTransformation variable*/
+		void setApplyTransformation(const glm::mat4& transformation);
+
 		/** \brief move the object from a rotation in spherical coordinate by phi value
 		 * \param phi the rotation of the object */
 		virtual void rotatePhi(float phi);
@@ -118,9 +123,13 @@ class Transformable
 		 * \return value the scale value of the object of the x, y and z coordinates */
 		virtual glm::vec3 getScale() const;
 
-		/** \brief get the result matrix of all the transformation
+		/** \brief get the result matrix of all the transformations (applyTransformation, position, scale, rotation)
 		 * \return the result matrix */
 		virtual glm::mat4 getMatrix() const;
+
+		/** \brief get the applyTransformation. This variable is used if you want to transform he object only a few times with the same type of matrix
+		 * \return the apply transformation*/
+		const glm::mat4& getApplyTransformation() const;
 
 		/** \brief get the spheric coordinates of the object position
 		 * \return the object spherical coordinates */
@@ -148,12 +157,13 @@ class Transformable
 
 		/** \brief set the default configuration of the object : default position and default size
 		 * \param dc the new defaultConf*/
-		virtual void setDefaultConf(const Rectangle3& dc);
+		virtual void setDefaultConf(const Rectangle3f& dc);
 
 		glm::mat4 m_mvpMatrix;
 		glm::mat4 m_rotate;
 		glm::mat4 m_scale;
 		glm::mat4 m_position;
+		glm::mat4 m_applyTransformation;
 
 		glm::vec3 m_defaultSize;
 		glm::vec3 m_defaultPos;

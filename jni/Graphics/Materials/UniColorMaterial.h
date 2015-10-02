@@ -18,7 +18,7 @@ class UniColorMaterial : public Material
 
 		~UniColorMaterial();
 
-		virtual void init(Renderer* renderer, const glm::mat4& mvp);
+		virtual void init(Render* renderer, const glm::mat4& mvp);
 
 		/** \brief set the color of this material
 		 * \param color the new color*/

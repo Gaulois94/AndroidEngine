@@ -128,15 +128,28 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	m_start = true;
 }
 
-bool Renderer::display()
+void Renderer::display()
 {
 	eglSwapBuffers(m_disp, m_surface);
-	return true;
 }
 
 void Renderer::clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::initDraw()
+{
+	if(!eglMakeCurrent(m_disp, m_surface, m_surface, m_context))
+	{
+		LOG_ERROR("Can't make this context the current one. Error : %d", eglGetError());
+		return;
+	}
+}
+
+void Renderer::stopDraw()
+{
+	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 }
 
 void Renderer::deleteSurface()
@@ -152,11 +165,6 @@ void Renderer::deleteSurface()
 bool Renderer::hasDisplay()
 {
 	return (m_disp != EGL_NO_DISPLAY);
-}
-
-Camera* Renderer::getCamera()
-{
-	return &m_camera;
 }
 
 Color Renderer::getAmbientColor()

@@ -64,7 +64,7 @@ class Texture : JniMadeOf
 		/** \brief Convert the pixels rectangle to the texture rectangle coordinates
 		 * \param rect the pixels rectangle
 		 * \return the texture rect which correspond to the pos and size in parameters*/
-		FloatRect2 getRect(const Rectangle2ui& rect);
+		FloatRect2 getRect(const Rectangle2ui& rect) const;
 
 		/** \brief get the opengl id texture from where the texture is stored in the graphics card.
 		 * \return the texture ID */

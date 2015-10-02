@@ -10,13 +10,13 @@ Drawable::~Drawable()
 	deleteVbos();
 }
 
-void Drawable::update(Renderer* renderer)
+void Drawable::update(Render& renderer)
 {
-	draw(renderer);
+	render.draw(this);
 	Updatable::update(renderer);
 }
 
-void Drawable::draw(Renderer* renderer, const glm::mat4& transformation)
+void Drawable::draw(Render& renderer, const glm::mat4& transformation)
 {
 	if(!m_canDraw)
 		return;
@@ -26,7 +26,7 @@ void Drawable::draw(Renderer* renderer, const glm::mat4& transformation)
 
 	glm::mat4 mvp = getMatrix();
 	if(!m_staticToCamera)
-		mvp = renderer->getCamera()->getMatrix() * transformation * mvp;
+		mvp = renderer.getCamera()->getMatrix() * transformation * mvp;
 	onDraw(renderer, mvp);
 
 	if(m_material)
@@ -37,7 +37,7 @@ void Drawable::onMove(const glm::vec3& v, bool useScale)
 {
 	if(m_setTransToChildren)
 		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-			if(Drawable* drawableChild = dynamic_cast<Drawable*>(*it))
+			if(Drawable* drawableChild = static_cast<Drawable*>(*it))
 				drawableChild.move(v, useScale);
 }
 
@@ -45,7 +45,7 @@ void Drawable::onRotate(float angle, const glm::vec3& axis, const glm::vec3& ori
 {
 	if(m_setTransToChildren)
 		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-			if(Drawable* drawableChild = dynamic_cast<Drawable*>(*it))
+			if(Drawable* drawableChild = static_cast<Drawable*>(*it))
 				drawableChild.onRotate(s);
 }
 
@@ -53,7 +53,7 @@ void Drawable::onScale(const glm::vec3& s)
 {
 	if(m_setTransToChildren)
 		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-			if(Drawable* drawableChild = dynamic_cast<Drawable*>(*it))
+			if(Drawable* drawableChild = static_cast<Drawable*>(*it))
 				drawableChild.scale(s);
 }
 

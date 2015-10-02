@@ -5,7 +5,8 @@
 #include <iostream>
 #include <stdexcept>
 #include "JniMadeOf.h"
-#include "Graphics/Renderer.h"
+
+class Render;
 
 /** \brief basic class for updating components*/
 class Updatable : public JniMadeOf
@@ -15,10 +16,14 @@ class Updatable : public JniMadeOf
 
 		virtual ~Updatable();
 
-		/** \brief Update the Updatable and its child.
-		 *  \param render the renderer from where the updatable could interact
+		/** \brief Update the Updatable and its children.
+		 *  \param render the render from where the updatable could interact
 		 */
-		virtual void update(Renderer &render);
+		virtual void update(Render &render);
+
+		/** \brief because maybe you don't want to update the Updatable children on some case, you can just put your updates operations here.
+		 * \param render the render from where the updatable could interact*/
+		virtual void onUpdate(Render &render);
 
 		/** \brief Add a child.
 		 *
@@ -61,7 +66,7 @@ class Updatable : public JniMadeOf
 		/** \brief extract a list of T object from the Updatable child's list(Widget for example)
 		 * \return a list of all T objects from Updatable's children*/
 		template <typename T>
-		std::list<T*> extractFromUpdatableChild() const
+		std::list<T*> extractFromUpdatableChild()
 		{
 			return extractFromUpdatableList<T>(m_child);
 		}
@@ -69,7 +74,7 @@ class Updatable : public JniMadeOf
 		/** \brief extract a list of T object from the Updatable list.
 		 * \return a list of all T objects from Updatable list*/
 		template <typename T>
-		static std::list<T*> extractFromUpdatableList(std::list<Updatable*> fromExtract) const
+		static std::list<T*> extractFromUpdatableList(std::list<Updatable*> fromExtract)
 		{
 			std::list<T*> list;
 			for(std::list<Updatable*>::const_iterator it = fromExtract.begin(); it != fromExtract.end(); ++it)

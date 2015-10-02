@@ -19,7 +19,21 @@ class Rectangle2
 			height = h;
 		}
 
-		Rectangle2(const Rectangle2<T>& r)
+		/** \brief Init the rectangle coordinates
+		 * \param pos the rectangle top left position
+		 * \param size the rectangle width and height*/
+		Rectangle2(const glm::vec2& pos, const glm::vec2& size)
+		{
+			x = pos.x;
+			y = pos.y;
+			width=size.x;
+			height=size.y;
+		}
+
+		/** \brief copy Constructor or Rectangle2
+		 * \param r the Rectangle2 being to be copied*/
+		template<typename S>
+		Rectangle2(const Rectangle2<S>& r)
 		{
 			x = r.x;
 			y = r.y;
@@ -27,7 +41,8 @@ class Rectangle2
 			height = r.height;
 		}
 
-		Rectangle2<T>& operator=(const Rectangle2<T>& r)
+		template<typename S>
+		Rectangle2& operator=(const Rectangle2<S>& r)
 		{
 			if(this != &r)
 			{

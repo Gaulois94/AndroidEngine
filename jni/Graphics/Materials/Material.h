@@ -4,7 +4,7 @@
 #include <GLES2/gl2.h>
 #include "Shader.h"
 #include "Texture.h"
-#include "Renderer.h"
+#include "Render.h"
 #include "JniMadeOf.h"
 
 /** \brief basic material class.*/
@@ -27,7 +27,7 @@ class Material : public JniMadeOf
 		/** \brief init the material. This function is necessary for sending the good parameters at the shader
 		 * \param renderer the renderer where this material will be used on
 		 * \param mvp the transformation matrix associated with this call*/
-		virtual void init(Renderer* renderer, const glm::mat4& mvp);
+		virtual void init(Render* renderer, const glm::mat4& mvp);
 
 		/** \brief unbind the possible texture with this texture.*/
 		void unbindTexture();

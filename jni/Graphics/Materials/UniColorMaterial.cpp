@@ -16,7 +16,7 @@ UniColorMaterial::~UniColorMaterial()
 		free(m_color);
 }
 
-void UniColorMaterial::init(Renderer *renderer, const glm::mat4& mvp)
+void UniColorMaterial::init(Render *renderer, const glm::mat4& mvp)
 {
 	Material::init(renderer, mvp);
 	GLint uUseColor = glGetUniformLocation(m_shader->getProgramID(), "uUseColor");

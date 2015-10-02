@@ -1,22 +1,9 @@
 #include "Updatable.h"
 
-Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_changeWindow(false), m_event(NULL)
+Updatable::Updatable(Updatable *parent) : m_parent(NULL)
 {
 	if(parent)
 		parent->addChild(this);
-}
-
-Updatable::Updatable(const Updatable &copy) : m_parent(NULL), m_changeWindow(false), m_event(NULL)
-{}
-
-Updatable& Updatable::operator=(const Updatable &copy)
-{
-	if(&copy != this)
-	{
-		m_parent = NULL;
-		m_changeWindow = false;
-	}
-	return *this;
 }
 
 Updatable::~Updatable()
@@ -32,13 +19,16 @@ Updatable::~Updatable()
 	}
 }
 
-void Updatable::update(Renderer &render)
+void Updatable::update(Render &render)
 {
-	m_changeWindow = false;
+	onUpdate(render);
 	for(std::list<Updatable*>::iterator it = m_child.begin(); it!=m_child.end(); ++it)
 		if(*it)
 			(*it)->update(render);
 }
+
+void Updatable::onUpdate(Render &render)
+{}
 
 void Updatable::addChild(Updatable *child, int pos)
 {
@@ -65,13 +55,7 @@ void Updatable::setParent(Updatable *parent, int pos)
 	if(m_parent)
 		m_parent->removeChild(this);
 	
-	EventManager* event = getEventManagerFromRootParent();
 	m_parent = parent;	
-	m_event = getEventManagerFromRootParent();
-	
-	if(event != m_event) //if the EventManager is not the same, then the Window's root parent is not the same. Then, we update the relative rect.
-		m_changeWindow=true;
-
 	if(parent)
 		m_parent->addChild(this, pos);
 }
@@ -102,13 +86,6 @@ bool Updatable::removeChild(unsigned int pos)
 
 	(*it)->setParent(NULL);
 	return true;
-}
-
-EventManager* Updatable::getEventManagerFromRootParent() const
-{
-	if(m_parent == NULL)
-		return NULL;
-	return m_parent->getEventManagerFromRootParent();
 }
 
 bool Updatable::isChild(const Updatable *child)

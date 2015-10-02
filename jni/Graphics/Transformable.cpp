@@ -1,6 +1,6 @@
 #include "Transformable.h"
 
-Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f), m_position(1.0f), m_theta(0.0f), m_phi(0.0f)
+Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f), m_position(1.0f), m_applyTransformation(1.0), m_theta(0.0f), m_phi(0.0f)
 {
 	m_defaultPos = glm::vec3(defaultConf.x, defaultConf.y, defaultConf.z);
 	m_defaultSize = glm::vec3(defaultConf.width, defaultConf.height, defaultConf.depth);
@@ -71,7 +71,7 @@ void Transformable::setDefaultSize(const glm::vec3 &s)
 	m_defaultSize = s;
 }
 
-void Transformable::setDefaultConf(const glm::vec3 &dc)
+void Transformable::setDefaultConf(const Rectangle3f &dc)
 {
 	setDefaultPos(glm::vec3(dc.x, dc.y, dc.z));
 	setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
@@ -90,6 +90,11 @@ void Transformable::setSphericCoordinate(float r, float theta, float phi)
 		m_phi = -fmod(phi, (2*PI));
 
 	setPosition(glm::vec3(x, y, z));
+}
+
+void Transformable::setApplyTransformation(const glm::mat4& transformation)
+{
+	m_applyTransformation = transformation;
 }
 
 void Transformable::rotatePhi(float phi)
@@ -112,10 +117,10 @@ glm::vec3 Transformable::getPosition(bool useScale) const
 	if(useScale)
 	{
 		glm::vec3 v = glm::vec3(m_mvpMatrix[3][0], m_mvpMatrix[3][1], m_mvpMatrix[3][2]);
-		return v+defaultPosition;
+		return v+m_defaultPos;
 	}
 	glm::vec3 v = glm::vec3(m_position[3][0], m_position[3][1], m_position[3][2]);
-	return v+defaultPosition;
+	return v+m_defaultPos;
 }
 
 const glm::vec3& Transformable::getDefaultPos() const
@@ -135,7 +140,7 @@ Rectangle3f Transformable::getDefaultConf() const
 
 glm::mat4 Transformable::getMatrix() const
 {
-	return m_mvpMatrix;
+	return m_applyTransformation * m_mvpMatrix;
 }
 
 SphericCoord Transformable::getSphericCoord() const
@@ -151,6 +156,11 @@ SphericCoord Transformable::getSphericCoord() const
 float Transformable::getRadius() const
 {
 	return getPosition().length();
+}
+
+const glm::mat4& Transformable::getApplyTransformation() const
+{
+	return m_applyTransformation;
 }
 
 EulerRotation Transformable::getEulerRotation() const
