@@ -10,7 +10,7 @@ ColorMaterial::ColorMaterial(const float* color, int nbVertex) : Material(Shader
 	setColor(color, nbVertex);
 }
 
-void ColorMaterial::init(Renderer* renderer, const glm::mat4& mvp)
+void ColorMaterial::init(Render* renderer, const glm::mat4& mvp)
 {
 	Material::init(renderer, mvp);
 	GLint vColor    = glGetAttribLocation(m_shader->getProgramID(), "vColor");

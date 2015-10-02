@@ -12,11 +12,10 @@
 #include "logger.h"
 #include "Camera.h"
 #include "Color.h"
-
-class Explosion;
+#include "Render.h"
 
 /** \brief The renderer class. It is a representative of the screen. */
-class Renderer
+class Renderer : Render
 {
 	public:
 		/** \brief create an uninitialized renderer */
@@ -32,11 +31,14 @@ class Renderer
 		 * \param window the android screen*/
 		void initializeSurface(ANativeWindow *window);
 
-		/** \brief update the screen*/
-		bool display();
+		/** \brief update the full screen*/
+		void display();
 
-		/** \brief clear the screen*/
+		/** \brief clear the full screen*/
 		void clear();
+
+		void initDraw();
+		void stopDraw();
 
 		/** \brief delete the current surface of the screen*/
 		void deleteSurface();
@@ -45,9 +47,8 @@ class Renderer
 		 * \return return if it has a display where it can draw to.*/
 		bool hasDisplay();
 
-		/** \brief get the renderer camera
-		 * \return the renderer camera*/
-		Camera* getCamera();
+		/** \brief get the renderer ambient color
+		 * \return the renderer ambient color*/
 		Color getAmbientColor();
 	private:
 		void terminate();
@@ -58,8 +59,6 @@ class Renderer
 
 		EGLint m_nbConf;
 		EGLint m_format;
-
-		Camera m_camera;
 
 		int m_width;
 		int m_height;

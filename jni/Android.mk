@@ -1,6 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
+LOCAL_C_INCLUDES := $(NDK_APP_PROJECT_PATH)/jni/Graphics/
 LOCAL_MODULE := engine
 LOCAL_CFLAGS := -Wall --std=c++0x
 APP_OPTIM := debug

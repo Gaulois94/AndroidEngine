@@ -6,7 +6,7 @@
 #include "Texture.h"
 #include "Color.h"
 #include "Materials/Material.h"
-#include "Renderer.h"
+#include "Render.h"
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <glm/glm.hpp>
@@ -27,7 +27,7 @@ class ColorMaterial : public Material
 		 * \param nbVertex how many vertex this color array contain.*/
 		ColorMaterial(const float* color, int nbVertex);
 
-		virtual void init(Renderer* renderer, const glm::mat4& mvp);
+		virtual void init(Render* renderer, const glm::mat4& mvp);
 
 		/** \brief set the color of all the vertices
 		 * \param color the array of color. One value per vertex

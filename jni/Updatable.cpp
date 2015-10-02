@@ -19,7 +19,7 @@ Updatable::~Updatable()
 	}
 }
 
-void Updatable::update(Renderer &render)
+void Updatable::update(Render &render)
 {
 	for(std::list<Updatable*>::iterator it = m_child.begin(); it!=m_child.end(); ++it)
 		if(*it)

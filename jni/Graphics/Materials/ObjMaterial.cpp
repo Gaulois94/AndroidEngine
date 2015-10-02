@@ -8,7 +8,7 @@ ObjMaterial::ObjMaterial(const Color& diffuseColor, const Color& specularColor, 
 	bindTexture(texture);
 }
 
-void ObjMaterial::init(Renderer* renderer, const glm::mat4& mvp)
+void ObjMaterial::init(Render* renderer, const glm::mat4& mvp)
 {
 	GLint ambientColorHandle      = glGetUniformLocation(m_shader->getProgramID(), "uAmbientColor");
 	GLint diffuseColorHandle      = glGetUniformLocation(m_shader->getProgramID(), "uDiffuseColor");

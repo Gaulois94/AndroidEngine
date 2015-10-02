@@ -5,7 +5,8 @@
 #include <iostream>
 #include <stdexcept>
 #include "JniMadeOf.h"
-#include "Graphics/Renderer.h"
+
+class Render;
 
 /** \brief basic class for updating components*/
 class Updatable : public JniMadeOf
@@ -18,7 +19,7 @@ class Updatable : public JniMadeOf
 		/** \brief Update the Updatable and its child.
 		 *  \param render the renderer from where the updatable could interact
 		 */
-		virtual void update(Renderer &render);
+		virtual void update(Render &render);
 
 		/** \brief Add a child.
 		 *
