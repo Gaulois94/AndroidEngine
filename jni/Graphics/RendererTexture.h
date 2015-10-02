@@ -4,13 +4,20 @@
 #include "Texture.h"
 #include <GLES2/gl2.h>
 
-class RendererTexture
+class RendererTexture : public Renderer
 {
 	public:
 		RendererTexture(int width, int height);
+		~RendererTexture();
+		
+		void initDraw();
+		void stopDraw();
+		void clear();
+
+		const Texture* getTexture();
 	private:
-		Texture  m_texture;
-		GLuint   m_framebuffer;
+		Texture* m_texture;
+		GLuint m_framebufferID;
 };
 
 #endif
