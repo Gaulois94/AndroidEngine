@@ -16,10 +16,14 @@ class Updatable : public JniMadeOf
 
 		virtual ~Updatable();
 
-		/** \brief Update the Updatable and its child.
-		 *  \param render the renderer from where the updatable could interact
+		/** \brief Update the Updatable and its children.
+		 *  \param render the render from where the updatable could interact
 		 */
 		virtual void update(Render &render);
+
+		/** \brief because maybe you don't want to update the Updatable children on some case, you can just put your updates operations here.
+		 * \param render the render from where the updatable could interact*/
+		virtual void onUpdate(Render &render);
 
 		/** \brief Add a child.
 		 *

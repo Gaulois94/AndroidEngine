@@ -21,10 +21,14 @@ Updatable::~Updatable()
 
 void Updatable::update(Render &render)
 {
+	onUpdate(render);
 	for(std::list<Updatable*>::iterator it = m_child.begin(); it!=m_child.end(); ++it)
 		if(*it)
 			(*it)->update(render);
 }
+
+void Updatable::onUpdate(Render &render)
+{}
 
 void Updatable::addChild(Updatable *child, int pos)
 {
