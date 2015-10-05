@@ -93,14 +93,14 @@ void Text::setText(const char* text)
 	free(textureCoords);
 }
 
-void Text::onDraw(Renderer* renderer, glm::mat4& mvp)
+void Text::onDraw(Render& render, const glm::mat4& mvp)
 {
 	if(m_font == NULL || m_text == NULL || m_material == NULL)
 		return;
 
 	if(!m_material)
 		return;
-	m_material->init(renderer, mvp);
+	m_material->init(render, mvp);
 
 	glBindTexture(GL_TEXTURE_2D, m_font->getTexture()->getID());
 	m_material->bindTexture(m_font->getTexture());

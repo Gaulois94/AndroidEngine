@@ -11,6 +11,8 @@
 #include "Materials/Material.h"
 #include <GLES2/gl2.h>
 
+class Material;
+
 /** \brief Basic class drawable */
 class Drawable : public Transformable, public Updatable
 {
@@ -35,11 +37,11 @@ class Drawable : public Transformable, public Updatable
 		 *
 		 * This function called the shader and gives it the parameters.
 		 */
-		virtual void onDraw(Render& renderer, glm::mat4& mvp)=0;
+		virtual void onDraw(Render& renderer, const glm::mat4& mvp=glm::mat4(1.0f))=0;
 
 		virtual void onMove(const glm::vec3& v, bool useScale);
 		virtual void onRotate(float angle, const glm::vec3& axis, const glm::vec3& origin);
-		virtual void onScale(const glm::vec3& );
+		virtual void onScale(const glm::vec3& s);
 
 		/** \brief Be static from the camera. If true, the next calls on draw function will ignore the camera.
 		 * \param s the value of the staticity of the object.*/

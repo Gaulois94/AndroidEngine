@@ -24,9 +24,9 @@ class Sprite : public Drawable
 		Sprite(Updatable* parent, Material* material, const Texture* texture);
 
 		/** \brief draw the sprite. If the texture is null, the function will draw a white square.
-		 * \param renderer The renderer where the drawable will be drawn
+		 * \param render The Render where the drawable will be drawn
 		 * \param transformation Transform the coord of the drawable itself transformed by the renderer's camera before.*/
-		void onDraw(Renderer* renderer, glm::mat4& mvp);
+		void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		/** \brief Set the sprite texture.
 		 * \param texture the new texture.

@@ -5,7 +5,7 @@ Rectangle::Rectangle(Updatable* parent, Material* material, const glm::vec2& siz
 	free(buffer);
 	buffer=NULL;
 	unsigned int drawOrder[] = {0, 1, 2, 0, 2, 3};
-	gml::vec3 normalCoord[] = {
+	glm::vec3 normalCoord[] = {
 		glm::vec3(0, 0, 1),
 		glm::vec3(0, 0, 1),
 		glm::vec3(0, 0, 1),

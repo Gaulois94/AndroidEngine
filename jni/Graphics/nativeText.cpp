@@ -1,10 +1,10 @@
 #include "nativeText.h"
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Text_createText(JNIEnv *jenv, jclass jcls, jint material, jlong font, jstring text)
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Text_createText(JNIEnv *jenv, jclass jcls, jlong parent, jlong material, jlong font, jstring text)
 {
     const char * t = jenv->GetStringUTFChars(text, 0);
 
-	Text* ptr      = new Text((Material*)material, (Font*) font, t);
+	Text* ptr      = new Text((Updatable*)parent, (Material*)material, (Font*) font, t);
 	jenv->ReleaseStringUTFChars(text, t);
 	return (long) ptr;
 }

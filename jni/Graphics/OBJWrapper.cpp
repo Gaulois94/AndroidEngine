@@ -1,6 +1,6 @@
 #include "OBJWrapper.h"
 
-OBJWrapper::OBJWrapper(JNIEnv* jenv, jobject jcontext, File& file) : Drawable(parent, NULL)
+OBJWrapper::OBJWrapper(Updatable* parent, JNIEnv* jenv, jobject jcontext, File& file) : Drawable(parent, NULL)
 {
 	//Information for the Transformation::defaultConf
 	glm::vec3 defaultPositionMax;
@@ -55,36 +55,34 @@ OBJWrapper::OBJWrapper(JNIEnv* jenv, jobject jcontext, File& file) : Drawable(pa
 				for(unsigned int i=0; i < vertexDrawOrder.size(); i++)
 				{
 					int offset = vertexDrawOrder[i] * COORDS_PER_VERTEX;
-					for(int j=0; j < COORDS_PER_VERTEX; j++)
+					glm::vec3 vPos = glm::vec3(vertexPosition[offset], vertexPosition[offset+1], vertexPosition[offset+2]);
+					//get the default position min and max
+					//First init the position
+					if(!defaultPositionInit)
 					{
-						glm::vec3& vPos = vertexPosition[offset + j];
-						//get the default position min and max
-						//First init the position
-						if(!defaultPositionInit)
-						{
-							defaultPositionInit = true;
-							defaultPositionMin = defaultPositionMax = vPos;
-						}
-
-						//then get the x value
-						else if(defaultPositionMin.x > vPos.x)
-							defaultPositionMin.x = vPos.x;
-						else if(defaultPositionMax.x < vPos.x)
-							defaultPositionMax.x = vPos.x;
-						//the y value
-						else if(defaultPositionMin.y > vPos.y)
-							defaultPositionMin.y = vPos.y;
-						else if(defaultPositionMax.y < vPos.y)
-							defaultPositionMax.y = vPos.y;
-						//and the z value
-						else if(defaultPositionMin.z > vPos.z)
-							defaultPositionMin.z = vPos.z;
-						else if(defaultPositionMax.z < vPos.z)
-							defaultPositionMax.z = vPos.z;
-
-						//Store the vertex position get by the order in the vertexPositionArray
-						vertexPositionArray[COORDS_PER_VERTEX*i + j] = vertexPosition[offset + j];
+						defaultPositionInit = true;
+						defaultPositionMin = defaultPositionMax = vPos;
 					}
+
+					//then get the x value
+					else if(defaultPositionMin.x > vPos.x)
+						defaultPositionMin.x = vPos.x;
+					else if(defaultPositionMax.x < vPos.x)
+						defaultPositionMax.x = vPos.x;
+					//the y value
+					else if(defaultPositionMin.y > vPos.y)
+						defaultPositionMin.y = vPos.y;
+					else if(defaultPositionMax.y < vPos.y)
+						defaultPositionMax.y = vPos.y;
+					//and the z value
+					else if(defaultPositionMin.z > vPos.z)
+						defaultPositionMin.z = vPos.z;
+					else if(defaultPositionMax.z < vPos.z)
+						defaultPositionMax.z = vPos.z;
+
+					//Store the vertex position get by the order in the vertexPositionArray
+					for(uint32_t j=0; j < COORDS_PER_VERTEX; j++)
+						vertexPositionArray[COORDS_PER_VERTEX*i + j] = vertexPosition[offset + j];
 				}
 
 				for(unsigned int i=0; i < vertexNormalOrder.size(); i++)
@@ -189,10 +187,10 @@ OBJWrapper::OBJWrapper(JNIEnv* jenv, jobject jcontext, File& file) : Drawable(pa
 		if(buffer != NULL)
 			free(buffer);
 	}
-	setDefaultConf(Rectangle3f(defaultPositionMin, defaultPositionMax-defaultPositionMin);
+	setDefaultConf(Rectangle3f(defaultPositionMin, defaultPositionMax-defaultPositionMin));
 }
 
-void OBJWrapper::onDraw(Renderer* renderer, glm::mat4& mvp)
+void OBJWrapper::onDraw(Render& render, const glm::mat4& mvp)
 {
 	for(std::map<std::string, OBJDatas*>::iterator itOBJ = m_objDatas.begin(); itOBJ != m_objDatas.end(); ++itOBJ)
 	{
@@ -209,12 +207,12 @@ void OBJWrapper::onDraw(Renderer* renderer, glm::mat4& mvp)
 				if(!m_material)
 				{
 					currentMaterial->enableShader();
-					currentMaterial->init(renderer, mvp);
+					currentMaterial->init(render, mvp);
 					shader = currentMaterial->getShader();
 				}
 				else
 				{
-					m_material->init(renderer, mvp);
+					m_material->init(render, mvp);
 					shader = m_material->getShader();
 				}
 

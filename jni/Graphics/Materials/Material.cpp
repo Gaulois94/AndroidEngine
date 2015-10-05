@@ -17,7 +17,7 @@ void Material::enableShader()
 	}
 }
 
-void Material::init(Render* renderer, const glm::mat4& mvp)
+void Material::init(Render& render, const glm::mat4& mvp)
 {
 	GLint uMaskColor     = glGetUniformLocation(m_shader->getProgramID(), "uMaskColor");
 	GLint uUseTexture    = glGetUniformLocation(m_shader->getProgramID(), "uUseTexture");

@@ -24,7 +24,7 @@ struct Particle
 class Effect : public Drawable
 {
 	public:
-		Effect(ExplosionMaterial* material);
+		Effect(Updatable *parent, ExplosionMaterial* material);
 	private:
 		Particle* m_particles;
 };

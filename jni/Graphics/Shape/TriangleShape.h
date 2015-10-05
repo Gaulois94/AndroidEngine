@@ -30,14 +30,15 @@ class TriangleShape : public Drawable
 		TriangleShape(Updatable* parent, Material* material, const glm::vec3* vertexCoords, const glm::vec3* normalCoords, int nbVertex, GLuint mode=GL_TRIANGLES);
 
 		/** \brief Create the TriangleShape object from float array
+		 * \param parent its parent
 		 * \param material its material
 		 * \param vertexCoords the coordinates of the vertex. 1 value per component (3 components per vertex : x, y, z)
 		 * \param normalCoords the normal value of the vertex. 1 value per component (3 components per vertex : x, y, z)
 		 * \param nbVertex the number of vertex
 		 * \param mode the mode used by the vertex. See the mode accorded by OpenGL. By default its GL_TRIANGLES*/
-		TriangleShape(Material* material, const float* vertexCoords, const float* normalCoords, int nbVertex, GLuint mode=GL_TRIANGLES);
+		TriangleShape(Updatable* parent, Material* material, const float* vertexCoords, const float* normalCoords, int nbVertex, GLuint mode=GL_TRIANGLES);
 
-		virtual void onDraw(Renderer* renderer, glm::mat4& mvp);
+		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		/** \brief set the datas of this triangle shape : its vertex coords, normal values. glm::vec3 version
 		 * \param vertexCoords the coordinates of the vertex

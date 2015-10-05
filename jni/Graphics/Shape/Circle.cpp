@@ -1,6 +1,6 @@
 #include "Circle.h"
 
-Circle::Circle(Updatable* parent, Material* material, float radius, int nbEdge) : TriangleShape(parent, material, buffer=initVertex(radius, nbEdge), NULL, 3*nbEdge), m_radius(radius)
+Circle::Circle(Updatable* parent, Material* material, float radius, uint32_t nbEdge) : TriangleShape(parent, material, buffer=initVertex(radius, nbEdge), NULL, 3*nbEdge), m_radius(radius)
 {
 	free(buffer);
 	buffer=NULL;
@@ -13,10 +13,10 @@ Circle::Circle(Updatable* parent, Material* material, float radius, int nbEdge) 
 	free(normalCoord);
 }
 
-void Circle::setNbEdge(int nbEdge)
+void Circle::setNbEdge(uint32_t nbEdge, float radius)
 {
 	m_nbEdge = nbEdge;
-	glm::vec3* vertexCoords = initVertex(m_radius, nbEdge);
+	glm::vec3* vertexCoords = initVertex(radius, nbEdge);
 	setVertexCoord(vertexCoords);
 	free(vertexCoords);
 }

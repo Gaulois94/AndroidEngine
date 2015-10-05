@@ -27,7 +27,7 @@ class ColorMaterial : public Material
 		 * \param nbVertex how many vertex this color array contain.*/
 		ColorMaterial(const float* color, int nbVertex);
 
-		virtual void init(Render* renderer, const glm::mat4& mvp);
+		virtual void init(Render& render, const glm::mat4& mvp);
 
 		/** \brief set the color of all the vertices
 		 * \param color the array of color. One value per vertex

@@ -4,6 +4,8 @@
 #include "Drawable.h"
 #include "Camera.h"
 
+class Drawable;
+
 /** \brief basic class Render. Use to put in common all classes used to draw something on texture, and update it*/
 class Render
 {
@@ -28,9 +30,12 @@ class Render
 		/** \brief clear the buffer where the Render is associated (the screen, a texture, etc...)*/
 		virtual void clear()=0;
 
+		const Color& getAmbientColor() const;
+
 		/** \brief get the Render camera*/
 		Camera& getCamera();
 	private:
+		Color m_ambientColor;
 		Camera m_camera;
 };
 

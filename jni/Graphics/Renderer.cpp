@@ -6,7 +6,7 @@
 #include "Materials/ExplosionMaterial.h"
 #include "Effect/Explosion.h"
 
-Renderer::Renderer() : m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT), m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
+Renderer::Renderer() : Render(), m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT), m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
 }
 

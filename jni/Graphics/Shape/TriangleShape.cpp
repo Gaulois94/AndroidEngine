@@ -15,7 +15,7 @@ TriangleShape::TriangleShape(Updatable* parent, Material* material, const glm::v
 	}
 }
 
-TriangleShape::TriangleShape(Material* material, const float* vertexCoords, const float* normalCoords, int nbVertex, GLuint mode) : Drawable(material), m_nbVertex(nbVertex), m_mode(mode), m_drawOrderLength(0)
+TriangleShape::TriangleShape(Updatable* parent, Material* material, const float* vertexCoords, const float* normalCoords, int nbVertex, GLuint mode) : Drawable(parent, material), m_nbVertex(nbVertex), m_mode(mode), m_drawOrderLength(0)
 {
 	if(normalCoords)
 		setDatas(vertexCoords, normalCoords, nbVertex);
@@ -27,13 +27,13 @@ TriangleShape::TriangleShape(Material* material, const float* vertexCoords, cons
 	}
 }
 
-void TriangleShape::onDraw(Renderer* renderer, glm::mat4& mvp)
+void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 {
 	if(!m_material)
 		return;
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
-		m_material->init(renderer, mvp);
+		m_material->init(render, mvp);
 		if(glIsBuffer(m_drawOrderVboID))
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_drawOrderVboID);
 
@@ -154,8 +154,8 @@ void TriangleShape::initVbos(const float* vertexCoords, const float* normalCoord
 void TriangleShape::setArrayVertex(const float* vertexCoords)
 {
 	//We recompile the default size and position of the triangleShape
-	glm::vec3& defaultPositionMin;
-	glm::vec3& defaultPositionMax;
+	glm::vec3 defaultPositionMin;
+	glm::vec3 defaultPositionMax;
 
 	//The if(i < 3) is if we haven't initialized the default position yet
 	for(uint32_t i=0; i < m_nbVertex*COORD_PER_TRIANGLES; i++)
@@ -187,7 +187,7 @@ void TriangleShape::setArrayVertex(const float* vertexCoords)
 		{
 			if(i<3)
 				defaultPositionMin.z = defaultPositionMax.z = vertexCoords[i];
-			else if(vertexCoords[i] > defaultPositionM.z.z)
+			else if(vertexCoords[i] > defaultPositionMax.z)
 				defaultPositionMax.z = vertexCoords[i];
 			else if(vertexCoords[i] < defaultPositionMin.z)
 				defaultPositionMin.z = vertexCoords[i];

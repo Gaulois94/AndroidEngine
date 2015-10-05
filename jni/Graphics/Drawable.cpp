@@ -1,4 +1,5 @@
 #include "Drawable.h"
+#include "Materials/Material.h"
 
 Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : Transformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_setTransToChildren(false)
 {
@@ -10,7 +11,7 @@ Drawable::~Drawable()
 	deleteVbos();
 }
 
-void Drawable::update(Render& renderer)
+void Drawable::update(Render& render)
 {
 	if(m_setTransToChildren)
 	{
@@ -22,18 +23,16 @@ void Drawable::update(Render& renderer)
 		renderCamera.setApplyTransformation(getMatrix() * renderCamera.getApplyTransformation());
 
 		//Call the usual update function
-		onUpdate();
-		Updatable::update(renderer);
+		Updatable::update(render);
 
 		//restore the apply transformation matrix
 		renderCamera.setApplyTransformation(currentApplyTransformation);
 	}
 
-	onUpdate();
-	Updatable::update(renderer);
+	Updatable::update(render);
 }
 
-void Drawable::draw(Render& renderer, const glm::mat4& transformation)
+void Drawable::draw(Render& render, const glm::mat4& transformation)
 {
 	if(!m_canDraw)
 		return;
@@ -43,15 +42,11 @@ void Drawable::draw(Render& renderer, const glm::mat4& transformation)
 
 	glm::mat4 mvp = getMatrix();
 	if(!m_staticToCamera)
-		mvp = renderer.getCamera()->getMatrix() * transformation * mvp;
-	onDraw(renderer, mvp);
+		mvp = render.getCamera().getMatrix() * transformation * mvp;
+	onDraw(render, mvp);
 
 	if(m_material)
 		m_material->disableShader();
-}
-
-void Drawable::onUpdate(Render& render)
-{
 }
 
 void Drawable::onMove(const glm::vec3& v, bool useScale)
