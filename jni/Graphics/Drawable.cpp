@@ -12,7 +12,24 @@ Drawable::~Drawable()
 
 void Drawable::update(Render& renderer)
 {
-	render.draw(this);
+	if(m_setTransToChildren)
+	{
+		//Set the camera current apply transformation.
+		Camera renderCamera = render.getCamera();
+		//save the old apply matrix
+		glm::mat4 currentApplyTransformation = renderCamera.getApplyTransformation();
+		//apply our transformation to the current one
+		renderCamera.setApplyTransformation(getMatrix() * renderCamera.getApplyTransformation());
+
+		//Call the usual update function
+		onUpdate();
+		Updatable::update(renderer);
+
+		//restore the apply transformation matrix
+		renderCamera.setApplyTransformation(currentApplyTransformation);
+	}
+
+	onUpdate();
 	Updatable::update(renderer);
 }
 
@@ -33,28 +50,20 @@ void Drawable::draw(Render& renderer, const glm::mat4& transformation)
 		m_material->disableShader();
 }
 
+void Drawable::onUpdate(Render& render)
+{
+}
+
 void Drawable::onMove(const glm::vec3& v, bool useScale)
 {
-	if(m_setTransToChildren)
-		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-			if(Drawable* drawableChild = static_cast<Drawable*>(*it))
-				drawableChild.move(v, useScale);
 }
 
 void Drawable::onRotate(float angle, const glm::vec3& axis, const glm::vec3& origin)
 {
-	if(m_setTransToChildren)
-		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-			if(Drawable* drawableChild = static_cast<Drawable*>(*it))
-				drawableChild.onRotate(s);
 }
 
 void Drawable::onScale(const glm::vec3& s)
 {
-	if(m_setTransToChildren)
-		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-			if(Drawable* drawableChild = static_cast<Drawable*>(*it))
-				drawableChild.scale(s);
 }
 
 void Drawable::setCanDraw(bool d)
