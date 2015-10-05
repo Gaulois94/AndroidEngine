@@ -1,4 +1,5 @@
 #include "Updatable.h"
+#include "Render.h"
 
 Updatable::Updatable(Updatable *parent) : m_parent(NULL)
 {
