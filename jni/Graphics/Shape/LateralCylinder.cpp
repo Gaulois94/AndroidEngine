@@ -6,6 +6,7 @@ LateralCylinder::LateralCylinder(Updatable* parent, Material* material, float ra
 	buffer = initNormal(nbMeridian);
 	setNormalCoord(buffer);
 	free(buffer);
+	buffer=NULL;
 }
 
 int LateralCylinder::getNbMeridian()
