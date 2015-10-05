@@ -4,6 +4,13 @@ Circle::Circle(Updatable* parent, Material* material, float radius, int nbEdge) 
 {
 	free(buffer);
 	buffer=NULL;
+
+	//Set the normalCoord of this Circle. All the vertices has the same normal coordinates
+	glm::vec3* normalCoord = (glm::vec3*)malloc(nbEdge*3*sizeof(glm::vec3));
+	for(uint32_t i=0; i < nbEdge*3; i++)
+		normalCoord[i] = glm::vec3(0, 0, 1);
+	setNormalCoord(normalCoord);
+	free(normalCoord);
 }
 
 void Circle::setNbEdge(int nbEdge)
