@@ -148,24 +148,24 @@ void Renderer::stopDraw()
 
 void Renderer::onDownTouchEvent(float x, float y)
 {
-	TouchCoord::down   = true;
-	TouchCoord::startX = x;
-	TouchCoord::x      = x;
-	TouchCoord::startY = y;
-	TouchCoord::y      = y;
+	touchCoord.down   = true;
+	touchCoord.startX = x;
+	touchCoord.x      = x;
+	touchCoord.startY = y;
+	touchCoord.y      = y;
 }
 
 void Renderer::onUpTouchEvent(float x, float y)
 {
-	TouchCoord::down = false;
-	TouchCoord::x    = x;
-	TouchCoord::y    = y;
+	touchCoord.down = false;
+	touchCoord.x    = x;
+	touchCoord.y    = y;
 }
 
 void Renderer::onMoveTouchEvent(float x, float y)
 {
-	TouchCoord::x    = x;
-	TouchCoord::y    = y;
+	touchCoord.x    = x;
+	touchCoord.y    = y;
 }
 
 void Renderer::deleteSurface()

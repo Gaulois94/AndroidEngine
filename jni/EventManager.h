@@ -4,11 +4,13 @@
 /** \brief structure which contain the touch information*/
 struct TouchCoord
 {
-	static bool down; /** <Tell if we are currently touching the screen*/
-	static float startX; /** <Where the touch event has started on X axis*/
-	static float startY; /** <Where the touch event has started on Y axis*/
-	static float x; /** <The last x coords*/
-	static float y; /** <The last y coords*/
+	bool down; /** <Tell if we are currently touching the screen*/
+	float startX; /** <Where the touch event has started on X axis*/
+	float startY; /** <Where the touch event has started on Y axis*/
+	float x; /** <The last x coords*/
+	float y; /** <The last y coords*/
 };
+
+static TouchCoord touchCoord;
 
 #endif
