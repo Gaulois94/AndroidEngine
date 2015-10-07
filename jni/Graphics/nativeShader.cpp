@@ -11,6 +11,7 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Shader_loadFromFilesShader(J
 	else
 		shader = Shader::loadFromFiles(vertexFile, fragFile, makeMap(jenv, keys, values));
 
+	shader->setJobject(jobject);
 	return (jlong) shader;
 }
 

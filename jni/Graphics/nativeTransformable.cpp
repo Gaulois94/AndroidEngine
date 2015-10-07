@@ -3,6 +3,7 @@
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Transformable_createTransformable(JNIEnv* jenv, jclass jcls)
 {
 	Transformable* trans = new Transformable();
+	trans->setJobject(jobject);
 	return (jlong)trans;
 }
 

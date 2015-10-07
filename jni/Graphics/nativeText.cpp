@@ -6,6 +6,7 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Text_createText(JNIEnv *jenv
 
 	Text* ptr      = new Text((Updatable*)parent, (Material*)material, (Font*) font, t);
 	jenv->ReleaseStringUTFChars(text, t);
+	ptr->setJobject(jobject);
 	return (long) ptr;
 }
 

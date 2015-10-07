@@ -34,6 +34,7 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Font_loadFromFileFont(JNIEnv
 	jenv->ReleaseIntArrayElements(posX, charPosX, 0);
 	jenv->ReleaseIntArrayElements(posY, charPosY, 0);
 
+	font->setJobject(jobject);
 	return (long)font;
 }
 

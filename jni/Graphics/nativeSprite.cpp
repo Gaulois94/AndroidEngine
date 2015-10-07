@@ -3,6 +3,7 @@
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Sprite_createSprite(JNIEnv *jenv, jclass jcls, jlong parent, jlong material, jlong texturePtr)
 {
 	Sprite* sprite = new Sprite((Updatable*)parent, (Material*)material, (Texture*)texturePtr);
+	sprite->setJobject(jobject);
 	return (long)sprite;
 }
 
