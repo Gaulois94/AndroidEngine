@@ -9,6 +9,7 @@ JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_cr
 	jenv->ReleaseFloatArrayElements(vertexCoords, pv, 0);
 	jenv->ReleaseFloatArrayElements(normalCoords, pn, 0);
 
+	result->setJobject(jobject);
 	return (long)result;
 }
 
