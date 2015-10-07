@@ -5,7 +5,8 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Renderer_createRenderer(JNIE
 	Renderer* renderer = new Renderer();
 	ANativeWindow* window = ANativeWindow_fromSurface(jenv, surface);
 	renderer->initializeContext(window);
-	LOG_ERROR("DEFAULT SURFACE");
+
+	renderer->setJobject(jobject);
 	return (jlong)renderer;
 }
 
@@ -55,4 +56,22 @@ JNIEXPORT bool JNICALL Java_com_gaulois94_Graphics_Renderer_hasDisplayRenderer(J
 		return false;
 	Renderer* renderer = (Renderer*) rendererPtr;
 	return renderer->hasDisplay();
+}
+
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onDownTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y)
+{
+	Renderer* renderer = (Renderer*)rendererPtr;
+	renderer->onDownTouch(x, y);
+}
+
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onUpTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y)
+{
+	Renderer* renderer = (Renderer*)rendererPtr;
+	renderer->onUpTouch(x, y);
+}
+
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onMoveTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y)
+{
+	Renderer* renderer = (Renderer*)rendererPtr;
+	renderer->onMoveTouch(x, y);
 }

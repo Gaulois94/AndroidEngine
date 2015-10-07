@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "Color.h"
 #include "Render.h"
+#include "EventManager.h"
 
 /** \brief The renderer class. It is a representative of the screen. */
 class Renderer : Render
@@ -39,6 +40,23 @@ class Renderer : Render
 
 		void initDraw();
 		void stopDraw();
+
+		//Events function
+		
+		/** \brief function called when the Renderer is released. Called by the View which contain the Renderer (from the Renderer java class for example, or a C++ native activity)
+		 * \param x the x coord in opengl format
+		 * \param y the y coord in opengl format*/
+		void onUpTouchEvent(float x, float y);
+
+		/** \brief function called when the Renderer is touched. Called by the View which contain the Renderer (from the Renderer java class for example, or a C++ native activity)
+		 * \param x the x coord in opengl format
+		 * \param y the y coord in opengl format*/
+		void onDownTouchEvent(float x, float y);
+
+		/** \brief function called when the Renderer is touched and the (x, y) coords are changing. Called by the View which contain the Renderer (from the Renderer java class for example, or a C++ native activity)
+		 * \param x the x coord in opengl format
+		 * \param y the y coord in opengl format*/
+		void onMoveTouchEvent(float x, float y);
 
 		/** \brief delete the current surface of the screen*/
 		void deleteSurface();
