@@ -48,7 +48,7 @@ public class Font extends JniMadeOf
 
 	public Texture getTexture()
 	{
-		return new Texture(getTextureFont(m_ptr));
+		return getTextureFont(m_ptr);
 	}
 
 	//return the height of lines for this font
@@ -165,11 +165,11 @@ public class Font extends JniMadeOf
 	}
 
 	private static native long loadFromFileFont(Bitmap bmp, int[] width, int[] height, int[] posX, int[] posY, int maxWidth, int maxHeight, int padX, int padY, FontMetrics fontMetrics);
-	private native float getLineHeightFont(long ptr);
-	private native int[] getPosFont(long ptr, char character);
-	private native int[] getSizeFont(long ptr, char character);
-	private native int getLeadingFont(long ptr);
-	private native long getTextureFont(long ptr);
+	private native float       getLineHeightFont(long ptr);
+	private native int[]       getPosFont(long ptr, char character);
+	private native int[]       getSizeFont(long ptr, char character);
+	private native int         getLeadingFont(long ptr);
+	private native Texture     getTextureFont(long ptr);
 	private native FontMetrics getFontMetricsFont(long ptr);
 
 }

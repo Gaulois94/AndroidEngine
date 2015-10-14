@@ -3,19 +3,25 @@ package com.gaulois94.Graphics;
 import com.gaulois94.Graphics.Drawable;
 import com.gaulois94.Graphics.Texture;
 import com.gaulois94.Graphics.Materials.Material;
+import com.gaulois94.Updatable;
 
 import android.graphics.RectF;
 
 public class Sprite extends Drawable
 {
-	public Sprite(Material material, Texture texture)
+	public Sprite(Updatable parent, Material material, Texture texture)
 	{
-		super(createSprite(material.getPtr(), texture.getPtr()));
+		super(createSprite(parent.getPtr(), material.getPtr(), texture.getPtr()));
+	}
+
+	public Sprite(long ptr)
+	{
+		super(ptr);
 	}
 
 	public Texture getTexture()
 	{
-		return new Texture(getTextureSprite(m_ptr));
+		return getTextureSprite(m_ptr);
 	}
 
 	public RectF getSubTextureRect()
@@ -40,8 +46,8 @@ public class Sprite extends Drawable
 		setSubTextureRectSprite(m_ptr, r);
 	}
 
-	public static native long createSprite(long material, long texturePtr);
-	public native long getTextureSprite(long ptr);
+	public static native long createSprite(long parent, long material, long texturePtr);
+	public native Texture getTextureSprite(long ptr);
 	public native float[] getSubTextureRectSprite(long ptr);
 	public native void setTextureSprite(long ptr, long texturePtr, int resetSubTextureRect);
 	public native void setSubTextureRectSprite(long ptr, float[] rectCoords);

@@ -6,6 +6,7 @@ public class Bitmap extends JniMadeOf
 	public Bitmap(long ptr)
 	{
 		super(ptr);
+		setJobject(this);
 	}
 
 	public Bitmap(android.graphics.Bitmap bmp)
@@ -19,7 +20,7 @@ public class Bitmap extends JniMadeOf
 	}
 
 	private static native long createBitmap(android.graphics.Bitmap bitmap);
-	native void invertPixelsBitmap(long ptr);
+	private native void invertPixelsBitmap(long ptr);
 
 	static
 	{

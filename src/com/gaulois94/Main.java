@@ -1,6 +1,7 @@
 package com.gaulois94;
 
 import com.gaulois94.Graphics.Renderer;
+import com.gaulois94.EventManager;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,11 +16,12 @@ import android.opengl.GLES20;
 public class Main extends Activity
 {
 	private Renderer m_renderer;
+
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		m_renderer = new Renderer(this);
-		setContentView(m_renderer);
+		setContentView(m_renderer.getSurface());
 	}
 
 	public void onResume()

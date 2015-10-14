@@ -63,12 +63,12 @@ public class Updatable extends JniMadeOf
 
 	public boolean removeChild(Updatable child)
 	{
-		return removeChildUpdatable(m_ptr, child.getPtr(), -1);
+		return removeChildUpdatable(m_ptr, child.getPtr());
 	}
 
 	public boolean removeChild(Updatable child, int pos)
 	{
-		return removeChildUpdatable(m_ptr, child.getPtr(), pos);
+		return removeChildUpdatable(m_ptr, pos);
 	}
 
 	public boolean isChild(Updatable child)

@@ -12,6 +12,7 @@ public class JniMadeOf
 	public JniMadeOf(long ptr)
 	{
 		m_ptr = ptr;
+		setJobject(this);
 	}
 
 	public long getPtr()
@@ -25,6 +26,11 @@ public class JniMadeOf
 		m_ptr = 0;
 	}
 
+	public void setJobject(JniMadeOf j)
+	{
+		setJobjectJniMadeOf(j, m_ptr);
+	}
+
 	public static void setContext(Context c)
 	{
 		context = c;
@@ -32,6 +38,7 @@ public class JniMadeOf
 	}
 
 	protected native void destroyJniMadeOf(long ptr);
+	protected native void setJobjectJniMadeOf(JniMadeOf j, long ptr);
 
 	static
 	{

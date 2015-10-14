@@ -4,6 +4,11 @@ import com.gaulois94.Graphics.Sprite;
 
 public abstract class Animation extends Sprite
 {
+	public Animation(long ptr)
+	{
+		super(ptr);
+	}
+
 	public void setSubNSpriteCoords(int n)
 	{
 		setSubNSpriteCoordsAnimation(m_ptr, n);
@@ -24,6 +29,7 @@ public abstract class Animation extends Sprite
 		return inAnimationAnimation(m_ptr);
 	}
 
+	protected native void    setSubNSpriteCoordsAnimation(long ptr, int n);
 	protected native void    setInAnimationAnimation(long ptr, int n, int reset);
 	protected native boolean inAnimationAnimation(long ptr);
 }

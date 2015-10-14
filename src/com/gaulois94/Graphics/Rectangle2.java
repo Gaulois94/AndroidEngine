@@ -30,20 +30,20 @@ public class Rectangle2<T extends Number>
 
 	static public <T extends Number, S extends Number> Rectangle2<T> sum(Rectangle2<T> r1, Rectangle2<S> r2)
 	{
-		Rectangle2<T> v = new Rectangle2<T>(v1.getModelClass());
+		Rectangle2<T> r = new Rectangle2<T>(r1.getModelClass());
 
 		r.x = r1.m_modelClass.cast(r1.x.doubleValue() + r2.x.doubleValue());
 		r.y = r1.m_modelClass.cast(r1.y.doubleValue() + r2.y.doubleValue());
 		r.width = r1.m_modelClass.cast(r1.width.doubleValue() + r2.width.doubleValue());
 		r.height = r1.m_modelClass.cast(r1.height.doubleValue() + r2.height.doubleValue());
 
-		return v;
+		return r;
 	}
 
 	static public <T extends Number> T[] rectArraytoArray(Rectangle2<T>[] r)
 	{
-		T[] result = new T[4*r.length];
-		for(int i=0; i < r.length; r++)
+		Number[] result = new Number[4*r.length];
+		for(int i=0; i < r.length; i++)
 		{
 			result[4*i]   = r[i].x;
 			result[4*i+1] = r[i].y;
@@ -51,7 +51,7 @@ public class Rectangle2<T extends Number>
 			result[4*i+3] = r[i].height;
 		}
 
-		return result;
+		return (T[])result;
 	}
 }
 

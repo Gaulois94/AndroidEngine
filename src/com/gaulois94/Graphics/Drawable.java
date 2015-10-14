@@ -56,6 +56,16 @@ public abstract class Drawable extends Transformable
 		return new Material(getMaterialDrawable(m_ptr));
 	}
 
+	public boolean getTransToChildren()
+	{
+		return getTransToChildrenDrawable(m_ptr);
+	}
+
+	public void setTransToChildren(boolean trans)
+	{
+		setTransToChildrenDrawable(m_ptr, trans);
+	}
+
 	//Functions for managing shaders
 	public static void addShader(String key, Shader shader)
 	{
@@ -105,10 +115,12 @@ public abstract class Drawable extends Transformable
 
 	protected native void drawDrawable(long ptr, long rendererPtr);
 
-	protected native void setCanDrawDrawable(long ptr, int d);
-	protected native int canDrawDrawable(long ptr);
-	protected native void staticToCameraDrawable(long ptr, int s);
-	protected native int isStaticToCameraDrawable(long ptr);
-	protected native long getMaterialDrawable(long ptr);
-	protected native void setMaterialDrawable(long ptr, long materialPtr);
+	protected native void    setCanDrawDrawable(long ptr, int d);
+	protected native int     canDrawDrawable(long ptr);
+	protected native void    staticToCameraDrawable(long ptr, int s);
+	protected native int     isStaticToCameraDrawable(long ptr);
+	protected native long    getMaterialDrawable(long ptr);
+	protected native void    setMaterialDrawable(long ptr, long materialPtr);
+	protected native void    setTransToChildrenDrawable(long ptr, boolean trans);
+	protected native boolean getTransToChildrenDrawable(long ptr);
 }

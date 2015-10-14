@@ -10,10 +10,13 @@ import com.gaulois94.Graphics.Shape.Circle;
 import com.gaulois94.Graphics.Sprite;
 import com.gaulois94.Graphics.Materials.UniColorMaterial;
 
+import android.content.Context;
+
 import android.app.Activity;
 import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
+import android.view.MotionEvent;
 import android.util.Log;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
@@ -21,8 +24,9 @@ import android.graphics.Rect;
 import android.opengl.GLES20;
 import android.util.Log;
 
-public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Runnable
+public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 {
+	private SurfaceView m_surface;
 	private Thread m_thread;
 	private Boolean m_open;
 	private Boolean m_isInit;
@@ -36,11 +40,10 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 	private Boolean m_isCreated;
 	private int m_nbEdge;
 
-    public Renderer(Activity activity)
+    public Renderer(Context context)
     {
-		super(activity);
-		JniMadeOf.setContext(activity);
-		m_ptr         = 0;
+		super(0);
+		JniMadeOf.setContext(context);
 		m_text        = null;
 		m_font        = null;
 		m_triangleShape = null;
@@ -53,12 +56,13 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 		m_isCreated   = false;
 		m_nbEdge      = 3;
 
-		getHolder().addCallback(this);
+		m_surface     = new SurfaceView(context);
+		m_surface.getHolder().addCallback(this);
     }
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
 	{
-		onChanged(getHolder().getSurfaceFrame());
+		onChanged(m_surface.getHolder().getSurfaceFrame());
 	}
 
 	public void surfaceCreated(SurfaceHolder holder)
@@ -111,8 +115,8 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 		{
 			if(m_reInit)
 			{
-				getHolder().setFormat(PixelFormat.RGBA_8888);
-				initRenderer(m_ptr, getHolder().getSurface());
+				m_surface.getHolder().setFormat(PixelFormat.RGBA_8888);
+				initRenderer(m_ptr, m_surface.getHolder().getSurface());
 		
 				m_reInit = false;
 				m_isInit = true;
@@ -120,6 +124,30 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 
 			if(m_isInit)
 				draw();
+		}
+	}
+
+	public void onTouchEvent(MotionEvent e)
+	{
+		int width2  = m_surface.getWidth()/2;
+		int height2 = m_surface.getHeight()/2;
+
+		float x = e.getX() / width2;
+		float y = e.getY() / height2;
+
+		switch(e.getFlags())
+		{
+			case MotionEvent.ACTION_DOWN:
+				onDownTouchRenderer(x, y);
+				break;
+
+			case MotionEvent.ACTION_CANCEL:
+				onUpTouchRenderer(x, y);
+				break;
+
+			case MotionEvent.ACTION_MOVE:
+				onMoveTouchRenderer(x, y);
+				break;
 		}
 	}
 
@@ -162,18 +190,22 @@ public class Renderer extends SurfaceView implements SurfaceHolder.Callback, Run
 		destroyRenderer(m_ptr);
 	}
 
-	public long getPtr()
+	public SurfaceView getSurface()
 	{
-		return m_ptr;
+		return m_surface;
 	}
 
-	private static native long createRenderer(Surface surface);
+	private native long createRenderer(Surface surface);
 	private native void initRenderer(long renderer, Surface surface);
 	private native void destroySurfaceRenderer(long renderer);
 	private native void destroyRenderer(long renderer);
 	private native void clearRenderer(long renderer);
 	private native void displayRenderer(long renderer);
 	private native Boolean hasDisplayRenderer(long renderer);
+
+	private native void onDownTouchRenderer(float x, float y);
+	private native void onMoveTouchRenderer(float x, float y);
+	private native void onUpTouchRenderer(float x, float y);
 
 	static
 	{

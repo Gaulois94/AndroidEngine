@@ -8,7 +8,7 @@ public class EventManager
 {
 	static public boolean touchInScreen(Rectangle2f rect2)
 	{
-		float r = new float[4];
+		float[] r = new float[4];
 		r[0] = rect2.x;
 		r[1] = rect2.y;
 		r[2] = rect2.width;
@@ -19,7 +19,7 @@ public class EventManager
 
 	static public boolean touchInScreen(Rectangle3f rect3)
 	{
-		float r = new float[4];
+		float[] r = new float[4];
 		r[0] = rect3.x;
 		r[1] = rect3.y;
 		r[2] = rect3.z;

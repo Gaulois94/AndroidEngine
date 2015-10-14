@@ -34,14 +34,14 @@ public class Rectangle3<T extends Number>
 
 	static public <T extends Number, S extends Number> Rectangle3<T> sum(Rectangle3<T> r1, Rectangle3<S> r2)
 	{
-		Rectangle3<T> v = new Rectangle3<T>(v1.getModelClass());
+		Rectangle3<T> r = new Rectangle3<T>(r1.getModelClass());
 
 		r.x = r1.m_modelClass.cast(r1.x.doubleValue() + r2.x.doubleValue());
 		r.y = r1.m_modelClass.cast(r1.y.doubleValue() + r2.y.doubleValue());
 		r.width = r1.m_modelClass.cast(r1.width.doubleValue() + r2.width.doubleValue());
 		r.height = r1.m_modelClass.cast(r1.height.doubleValue() + r2.height.doubleValue());
 
-		return v;
+		return r;
 	}
 }
 
