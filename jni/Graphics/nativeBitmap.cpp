@@ -14,7 +14,6 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Bitmap_createBitmap(JNIEnv* 
 	ptr->invertPixels();
 
 	AndroidBitmap_unlockPixels(jenv, bmp);
-	ptr->setJobject(jobject);
 	return (jlong)ptr;
 }
 

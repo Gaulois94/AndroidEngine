@@ -3,7 +3,6 @@
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_initTexture(JNIEnv* jenv, jclass jcls, jlong width, jlong height)
 {
 	Texture* texture = new Texture(width, height);
-	texture->setJobject(jobject);
 	return (jlong)texture;
 }
 
@@ -12,14 +11,12 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromPixelsTextur
 	unsigned char* p = (unsigned char*)(jenv->GetByteArrayElements(pixels, 0));
 	Texture* texture = new Texture(p, width, height, alpha);
 	jenv->ReleaseByteArrayElements(pixels, (jbyte*)p, 0);
-	texture->setJobject(jobject);
 	return (jlong)texture;
 }
 
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromBitmapTexture(JNIEnv* jenv, jclass jcls, jlong bmp)
 {
 	Texture* texture = new Texture((Bitmap*) bmp);
-	texture->setJobject(jobject);
 	return (jlong)texture;
 }
 
@@ -31,11 +28,10 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromFileTexture(
 	jobject jbmp = jenv->CallStaticObjectMethod(BitmapFactory, decodeFileMethod, path);
 	
 	//Load the texture
-	Bitmap*	bmp = (Bitmap*) Java_com_gaulois94_Graphics_Bitmap_createBitmap(jenv, jcls, jbmp);
+	Bitmap*	bmp = (Bitmap*) Java_com_gaulois94_Graphics_Bitmap_createBitmap(jenv, BitmapFactory, jbmp);
 	Texture* texture = new Texture(bmp);
 
 	delete bmp;
-	texture->setJobject(jobject);
 	return (jlong)texture;	
 }
 

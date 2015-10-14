@@ -3,7 +3,6 @@
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Camera_createCamera(JNIEnv *jenv, jclass jcls)
 {
 	Camera* camera = new Camera();
-	camera->setJobject(jobject);
 	return (jlong) camera;
 }
 

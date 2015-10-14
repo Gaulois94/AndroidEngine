@@ -3,7 +3,6 @@
 JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_Circle_createCircle(JNIEnv *jenv, jclass jcls, jlong parent, jlong material, jfloat radius, jint nbEdge)
 {
 	Circle* circle = new Circle((Updatable*)parent, (Material*)material, radius, nbEdge);
-	circle->setJobject(jobject);
 
 	return (long)circle;
 }

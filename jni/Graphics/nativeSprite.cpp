@@ -3,14 +3,13 @@
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Sprite_createSprite(JNIEnv *jenv, jclass jcls, jlong parent, jlong material, jlong texturePtr)
 {
 	Sprite* sprite = new Sprite((Updatable*)parent, (Material*)material, (Texture*)texturePtr);
-	sprite->setJobject(jobject);
 	return (long)sprite;
 }
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Sprite_getTextureSprite(JNIEnv *jenv, jobject jobj, jlong ptr)
+JNIEXPORT jobject JNICALL Java_com_gaulois94_Graphics_Sprite_getTextureSprite(JNIEnv *jenv, jobject jobj, jlong ptr)
 {
 	Sprite* sprite = (Sprite*)ptr;
-	return (long)(sprite->getTexture());
+	return sprite->getTexture()->getJobject();
 }
 
 JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Sprite_getSubTextureRectSprite(JNIEnv *jenv, jobject jobj, jlong ptr)

@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Sprite_createSprite(JNIEnv *, jclass, jlong, jlong, jlong);
-	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Sprite_getTextureSprite(JNIEnv *, jobject, jlong);
+	JNIEXPORT jobject JNICALL Java_com_gaulois94_Graphics_Sprite_getTextureSprite(JNIEnv *, jobject, jlong);
 	JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Sprite_getSubTextureRectSprite(JNIEnv *, jobject, jlong);
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Sprite_setTextureSprite(JNIEnv *, jobject, jlong, jlong, jint);
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Sprite_setSubTextureRectSprite(JNIEnv *, jobject, jlong, jfloatArray);

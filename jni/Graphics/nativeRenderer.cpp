@@ -1,12 +1,11 @@
 #include "nativeRenderer.h"
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Renderer_createRenderer(JNIEnv* jenv, jclass cls, jobject surface)
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Renderer_createRenderer(JNIEnv* jenv, jclass jcls, jlong parent, jobject surface)
 {
-	Renderer* renderer = new Renderer();
+	Renderer* renderer = new Renderer((Updatable*)parent);
 	ANativeWindow* window = ANativeWindow_fromSurface(jenv, surface);
 	renderer->initializeContext(window);
 
-	renderer->setJobject(jobject);
 	return (jlong)renderer;
 }
 
@@ -61,17 +60,17 @@ JNIEXPORT bool JNICALL Java_com_gaulois94_Graphics_Renderer_hasDisplayRenderer(J
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onDownTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y)
 {
 	Renderer* renderer = (Renderer*)rendererPtr;
-	renderer->onDownTouch(x, y);
+	renderer->onDownTouchEvent(x, y);
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onUpTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y)
 {
 	Renderer* renderer = (Renderer*)rendererPtr;
-	renderer->onUpTouch(x, y);
+	renderer->onUpTouchEvent(x, y);
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onMoveTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y)
 {
 	Renderer* renderer = (Renderer*)rendererPtr;
-	renderer->onMoveTouch(x, y);
+	renderer->onMoveTouchEvent(x, y);
 }
