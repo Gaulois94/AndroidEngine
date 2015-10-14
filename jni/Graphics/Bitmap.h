@@ -8,7 +8,7 @@
 #include "logger.h"
 
 /** \brief Bitmap class */
-class Bitmap : JniMadeOf
+class Bitmap : public JniMadeOf
 {
 	public:
 		/** \brief Bitmap constructor from bitmap info and an array of pixels.

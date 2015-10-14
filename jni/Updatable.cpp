@@ -1,5 +1,8 @@
 #include "Updatable.h"
 #include "Render.h"
+#include "Renderer.h"
+
+bool Updatable::focusIsCheck = false;
 
 Updatable::Updatable(Updatable *parent) : m_parent(NULL)
 {
@@ -19,6 +22,22 @@ Updatable::~Updatable()
 		it = m_child.erase(it);
 	}
 }
+
+void Updatable::updateFocus(Renderer& renderer)
+{
+	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); ++it)
+	{
+		if(Updatable::focusIsCheck == true)
+		{
+			Updatable::focusIsCheck = false;
+			return;
+		}
+		(*it)->updateFocus(renderer);
+	}
+}
+
+void Updatable::onFocus(Renderer& renderer)
+{}
 
 void Updatable::update(Render &render)
 {

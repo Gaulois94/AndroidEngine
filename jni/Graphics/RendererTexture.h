@@ -7,7 +7,7 @@
 class RendererTexture : public Renderer
 {
 	public:
-		RendererTexture(int width, int height);
+		RendererTexture(Updatable* parent, int width, int height);
 		~RendererTexture();
 		
 		void initDraw();

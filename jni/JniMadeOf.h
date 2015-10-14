@@ -3,10 +3,6 @@
 
 #include <jni.h>
 
-enum MethodType
-{
-}
-
 /** \brief Base class of JNI Objects
  * */
 class JniMadeOf
@@ -26,8 +22,12 @@ class JniMadeOf
 		 * \param jobj the new java object*/
 		void setJobject(jobject jobj);
 
+		/** \brief Return the java object
+		 * \return the java object associated with this C++ object*/
+		jobject getJobject() const;
+
 		static JNIEnv* jenv; /* <the java environment. Should be constante while the application run.*/
-	private:
+	protected:
 		jobject m_obj;
 };
 

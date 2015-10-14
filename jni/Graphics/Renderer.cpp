@@ -1,6 +1,7 @@
 #include "Renderer.h"
+#include "Updatable.h"
 
-Renderer::Renderer() : Render(), m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT), m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
+Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT), m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
 }
 
@@ -148,7 +149,7 @@ void Renderer::stopDraw()
 
 void Renderer::onDownTouchEvent(float x, float y)
 {
-	touchCoord.down   = true;
+	touchCoord.type   = DOWN;
 	touchCoord.startX = x;
 	touchCoord.x      = x;
 	touchCoord.startY = y;
@@ -157,15 +158,18 @@ void Renderer::onDownTouchEvent(float x, float y)
 
 void Renderer::onUpTouchEvent(float x, float y)
 {
-	touchCoord.down = false;
+	touchCoord.type = UP;
 	touchCoord.x    = x;
 	touchCoord.y    = y;
+
+	updateFocus(*this);
 }
 
 void Renderer::onMoveTouchEvent(float x, float y)
 {
 	touchCoord.x    = x;
 	touchCoord.y    = y;
+	touchCoord.type = MOVE;
 }
 
 void Renderer::deleteSurface()

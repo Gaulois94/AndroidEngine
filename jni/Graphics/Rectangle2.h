@@ -1,6 +1,12 @@
 #ifndef RECT_INCLUDE
 #define RECT_INCLUDE
 
+#define GLM_FORCE_RADIANS
+
+#include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
+#include <glm/gtc/matrix_transform.hpp> 
+
 /** \brief the 2D rectangle operations*/
 template<typename T>
 class Rectangle2
@@ -74,7 +80,9 @@ bool operator!=(const Rectangle2<T> &a, const Rectangle2<T> &b)
 }
 
 typedef Rectangle2<float>        FloatRect2;
+typedef Rectangle2<float>        Rectangle2f;
 typedef Rectangle2<int>          IntRect2;
+typedef Rectangle2<int>          Rectangle2i;
 typedef Rectangle2<unsigned int> Rectangle2ui;
 
 #endif

@@ -10,3 +10,9 @@ JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_setJNIEnvJniMadeOf(JNIEnv* j
 {
 	JniMadeOf::jenv = jenv;
 }
+
+JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_setJobjectJniMadeOf(JNIEnv* jenv, jobject jobj, jlong ptr)
+{
+	JniMadeOf* jniMadeOf = (JniMadeOf*) ptr;
+	jniMadeOf->setJobject(jobj);
+}

@@ -23,6 +23,11 @@ CheckBox::CheckBox(Updatable* parent, Material* material, const glm::vec2& size)
 	m_drawables.add("rectangle", m_rectangle);
 }
 
+void CheckBox::onFocus(Renderer& renderer)
+{
+	activeIt();
+}
+
 void CheckBox::onUpdate(Render &render)
 {
 	Active::update();
@@ -32,7 +37,8 @@ void CheckBox::onUpdate(Render &render)
 void CheckBox::onDraw(Render &render, const glm::mat4& transformation)
 {
 	render.draw(m_rectangle, getMatrix());
-	render.draw(m_cross, getMatrix());
+	if(m_active)
+		render.draw(m_cross, getMatrix());
 }
 
 void CheckBox::setCrossMaterial(Material* material)

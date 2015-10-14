@@ -6,6 +6,7 @@
 #include "Shape/TriangleShape.h"
 #include "Shape/Rectangle.h"
 #include "GroupDrawable.h"
+#include "Renderer.cpp"
 
 /** \brief CheckBox class. Use to create CheckBox*/
 class CheckBox : public Widget, public Active, public GroupDrawable
@@ -17,6 +18,7 @@ class CheckBox : public Widget, public Active, public GroupDrawable
 		 * \param size its size. Default position at (0, 0)*/
 		CheckBox(Updatable* parent, Material* material, const glm::vec2& size);
 
+		virtual void onFocus(Renderer& renderer);
 		virtual void onUpdate(Render &render);
 		virtual void draw(Render &render, const glm::mat4& transformation=glm::mat4(1.0f));
 

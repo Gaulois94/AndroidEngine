@@ -14,13 +14,17 @@
 #include "Color.h"
 #include "Render.h"
 #include "EventManager.h"
+#include "Rectangle2.h"
+#include "Updatable.h"
+
+class Updatable;
 
 /** \brief The renderer class. It is a representative of the screen. */
-class Renderer : Render
+class Renderer : public Render
 {
 	public:
 		/** \brief create an uninitialized renderer */
-		Renderer();
+		Renderer(Updatable* parent);
 		virtual ~Renderer();
 
 		/** \brief initialise the renderer's context

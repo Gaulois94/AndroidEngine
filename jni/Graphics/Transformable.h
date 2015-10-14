@@ -31,7 +31,7 @@ struct EulerRotation
 /** \brief Transformable is the class which manage all the transformation (rotations, translations, scales) of a matrix. It is mainly used for all the drawable and the Camera.
  * Firstly we apply the rotation, then the scale and after the rotation of the object.
  * The onScale, onRotate and onMove do nothing for this class. They are used if you want to do something during a transformation (without recreate move, scale or rotate function)*/
-class Transformable
+class Transformable : public JniMadeOf
 {
 	public:
 		/** \brief create an unity matrix
@@ -142,6 +142,10 @@ class Transformable
 		/** \brief get the euler rotation
 		 * \return the euler rotation of the object */
 		virtual EulerRotation getEulerRotation() const;
+
+		/** \brief get the 3D rectangle of the transformable given its default position and default size
+		 * \param m if you want to apply a transformation before getting the 3D rectangle coordinates*/
+		Rectangle3f getRect(const glm::mat4& m = glm::mat4(1.0f)) const;
 	protected:
 		/** \brief create the new matrix result from the position, the scale and the rotation. */
 		void setMVPMatrix();

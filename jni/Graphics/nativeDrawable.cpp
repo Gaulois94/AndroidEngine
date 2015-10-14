@@ -195,7 +195,7 @@ JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Drawable_setTransToChildre
 JNIEXPORT bool   JNICALL Java_com_gaulois94_Graphics_Drawable_getTransToChildrenDrawable(JNIEnv *jenv, jclass jobj, jlong ptr)
 {
 	Drawable* drawable = (Drawable*)ptr;
-	return drawable->getSetTransToChildren();
+	return drawable->getTransToChildren();
 }
 
 JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Drawable_setMaterialDrawable(JNIEnv *jenv, jclass jcls, jlong ptr, jlong materialPtr)

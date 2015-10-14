@@ -1,17 +1,19 @@
 #ifndef DEF_RENDER_INCLUDE
 #define DEF_RENDER_INCLUDE
 
-#include "Drawable.h"
+#include "Transformable.h"
 #include "Camera.h"
+#include "Updatable.h"
+#include "Color.h"
 
 class Drawable;
 
 /** \brief basic class Render. Use to put in common all classes used to draw something on texture, and update it*/
-class Render
+class Render : public Updatable
 {
 	public:
 		/** \brief Constructor of Render. Do nothing.*/
-		Render();
+		Render(Updatable* parent);
 
 		/** \brief function draw. It init the draw function, call Drawable's call function, and use stopDraw function
 		 * \param drawable the object being drawn
@@ -34,6 +36,12 @@ class Render
 
 		/** \brief get the Render camera*/
 		Camera& getCamera();
+
+		/** \brief get the 3D rectangle of an object on the screen
+		 * \param trans the Transformable holding the information for getting the rect on the screen*/
+		Rectangle3f getRectOnScreen(const Transformable& trans) const;
+
+		glm::vec3 getPositionOnScreen(const glm::vec3& p) const;
 	private:
 		Color m_ambientColor;
 		Camera m_camera;

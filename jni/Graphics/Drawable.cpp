@@ -1,5 +1,7 @@
 #include "Drawable.h"
 #include "Materials/Material.h"
+#include "Renderer.h"
+#include "Render.h"
 
 Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : Transformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_setTransToChildren(false)
 {
@@ -30,6 +32,16 @@ void Drawable::update(Render& render)
 	}
 
 	Updatable::update(render);
+}
+
+void Drawable::updateFocus(Renderer& renderer)
+{
+	Updatable::updateFocus(renderer);
+	if(touchInRect(renderer.getRectOnScreen(*this)))
+	{
+		Updatable::focusIsCheck = true;
+		onFocus(renderer);
+	}
 }
 
 void Drawable::draw(Render& render, const glm::mat4& transformation)
@@ -86,7 +98,7 @@ bool Drawable::isStaticToCamera() const
 	return m_staticToCamera;
 }
 
-bool Drawable::getSetTransToChildren() const
+bool Drawable::getTransToChildren() const
 {
 	return m_setTransToChildren;
 }

@@ -25,19 +25,20 @@ class Drawable : public Transformable, public Updatable
 		virtual ~Drawable();
 
 		/** \brief draw the drawable
-		 * \param renderer The renderer where the drawable will be drawn
-		 * \param transformation Transform the coord of the drawable itself transformed by the renderer's camera before.*/
-		virtual void draw(Render& renderer, const glm::mat4& transformation=glm::mat4(1.0));
+		 * \param render The render where the drawable will be drawn
+		 * \param transformation Transform the coord of the drawable itself transformed by the render's camera before.*/
+		virtual void draw(Render& render, const glm::mat4& transformation=glm::mat4(1.0));
 
-		virtual void update(Render& renderer);
+		virtual void updateFocus(Renderer& renderer);
+		virtual void update(Render& render);
 
 		/** \brief is called by draw.
-		 * \param renderer The renderer where the drawable will be drawn.
+		 * \param render The render where the drawable will be drawn.
 		 * \param mvp The transformation matrix generate by the camera, the transformation gived in draw function and the transformation used on the drawable itself.
 		 *
 		 * This function called the shader and gives it the parameters.
 		 */
-		virtual void onDraw(Render& renderer, const glm::mat4& mvp=glm::mat4(1.0f))=0;
+		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f))=0;
 
 		virtual void onMove(const glm::vec3& v, bool useScale);
 		virtual void onRotate(float angle, const glm::vec3& axis, const glm::vec3& origin);
@@ -73,7 +74,7 @@ class Drawable : public Transformable, public Updatable
 
 		/** \brief Tell if the transformation should be passed to all the children
 		 * \return transformation is applied to children or not*/
-		virtual bool getSetTransToChildren() const;
+		virtual bool getTransToChildren() const;
 	protected:
 		virtual void deleteVbos();
 		Material* m_material;

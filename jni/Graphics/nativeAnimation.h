@@ -2,6 +2,7 @@
 #define DEF_NATIVEANIMATION
 
 #include <jni.h>
+#include "Animation.h"
 
 extern "C"
 {
