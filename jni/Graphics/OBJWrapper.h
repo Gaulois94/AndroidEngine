@@ -49,7 +49,7 @@ class OBJWrapper : public Drawable
 		 * \param file the file to being parsed*/
 		OBJWrapper(Updatable* parent, JNIEnv* jenv, jobject context, File& file);
 		~OBJWrapper();
-		virtual void onDraw(Renderer* renderer, glm::mat4& mvp);
+		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 	private:
 		ResourcesManager<MaterialWrapper*> m_mtlWrapper;
 		ResourcesManager<OBJDatas*> m_objDatas;

@@ -5,3 +5,14 @@ JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_destroyJniMadeOf(JNIEnv* jen
 	JniMadeOf* obj = (JniMadeOf*) ptr;
 	delete obj;
 }
+
+JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_setJNIEnvJniMadeOf(JNIEnv* jenv, jclass jcls)
+{
+	JniMadeOf::jenv = jenv;
+}
+
+JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_setJobjectJniMadeOf(JNIEnv* jenv, jobject jobj, jlong ptr)
+{
+	JniMadeOf* jniMadeOf = (JniMadeOf*) ptr;
+	jniMadeOf->setJobject(jobj);
+}

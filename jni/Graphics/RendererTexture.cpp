@@ -1,6 +1,6 @@
 #include "RendererTexture.h"
 
-RendererTexture::RendererTexture(int width, int height) : m_texture->NULL);
+RendererTexture::RendererTexture(Updatable* parent, int width, int height) : Render(parent), m_texture->NULL;
 {
 	GLuint textureID;
 	glGenTexture(1, &textureID);

@@ -28,7 +28,7 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromFileTexture(
 	jobject jbmp = jenv->CallStaticObjectMethod(BitmapFactory, decodeFileMethod, path);
 	
 	//Load the texture
-	Bitmap*	bmp = (Bitmap*) Java_com_gaulois94_Graphics_Bitmap_createBitmap(jenv, jcls, jbmp);
+	Bitmap*	bmp = (Bitmap*) Java_com_gaulois94_Graphics_Bitmap_createBitmap(jenv, BitmapFactory, jbmp);
 	Texture* texture = new Texture(bmp);
 
 	delete bmp;

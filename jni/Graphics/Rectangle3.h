@@ -1,6 +1,12 @@
 #ifndef DEF_RECTANGLE3_INCLUDE
 #define DEF_RECTANGLE3_INCLUDE
 
+#define GLM_FORCE_RADIANS
+
+#include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
+#include <glm/gtc/matrix_transform.hpp> 
+
 /** \brief the 3D rectangle operations.*/
 template<typename T>
 class Rectangle3

@@ -74,7 +74,7 @@ JNIEXPORT jint JNICALL Java_com_gaulois94_Graphics_Font_getLeadingFont(JNIEnv* j
 	return font->getFontMetrics().leading;
 }
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Font_getTextureFont(JNIEnv* jenv, jobject jobj, jlong ptr)
+JNIEXPORT jobject JNICALL Java_com_gaulois94_Graphics_Font_getTextureFont(JNIEnv* jenv, jobject jobj, jlong ptr)
 {
-	return (jlong) (((Font*)ptr)->getTexture());
+	return ((Font*)ptr)->getTexture()->getJobject();
 }

@@ -25,9 +25,9 @@ class Material : public JniMadeOf
 		void bindTexture(const Texture* texture);
 
 		/** \brief init the material. This function is necessary for sending the good parameters at the shader
-		 * \param renderer the renderer where this material will be used on
+		 * \param render the render where this material will be used on
 		 * \param mvp the transformation matrix associated with this call*/
-		virtual void init(Render* renderer, const glm::mat4& mvp);
+		virtual void init(Render& render, const glm::mat4& mvp);
 
 		/** \brief unbind the possible texture with this texture.*/
 		void unbindTexture();

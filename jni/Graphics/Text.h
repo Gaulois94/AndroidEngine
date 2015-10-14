@@ -12,7 +12,7 @@
 #include "Drawable.h"
 #include "Color.h"
 #include "Font.h"
-#include "Renderer.h"
+#include "Render.h"
 
 /** \brief manage a text on the screen. */
 class Text : public Drawable
@@ -29,7 +29,7 @@ class Text : public Drawable
 		Text();
 		~Text();
 
-		virtual void onDraw(Renderer* renderer, glm::mat4& mvp);
+		virtual void onDraw(Render& renderer, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		/** \brief set the font of the text
 		 * \param font the new font. The user should store the font somewhere (for example on a ResourcesManager) */

@@ -16,10 +16,13 @@ class PatternAnimation : public Animation
 		 * \param pad the distance (x, y) between two animation sprite
 		 * \param size the size (width, height) of each sprite
 		 * \param n the number of sprite(row, column)
-		 * \param nSprite the number of sprites*/
-		PatternAnimation(Updatable* parent, Material* material, const Texture* texture, const Vector2ui& pos, const Vector2ui& pad, const Vector2ui& size, const Vector2ui& n, uint32_t nSprite);
+		 * \param nSprite the number of sprites
+		 * \param nbFrame the number of frames before changing the sprite*/
+		PatternAnimation(Updatable* parent, Material* material, const Texture* texture, const Vector2ui& pos, const Vector2ui& pad, const Vector2ui& size, const Vector2ui& n, uint32_t nSprite, uint32_t nbFrame);
+
+		void setSubNSpriteCoords(uint32_t n);
 	private:
-		uint32_t m_posX, m_posY, m_padX, m_padY, m_width, m_height, m_nX;
+		uint32_t m_posX, m_posY, m_padX, m_padY, m_width, m_height, m_nX, m_nY;
 };
 
 #endif

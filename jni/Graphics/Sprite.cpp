@@ -2,7 +2,7 @@
 
 short Sprite::drawOrder[6] = {0, 1, 2, 0, 2, 3};
 
-Sprite::Sprite(Material* material, const Texture* texture) : Drawable(parent, material, Rectangle3(0, 0, 0, 1, 1, 0)), m_subTextureRect(0.0f, 0.0f, 1.0f, 1.0f), m_texture(texture)
+Sprite::Sprite(Updatable* parent, Material* material, const Texture* texture) : Drawable(parent, material, Rectangle3f(0, 0, 0, 1, 1, 0)), m_subTextureRect(0.0f, 0.0f, 1.0f, 1.0f), m_texture(texture)
 {
 	float vertexCoords[] = {0.0f, 1.0f, 0.0f,
 							0.0f, 0.0f, 0.0f,
@@ -19,11 +19,11 @@ Sprite::Sprite(Material* material, const Texture* texture) : Drawable(parent, ma
 	initVbos(vertexCoords, textureCoords);
 }
 
-void Sprite::onDraw(Renderer* renderer, glm::mat4& mvp)
+void Sprite::onDraw(Render& render, const glm::mat4& mvp)
 {
 	if(!m_material)
 		return;
-	m_material->init(renderer, mvp);
+	m_material->init(render, mvp);
 
 	m_material->bindTexture(m_texture);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);

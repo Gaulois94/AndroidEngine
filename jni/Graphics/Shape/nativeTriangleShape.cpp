@@ -1,11 +1,11 @@
 #include "Shape/nativeTriangleShape.h"
 
-JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_createTriangleShape(JNIEnv *jenv, jclass jcls, jlong material, jfloatArray vertexCoords, jfloatArray normalCoords, jint nbVertex, jint mode)
+JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_createTriangleShape(JNIEnv *jenv, jclass jcls, jlong parent, jlong material, jfloatArray vertexCoords, jfloatArray normalCoords, jint nbVertex, jint mode)
 {
 	float* pv = jenv->GetFloatArrayElements(vertexCoords, 0);
 	float* pn = jenv->GetFloatArrayElements(normalCoords, 0);
 
-	TriangleShape* result = new TriangleShape((Material*)material, pv, pn, nbVertex, mode);
+	TriangleShape* result = new TriangleShape((Updatable*)parent, (Material*)material, pv, pn, nbVertex, mode);
 	jenv->ReleaseFloatArrayElements(vertexCoords, pv, 0);
 	jenv->ReleaseFloatArrayElements(normalCoords, pn, 0);
 
@@ -42,6 +42,16 @@ JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_se
 
 	jenv->ReleaseFloatArrayElements(vertexCoords, pv, 0);
 	free(v);
+}
+
+JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_setNormalTriangleShape(JNIEnv *, jobject, jlong, jfloatArray)
+{
+
+}
+
+JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_setDrawOrderTriangleShape(JNIEnv*, jobject, jint, jint)
+{
+
 }
 
 JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_getPositionVertexTriangleShape(JNIEnv *jenv, jobject jobj, jlong ptr, jint vertex)

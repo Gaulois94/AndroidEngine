@@ -1,6 +1,11 @@
 #ifndef DEF_GROUPDRAWABLE_INCLUDE
 #define DEF_GROUPDRAWABLE_INCLUDE
 
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
+#include <glm/gtc/matrix_transform.hpp> 
+
 #include "Drawable.h"
 #include "Materials/Material.h"
 #include "ResourcesManager.h"
@@ -10,15 +15,18 @@ class GroupDrawable : public Drawable
 {
 	public:
 		/** \brief Init the GroupDrawable with the same material for each drawables.
-		 * \param material The drawables material.*/
-		GroupDrawable(Updatable* parent, Material* material);
+		 * \param material The drawables material.
+		 * \param parent its parent
+		 * \param material The drawables material.
+		 * \param defaultConf The default configuration (pos and size) of the GroupDrawable*/
+		GroupDrawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf);
 
-		void update(Renderer* renderer);
+		void update(Render& render);
 
 		/** \brief Call each Drawable's draw function contained in the GroupDrawable.
-		 * \param renderer The renderer where each drawable will be drawn on.
+		 * \param render The Render where each drawable will be drawn on.
 		 * \param transformation The transformation matrix for each drawable.*/
-		void draw(Renderer* renderer, glm::mat4& transformation);
+		void onDraw(Render& render, const glm::mat4& transformation=glm::mat4(1.0f));
 
 		/** \brief Set the material for all the object.
 		 * \param the Drawables material.*/

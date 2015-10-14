@@ -1,4 +1,7 @@
 #include "Drawable.h"
+#include "Materials/Material.h"
+#include "Renderer.h"
+#include "Render.h"
 
 Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : Transformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_setTransToChildren(false)
 {
@@ -10,13 +13,38 @@ Drawable::~Drawable()
 	deleteVbos();
 }
 
-void Drawable::update(Render& renderer)
+void Drawable::update(Render& render)
 {
-	render.draw(this);
-	Updatable::update(renderer);
+	if(m_setTransToChildren)
+	{
+		//Set the camera current apply transformation.
+		Camera renderCamera = render.getCamera();
+		//save the old apply matrix
+		glm::mat4 currentApplyTransformation = renderCamera.getApplyTransformation();
+		//apply our transformation to the current one
+		renderCamera.setApplyTransformation(getMatrix() * renderCamera.getApplyTransformation());
+
+		//Call the usual update function
+		Updatable::update(render);
+
+		//restore the apply transformation matrix
+		renderCamera.setApplyTransformation(currentApplyTransformation);
+	}
+
+	Updatable::update(render);
 }
 
-void Drawable::draw(Render& renderer, const glm::mat4& transformation)
+void Drawable::updateFocus(Renderer& renderer)
+{
+	Updatable::updateFocus(renderer);
+	if(touchInRect(renderer.getRectOnScreen(*this)))
+	{
+		Updatable::focusIsCheck = true;
+		onFocus(renderer);
+	}
+}
+
+void Drawable::draw(Render& render, const glm::mat4& transformation)
 {
 	if(!m_canDraw)
 		return;
@@ -26,8 +54,8 @@ void Drawable::draw(Render& renderer, const glm::mat4& transformation)
 
 	glm::mat4 mvp = getMatrix();
 	if(!m_staticToCamera)
-		mvp = renderer.getCamera()->getMatrix() * transformation * mvp;
-	onDraw(renderer, mvp);
+		mvp = render.getCamera().getMatrix() * transformation * mvp;
+	onDraw(render, mvp);
 
 	if(m_material)
 		m_material->disableShader();
@@ -35,26 +63,14 @@ void Drawable::draw(Render& renderer, const glm::mat4& transformation)
 
 void Drawable::onMove(const glm::vec3& v, bool useScale)
 {
-	if(m_setTransToChildren)
-		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-			if(Drawable* drawableChild = static_cast<Drawable*>(*it))
-				drawableChild.move(v, useScale);
 }
 
 void Drawable::onRotate(float angle, const glm::vec3& axis, const glm::vec3& origin)
 {
-	if(m_setTransToChildren)
-		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-			if(Drawable* drawableChild = static_cast<Drawable*>(*it))
-				drawableChild.onRotate(s);
 }
 
 void Drawable::onScale(const glm::vec3& s)
 {
-	if(m_setTransToChildren)
-		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-			if(Drawable* drawableChild = static_cast<Drawable*>(*it))
-				drawableChild.scale(s);
 }
 
 void Drawable::setCanDraw(bool d)
@@ -82,7 +98,7 @@ bool Drawable::isStaticToCamera() const
 	return m_staticToCamera;
 }
 
-bool Drawable::getSetTransToChildren() const
+bool Drawable::getTransToChildren() const
 {
 	return m_setTransToChildren;
 }

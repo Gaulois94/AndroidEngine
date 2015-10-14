@@ -15,7 +15,7 @@
 #include "Color.h"
 
 /** \brief a OpenGL texture class*/
-class Texture : JniMadeOf
+class Texture : public JniMadeOf
 {
 	public:
 		/** \brief create a texture by its openglID, its width, height and maskColor (which color should not be displayed)

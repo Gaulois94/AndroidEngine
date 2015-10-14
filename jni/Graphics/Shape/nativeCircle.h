@@ -11,8 +11,8 @@
 #include "Materials/Material.h"
 
 extern "C" {
-	JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_Circle_createCircle(JNIEnv *, jclass, jlong, jfloat, jint);
-	JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_Circle_setNbEdgeCircle(JNIEnv *, jobject, jlong, jint);
+	JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_Circle_createCircle(JNIEnv *, jclass, jlong, jlong, jfloat, jint);
+	JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_Circle_setNbEdgeCircle(JNIEnv *, jobject, jlong, jint, jfloat);
 	JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Shape_Circle_getCenterCircle(JNIEnv *jenv, jobject jobj, jlong ptr);
 	JNIEXPORT int         JNICALL Java_com_gaulois94_Graphics_Shape_Circle_getNbEdgeCircle(JNIEnv *, jobject, jlong);
 }

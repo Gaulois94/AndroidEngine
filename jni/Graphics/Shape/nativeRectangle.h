@@ -4,5 +4,5 @@
 
 extern "C"
 {
-	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Shape_createRectangle(JNIEnv* jenv, jclass jcls, jlong mtlPtr, int x, int y);
+	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Shape_createRectangle(JNIEnv* jenv, jclass jcls, jlong parent, jlong mtlPtr, int x, int y);
 };

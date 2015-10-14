@@ -1,16 +1,16 @@
 #include "nativeCircle.h"
 
-JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_Circle_createCircle(JNIEnv *jenv, jclass jcls, jlong material, jfloat radius, jint nbEdge)
+JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_Circle_createCircle(JNIEnv *jenv, jclass jcls, jlong parent, jlong material, jfloat radius, jint nbEdge)
 {
-	Circle* circle = new Circle((Material*)material, radius, nbEdge);
+	Circle* circle = new Circle((Updatable*)parent, (Material*)material, radius, nbEdge);
 
 	return (long)circle;
 }
 
-JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_Circle_setNbEdgeCircle(JNIEnv *jenv, jobject jobj, jlong ptr, jint nbEdge)
+JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_Circle_setNbEdgeCircle(JNIEnv *jenv, jobject jobj, jlong ptr, jint nbEdge, jfloat radius)
 {
 	Circle* circle = (Circle*) ptr;
-	circle->setNbEdge(nbEdge);
+	circle->setNbEdge(nbEdge, radius);
 }
 
 JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Shape_Circle_getCenterCircle(JNIEnv *jenv, jobject jobj, jlong ptr)

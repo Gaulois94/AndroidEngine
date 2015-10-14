@@ -173,6 +173,62 @@ EulerRotation Transformable::getEulerRotation() const
 	return e;
 }
 
+Rectangle3f Transformable::getRect(const glm::mat4& m) const
+{
+	/* Get the proper transformable matrix.*/
+	glm::mat4 tMat = getMatrix();
+	tMat = m * tMat;
+
+	//Take the object 3D rect and apply it to the
+	glm::vec4 v[8] = {
+		glm::vec4(0.0, 0.0, 0.0, 0.0), glm::vec4(0.0, m_defaultSize[1], 0.0, 0.0), 
+		glm::vec4(m_defaultSize[0], 0.0, 0.0, 0.0), glm::vec4(m_defaultSize[0], m_defaultSize[1], 0.0, 0.0), //Front face
+		
+		glm::vec4(0.0, 0.0, 0.0, 0.0), glm::vec4(0.0, m_defaultSize[1], 0.0, 0.0),
+	   	glm::vec4(m_defaultSize[0], 0.0, 0.0, 0.0), glm::vec4(m_defaultSize[0], m_defaultSize[1], 0.0, 0.0)}; //Will be the back face
+
+	//Fit the vector position with the trans position
+	for(uint32_t i=0; i < 8; i++)
+		v[i] = v[i] + glm::vec4(m_defaultPos, 0.0);
+
+	//Get the back face position
+	for(uint32_t i=4; i < 8; i++)
+		v[i] = v[i] + glm::vec4(0.0, 0.0, m_defaultSize[2], 0.0);
+
+	//Calculate the transformation to these vec
+	for(uint32_t i=0; i < 8; i++)
+		v[i] = tMat * v[i];
+	
+	//Determine the maximum and minimum coord of the v[i] table
+	float xMin, yMin, zMin, xMax, zMax, yMax;
+	for(uint32_t i=0; i < 8; i++)
+	{
+		if(i==0)
+		{
+			xMin = xMax = v[i][0];
+			yMin = yMax = v[i][1];
+			zMin = zMax = v[i][2];
+		}
+
+		if(v[i][0] < xMin)
+			xMin = v[i][0];
+		else if(v[i][0] > xMax)
+			xMax = v[i][0];
+
+		if(v[i][1] < yMin)
+			yMin = v[i][1];
+		else if(v[i][1] > yMax)
+			yMax = v[i][1];
+
+		if(v[i][2] < zMin)
+			zMin = v[i][2];
+		else if(v[i][2] > zMax)
+			zMax = v[i][2];
+	}
+
+	return Rectangle3f(xMin, yMin, zMin, xMax - xMin, yMax - yMin, zMax - zMin);
+}
+
 void Transformable::setMVPMatrix()
 {	
 	m_mvpMatrix = m_scale * m_position;

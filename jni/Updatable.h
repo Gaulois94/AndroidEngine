@@ -7,6 +7,7 @@
 #include "JniMadeOf.h"
 
 class Render;
+class Renderer;
 
 /** \brief basic class for updating components*/
 class Updatable : public JniMadeOf
@@ -15,6 +16,14 @@ class Updatable : public JniMadeOf
 		Updatable(Updatable *parent);
 
 		virtual ~Updatable();
+
+		/** \brief call when a TouchEvent is called. Try to get the Updatable who get the focus
+		 * \param renderer the Renderer which has catch the event.*/
+		virtual void updateFocus(Renderer& renderer);
+
+		/** \brief called when the object has the focus
+		 * \param renderer the Renderer which has catch the event.*/
+		virtual void onFocus(Renderer& renderer);
 
 		/** \brief Update the Updatable and its children.
 		 *  \param render the render from where the updatable could interact
@@ -83,6 +92,8 @@ class Updatable : public JniMadeOf
 
 			return list;
 		}
+
+		static bool focusIsCheck; /** Tell if we have finish to get the focus*/
 };
 
 #endif

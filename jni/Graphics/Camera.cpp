@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera(const glm::vec3& defaultPos) : Transformable(Rectangle3(defaultPos.x, defaultPos.y, defaultPos.z, 0, 0, 0))
+Camera::Camera(const glm::vec3& defaultPos) : Transformable(Rectangle3f(defaultPos.x, defaultPos.y, defaultPos.z, 0, 0, 0))
 {}
 
 void Camera::lookAt(const glm::vec3& camera, const glm::vec3& target)

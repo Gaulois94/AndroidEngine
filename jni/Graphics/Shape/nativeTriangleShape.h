@@ -11,9 +11,11 @@
 #include "Shape/TriangleShape.h"
 
 extern "C" {
-	JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_createTriangleShape(JNIEnv *, jclass, jlong, jfloatArray, jfloatArray, jint, jint);
+	JNIEXPORT jlong       JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_createTriangleShape(JNIEnv *, jclass, jlong, jlong, jfloatArray, jfloatArray, jint, jint);
 	JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_setDatasTriangleShape(JNIEnv *, jobject, jlong, jfloatArray, jfloatArray, jint);
 	JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_setVertexTriangleShape(JNIEnv *, jobject, jlong, jfloatArray);
+	JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_setNormalTriangleShape(JNIEnv *, jobject, jlong, jfloatArray);
+	JNIEXPORT void        JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_setDrawOrderTriangleShape(JNIEnv*, jobject, jint, jint);
 	JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Shape_TriangleShape_getPositionVertexTriangleShape(JNIEnv *, jobject, jlong, jint);
 }
 #endif

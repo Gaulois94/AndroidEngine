@@ -1,22 +1,23 @@
 #include "GroupDrawable.h"
 
-GroupDrawable::GroupDrawable(Updatable *parent, material* material) : Drawable(parent, material)
+GroupDrawable::GroupDrawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : Drawable(parent, material, defaultConf)
 {}
 
-void GroupDrawable::update(Renderer* renderer)
+void GroupDrawable::update(Render& render)
 {
 	for(std::map<std::string, Drawable*>::iterator it = m_drawables.begin(); it != m_drawables.end(); it++)
-		it->second->update(renderer);
+		it->second->update(render);
+	Drawable::update(render);
 }
 
-void GroupDrawable::draw(Renderer* renderer, glm::mat4& transformation)
+void GroupDrawable::onDraw(Render& render, const glm::mat4& transformation)
 {
 	if(!m_canDraw)
 		return;
 
 	glm::mat4 mvp = getMatrix() * transformation;
 	for(std::map<std::string, Drawable*>::iterator it = m_drawables.begin(); it != m_drawables.end(); it++)
-		it->second->draw(renderer, mvp);
+		render.draw(*(it->second), mvp);
 }
 
 void GroupDrawable::staticToCamera(bool s)
