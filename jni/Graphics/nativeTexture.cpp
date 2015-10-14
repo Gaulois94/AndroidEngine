@@ -35,6 +35,55 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromFileTexture(
 	return (jlong)texture;	
 }
 
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Texture_setMaskColorTexture(JNIEnv* jenv, jobject jobj, jlong texture, jfloatArray color)
+{
+	float* c = jenv->GetFloatArrayElements(color, 0);
+	((Texture*)ptr)->setMaskColor(Color(c[0], c[1], c[2], c[3]));
+	jenv->ReleaseFloatArrayElements(color, c, 0);
+}
+
+JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Texture_pixelsToTextureCoordTexture(JNIEnv* jenv, jobject jobj, jlong texture, jintArray pos)
+{
+	int* p   = jenv->GetIntArrayElements(pos, 0);
+	float[] r = ((Texture*)ptr)->pixelsToTextureCoord(glm::vec2(p[0], p[1]));
+
+	jfloatArray result = jenv->NewFloatArray(2);
+	jenv->SetFloatArrayRegion(result, 0, 2, r);
+	jenv->ReleaseIntArrayElements(pos, p, 0);
+
+	return result;
+}
+
+JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Texture_getRectTexture(JNIEnv* jenv, jobject jobj, jlong texture, jintArray pos, jintArray size)
+{
+	int* p = jenv->GetIntArrayElements(pos, 0);
+	int* s = jenv->GetIntArrayElements(size, 0);
+
+	Rectangle2f rect = ((Texture*)ptr)->getRect(glm::vec2(p[0], p[1]), glm::vec2(s[0], s[1]));
+	float r[4] = {rect.x, rect.y, rect.width, rect.height};
+	jfloatArray result = jenv->NewFloatArray(4);
+	jenv->SetFloatArrayRegion(result, 0, 4, r);
+
+	jenv->ReleaseIntArrayElements(pos, p, 0);
+	jenv->ReleaseIntArrayElements(size, s, 0);
+
+	return result;
+}
+
+JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Texture_getRectTexture(JNIEnv* jenv, jobject jobj, jlong texture, jintArray rect)
+{
+	int* r = jenv->GetIntArrayElements(rect, 0);
+
+	Rectangle2i rTexture = ((Texture*)ptr)->getRect(Rectangle2i(r[0], r[1], r[2], r[3]));
+	float r2[4] = {rTexture.x, rTexture.y, rTexture.width, rTexture.height};
+	jfloatArray result = jenv->NewFloatArray(4);
+	jenv->SetFloatArrayRegion(result, 0, 4, r2);
+
+	jenv->ReleaseIntArrayElements(rect, r, 0);
+
+	return result;
+}
+
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_getIDTexture(JNIEnv* jenv, jobject jobj, jlong texture)
 {
 	Texture* ptr = (Texture*) texture;
@@ -51,4 +100,13 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_getHeightTexture(JNI
 {
 	Texture* ptr = (Texture*) texture;
 	return ptr->getHeight();
+}
+
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_getMaskColorTexture(JNIEnv* jenv, jobject jobj, jlong texture)
+{
+	jfloatArray result = jenv->NewFloatArray(4);
+	Color c = ((Texture*)texture)->getMaskColor();
+	float c[4] = {c.r, c.g, c.b, c.a};
+	jenv->SetFloatArrayRegion(result, 0, 4, c);
+	return result;
 }
