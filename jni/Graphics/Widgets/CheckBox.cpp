@@ -1,52 +1,72 @@
 #include "CheckBox.h"
 
-CheckBox::CheckBox(Updatable* parent, Material* material, const glm::vec2& size) : Widget(parent, material), 
+CheckBox::CheckBox(Updatable* parent, Material* material, const glm::vec2& size) : GroupDrawable(parent, material, Rectangle3f(0.0, 0.0, 0.0, size[0], size[1], 0.0)), m_rectangle(NULL), m_cross(NULL)
 {
-	Rectangle* m_rectangle = new Rectangle(NULL, material, size);
-	TriangleShape* m_cross = new TriangleShape(NULL, material, NULL, NULL, 0, GL_LINE);
-	glm::vec3 normalCoord[] = {
+	m_activeOnce = false;
+	m_alwaysUpdateSelection = false;
+	m_alwaysUpdateActivation = false;
+	m_rectangle = new Rectangle(NULL, material, size);
+	glm::vec3 normalCoords[] = {
 		glm::vec3(0, 0, 1),
 		glm::vec3(0, 0, 1),
 		glm::vec3(0, 0, 1),
 		glm::vec3(0, 0, 1)
-	}
+	};
 
-	glm::vec3 vertexPos[] = {
+	glm::vec3 vertexCoords[] = {
 		glm::vec3(0, 0, 0),
-		glm::vec3(1, 1, 0)
-		glm::vec3(0, 1, 0),
-		glm::vec3(1, 0, 0)
-	}
+		glm::vec3(size.x, size.y, 0),
+		glm::vec3(0, size.y, 0),
+		glm::vec3(size.x, 0, 0)
+	};
 
-	m_cross->setDatas(vertexPos, normalCoord, 4);
-	m_drawables.add("cross", m_cross);
-	m_drawables.add("rectangle", m_rectangle);
+	m_cross = new TriangleShape(NULL, material, vertexCoords, normalCoords, 4, GL_LINES);
+	m_cross->setCanDraw(false);
+	m_activeOnce = false;
+	m_drawables.push_back(m_rectangle);
+	m_drawables.push_back(m_cross);
 }
 
-void CheckBox::onFocus(Renderer& renderer)
+CheckBox::~CheckBox()
 {
-	activeIt();
+	delete m_cross;
+	delete m_rectangle;
+}
+
+void CheckBox::onFocus(Render& render)
+{
+	if(m_isActive)
+		disactiveIt();
+	else
+		activeIt();
 }
 
 void CheckBox::onUpdate(Render &render)
 {
 	Active::update();
-	Widget::onUpdate(render);
-}
-
-void CheckBox::onDraw(Render &render, const glm::mat4& transformation)
-{
-	render.draw(m_rectangle, getMatrix());
-	if(m_active)
-		render.draw(m_cross, getMatrix());
+	GroupDrawable::onUpdate(render);
 }
 
 void CheckBox::setCrossMaterial(Material* material)
 {
-	m_cross.setMaterial(material);
+	m_cross->setMaterial(material);
 }
 
-void setRectangleMaterial(Material* material)
+void CheckBox::setRectangleMaterial(Material* material)
 {
-	m_rectangle.setMaterial(material);
+	m_rectangle->setMaterial(material);
+}
+
+void CheckBox::activeIt()
+{
+	LOG_ERROR("ACTIVE");
+	Active::activeIt();
+	m_cross->setCanDraw(true);
+}
+
+void CheckBox::disactiveIt()
+{
+	LOG_ERROR("DISACTIVE");
+	Active::disactiveIt();
+	m_cross->setCanDraw(false);
 }
