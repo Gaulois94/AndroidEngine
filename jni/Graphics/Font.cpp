@@ -26,6 +26,14 @@ glm::vec2 Font::getSize(char character) const
 	return m_charSize[character-CHAR_START];
 }
 
+FloatRect2 Font::getCharRect(char character) const
+{
+	//The texture font letter is in directX norme. Remember that the position of a text in the font is given at the baseline of the text, that's why we subtract that position with the top position (which is negative, that's why we do + and not -)
+	return FloatRect2(getPosition(text[i])+glm::vec2(0.0, m_fontMetrics.top),
+					  getSize(text[i]));
+
+}
+
 const Texture* Font::getTexture() const
 {
 	return m_texture;

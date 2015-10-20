@@ -16,14 +16,14 @@
 #include "Bitmap.h"
 #include "Color.h"
 
-/** \brief The edges (or the metrics) of the Font */
+/** \brief The edges (or the metrics) of the Font.*/
 struct FontMetrics
 {
-	float ascent;
-	float descent;
-	float bottom;
-	float leading;
-	float top;
+	float ascent; /** The recommended distance above the baseline for singled spaced text. */
+	float descent; /** The maximum distance below the baseline for the lowest glyph in the font at a given text size.*/
+	float bottom; /** The recommended distance below the baseline for singled spaced text. */
+	float leading; /** The recommended additional space to add between lines of text.*/
+	float top; /** The maximum distance above the baseline for the tallest glyph in the font at a given text size.*/
 
 	jobject fontMetrics;
 };
@@ -45,10 +45,32 @@ class Font
 		 * \param fontMetrics the font metrics of this font.*/
 		Font(Texture* texture, int* charWidth, int* charHeight, int* posX, int* posY, int maxWidth, int maxHeight, int padX, int padY, FontMetrics& fontMetrics);
 
+		/** \brief get the position in pixel of the character in directX norme. 
+		 * Remember that the character position is given from its baseline, and not the top if it.
+		 * \param character the character ascii
+		 * \return the position of pixel of this character*/
 		glm::vec2 getPosition(char character) const;
+
+		/** \brief get the size in pixel of the character
+		 * \param character the character ascii code
+		 * \return the size of the character*/
 		glm::vec2 getSize(char character) const;
+
+		/** \brief get the rectangle of this character in directX norme.
+		 * \param character the character ascii code
+		 * \return the rect of this character*/
+		FloatRect2 getCharRect(char character) const;
+
+		/** \brief get the texture used for this font.
+		 * \return the texture of the font, containing all the character used*/
 		const Texture* getTexture() const;
+
+		/** \brief get the height of one line of this font.
+		 * \return the height of one line of this font.*/
 		float getLineHeight() const;
+
+		/** \brief get the font metrics of this font
+		 * \return the font metrics.*/
 		const FontMetrics& getFontMetrics() const;
 	private:
 		std::vector<glm::vec2> m_charSize;
