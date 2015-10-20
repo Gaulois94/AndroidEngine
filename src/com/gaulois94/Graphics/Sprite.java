@@ -47,11 +47,7 @@ public class Sprite extends Drawable
 	}
 
 	public static native long createSprite(long parent, long material, long texturePtr);
-<<<<<<< HEAD
 	public native Texture getTextureSprite(long ptr);
-=======
-	public native jobject getTextureSprite(long ptr);
->>>>>>> 0037bfc8e2146765a6fcc65374b2092297ecb5ab
 	public native float[] getSubTextureRectSprite(long ptr);
 	public native void setTextureSprite(long ptr, long texturePtr, int resetSubTextureRect);
 	public native void setSubTextureRectSprite(long ptr, float[] rectCoords);
