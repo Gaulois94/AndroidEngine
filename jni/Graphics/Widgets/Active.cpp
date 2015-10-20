@@ -1,6 +1,6 @@
 #include "Active.h"
 
-Active::Active(bool select, bool active, bool alwaysUpdateSelection, bool alwaysUpdateActivation) : m_isSelect(select), m_isActive(active), m_alwaysUpdateSelection(alwaysUpdateSelection), m_alwaysUpdateActivation(alwaysUpdateActivation), m_permanentSelected(false), m_permanentActivated(false), m_selectOnce(true), m_activeOnce(true);
+Active::Active(bool select, bool active, bool alwaysUpdateSelection, bool alwaysUpdateActivation) : m_isSelect(select), m_isActive(active), m_alwaysUpdateSelection(alwaysUpdateSelection), m_alwaysUpdateActivation(alwaysUpdateActivation), m_permanentSelected(false), m_permanentActivated(false), m_selectOnce(true), m_activeOnce(true), m_activeFunc(0)
 {}
 
 void Active::update()
@@ -23,12 +23,32 @@ bool Active::updateSelection()
 
 bool Active::updateActivation()
 {
-	if((m_isActive && m_activeOnce) && (howActive() || m_permanentActivated))
+	if(howActive() || m_permanentActivated)
 		activeIt();
-	else if(howDisactive())
+	else if(howDisactive() || (m_isActive && m_activeOnce))
 		disactiveIt();
 
 	return m_isActive;
+}
+
+bool Active::howActive()
+{
+	return false;
+}
+
+bool Active::howDisactive()
+{
+	return false;
+}
+
+bool Active::howSelect()
+{
+	return false;
+}
+
+bool Active::howDeselect()
+{
+	return false;
 }
 
 void Active::selectIt()
@@ -43,11 +63,15 @@ void Active::deselectIt()
 
 void Active::activeIt()
 {
+	LOG_ERROR("ACTIVED !");
 	m_isActive = true;
+	if(m_activeFunc)
+		m_activeFunc();
 }
 
 void Active::disactiveIt()
 {
+	LOG_ERROR("DISACTIVED !");
 	m_isActive = false;
 }
 
@@ -59,7 +83,7 @@ void Active::setPermanentSelected(bool permanentSelected)
 
 void Active::setPermanentActivated(bool permanentActivated)
 {
-	m_permanentActivated = permanentActivated
+	m_permanentActivated = permanentActivated;
 	updateActivation();
 }
 
@@ -83,14 +107,19 @@ void Active::setActiveOnce(bool activeOnce)
 	m_activeOnce = activeOnce;
 }
 
-bool Active::isPermanentSelected() const
+void Active::setActiveFunc(void(*f)(void))
 {
-	return m_isSelectCopy;
+	m_activeFunc = f;
 }
 
-bool Active::isPermanentActiveed() const
+bool Active::isPermanentSelected() const
 {
-	return m_isActiveCopy;
+	return m_permanentSelected;
+}
+
+bool Active::isPermanentActivated() const
+{
+	return m_permanentActivated;
 }
 
 bool Active::isSelect() const

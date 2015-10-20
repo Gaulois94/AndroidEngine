@@ -1,6 +1,8 @@
 #ifndef DEF_ACTIVE
 #define DEF_ACTIVE
 
+#include "logger.h"
+
 /** \brief basic class for activation / selection system as Button or CheckBox*/
 class Active
 {
@@ -35,17 +37,21 @@ class Active
 		/** \brief disactive the system*/
 		virtual void disactiveIt();
 
-		/** \brief function for knowing if the system is currently being activated or not*/
-		virtual bool howActive()=0;
+		/** \brief function for knowing if the system is currently being activated or not
+		 * If not surcharged, returns false*/
+		virtual bool howActive();
 
-		/** \brief function for know if the system is currently being disactivated or not*/
-		virtual bool howDisactive()=0;
+		/** \brief function for know if the system is currently being disactivated or not
+		 * If not surcharged, returns false*/
+		virtual bool howDisactive();
 
-		/** \brief function for knowing if the system is currently being selected or not*/
-		virtual bool howSelect()=0;
+		/** \brief function for knowing if the system is currently being selected or not
+		 * If not surcharged, returns false*/
+		virtual bool howSelect();
 
-		/** \brief function for knowing if the system is currently being deselected or not*/
-		virtual bool howDeselect()=0;
+		/** \brief function for knowing if the system is currently being deselected or not
+		 * If not surcharged, returns false*/
+		virtual bool howDeselect();
 
 		/** \brief set permanently the selection. The system will be always selected
 		 * \param permamentSelection tell if the system is in a permanent selection or not*/
@@ -102,6 +108,10 @@ class Active
 		/** \brief the system will call activeIt only once before being disactivated
 		 * \return if the system is selected only once before being disactivated*/
 		bool isActiveOnce() const;
+
+		/** \brief The active function is the function called when the system is activated
+		 * \param f the new active function. Must be void func(void); prototype*/
+		void setActiveFunc(void(*f)(void));
 	protected:
 		bool m_isSelect;
 		bool m_isActive;
@@ -111,6 +121,7 @@ class Active
 		bool m_permanentActivated;
 		bool m_selectOnce;
 		bool m_activeOnce;
+		void (*m_activeFunc)();
 };
 
 #endif
