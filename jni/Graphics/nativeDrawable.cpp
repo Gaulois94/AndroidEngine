@@ -60,7 +60,6 @@ JNIEXPORT jint JNICALL Java_com_gaulois94_Graphics_Drawable_existShaderFromKeyDr
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(JNIEnv *jenv, jclass jcls, jobject context)
 {
-	JniMadeOf::jenv = jenv;
 	std::string files[]          = {"basic", "color", "obj", "text", "texture"};
 	int size                     = 5;
 
