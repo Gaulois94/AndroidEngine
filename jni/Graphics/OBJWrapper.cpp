@@ -1,6 +1,6 @@
 #include "OBJWrapper.h"
 
-OBJWrapper::OBJWrapper(Updatable* parent, JNIEnv* jenv, jobject jcontext, File& file) : Drawable(parent, NULL)
+OBJWrapper::OBJWrapper(Updatable* parent, File& file) : Drawable(parent, NULL)
 {
 	//Information for the Transformation::defaultConf
 	glm::vec3 defaultPositionMax;
@@ -138,7 +138,7 @@ OBJWrapper::OBJWrapper(Updatable* parent, JNIEnv* jenv, jobject jcontext, File& 
 			std::string mtlName      = split(line, ' ')[1];
 			path                    += mtlName;
 
-			File f(jenv, jcontext, path.c_str(), "r");
+			File f(JniMadeOf::jenv, JniMadeOf::context, path.c_str(), "r");
 			currentDatas->mtlWrapper = new MaterialWrapper(f);
 			m_mtlWrapper.add(mtlName, currentDatas->mtlWrapper);
 		}

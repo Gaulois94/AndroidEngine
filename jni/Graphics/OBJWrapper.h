@@ -13,6 +13,7 @@
 #include "Drawable.h"
 #include "File.h"
 #include "MaterialWrapper.h"
+#include "JniMadeOf.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -44,10 +45,8 @@ class OBJWrapper : public Drawable
 	public:
 		/** \brief Basic constructor of OBJWrapper
 		 * \param parent its parent
-		 * \param jenv the java environment, used for reading the android file.
-		 * \param context the android context, used for reading the android file
 		 * \param file the file to being parsed*/
-		OBJWrapper(Updatable* parent, JNIEnv* jenv, jobject context, File& file);
+		OBJWrapper(Updatable* parent, File& file);
 		~OBJWrapper();
 		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 	private:
