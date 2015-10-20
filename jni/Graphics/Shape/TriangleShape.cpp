@@ -31,11 +31,10 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 {
 	if(!m_material)
 		return;
+
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
 		m_material->init(render, mvp);
-		if(glIsBuffer(m_drawOrderVboID))
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_drawOrderVboID);
 
 		GLint vPosition         = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
 		GLint vNormal           = glGetAttribLocation(m_material->getShader()->getProgramID(), "vNormal");
@@ -48,11 +47,10 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 		glVertexAttribPointer(vNormal, 3, GL_FLOAT, false, 0, BUFFER_OFFSET(sizeof(float)*3*m_nbVertex));
 		glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
 
-
 		if(glIsBuffer(m_drawOrderVboID))
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_drawOrderVboID);
-			glDrawElements(m_mode, m_drawOrderLength, GL_UNSIGNED_INT, NULL);
+				glDrawElements(m_mode, m_drawOrderLength, GL_UNSIGNED_INT, NULL);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 		else
