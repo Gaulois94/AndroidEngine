@@ -7,7 +7,6 @@
 #include "JniMadeOf.h"
 
 class Render;
-class Renderer;
 
 /** \brief basic class for updating components*/
 class Updatable : public JniMadeOf
@@ -18,12 +17,12 @@ class Updatable : public JniMadeOf
 		virtual ~Updatable();
 
 		/** \brief call when a TouchEvent is called. Try to get the Updatable who get the focus
-		 * \param renderer the Renderer which has catch the event.*/
-		virtual void updateFocus(Renderer& renderer);
+		 * \param render the Render which has catch the event.*/
+		virtual void updateFocus(Render& render);
 
 		/** \brief called when the object has the focus
-		 * \param renderer the Renderer which has catch the event.*/
-		virtual void onFocus(Renderer& renderer);
+		 * \param render the Render which has catch the event.*/
+		virtual void onFocus(Render& render);
 
 		/** \brief Update the Updatable and its children.
 		 *  \param render the render from where the updatable could interact
@@ -64,6 +63,10 @@ class Updatable : public JniMadeOf
 		 * */
 		bool isChild(const Updatable *child);
 
+		/** \brief set if the updatable should be updated for its focus
+		 * \param f the new value of m_updateFocus*/
+		void setUpdateFocus(bool f);
+
 		/** \brief Return Updatable's parent.
 		 * \return the Updatable parent
 		*/
@@ -71,6 +74,8 @@ class Updatable : public JniMadeOf
 	protected:
 		std::list <Updatable*> m_child; /**< Child's list. */
 		Updatable *m_parent; /**< The Updatable's parent. */
+		bool m_updateFocus;
+		bool m_canUpdate;
 
 		/** \brief extract a list of T object from the Updatable child's list(Widget for example)
 		 * \return a list of all T objects from Updatable's children*/

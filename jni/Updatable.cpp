@@ -1,10 +1,9 @@
 #include "Updatable.h"
 #include "Render.h"
-#include "Renderer.h"
 
 bool Updatable::focusIsCheck = false;
 
-Updatable::Updatable(Updatable *parent) : m_parent(NULL)
+Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true)
 {
 	if(parent)
 		parent->addChild(this);
@@ -23,24 +22,26 @@ Updatable::~Updatable()
 	}
 }
 
-void Updatable::updateFocus(Renderer& renderer)
+void Updatable::updateFocus(Render& render)
 {
+	if(!m_updateFocus)
+		return;
+
 	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); ++it)
 	{
 		if(Updatable::focusIsCheck == true)
-		{
-			Updatable::focusIsCheck = false;
 			return;
-		}
-		(*it)->updateFocus(renderer);
+		(*it)->updateFocus(render);
 	}
 }
 
-void Updatable::onFocus(Renderer& renderer)
+void Updatable::onFocus(Render& render)
 {}
 
 void Updatable::update(Render &render)
 {
+	if(!m_canUpdate)
+		return;
 	onUpdate(render);
 	for(std::list<Updatable*>::iterator it = m_child.begin(); it!=m_child.end(); ++it)
 		if(*it)
@@ -68,6 +69,11 @@ void Updatable::addChild(Updatable *child, int pos)
 			m_child.insert(it, child);
 		}
 	}
+}
+
+void Updatable::setUpdateFocus(bool u)
+{
+	m_updateFocus = u;
 }
 
 void Updatable::setParent(Updatable *parent, int pos)
