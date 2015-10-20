@@ -8,7 +8,6 @@
 
 #include "Drawable.h"
 #include "Materials/Material.h"
-#include "ResourcesManager.h"
 
 /** \brief Contain a list of drawables. These drawable are only a part of a bigger one, that's why it exists with the Updatable class*/
 class GroupDrawable : public Drawable
@@ -20,11 +19,15 @@ class GroupDrawable : public Drawable
 		 * \param defaultConf The default configuration (pos and size) of the GroupDrawable*/
 		GroupDrawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf);
 
-		void update(Render& render);
+		~GroupDrawable();
 
-		/** \brief Call each Drawable's draw function contained in the GroupDrawable.
+		void onUpdate(Render& render);
+
+		/** \brief Call each Drawable's draw function contained in the GroupDrawable and its own onDraw function
 		 * \param render The Render where each drawable will be drawn on.
 		 * \param transformation The transformation matrix for each drawable.*/
+		void draw(Render& render, const glm::mat4& transformation=glm::mat4(1.0f));
+
 		void onDraw(Render& render, const glm::mat4& transformation=glm::mat4(1.0f));
 
 		/** \brief Set the material for all the object.
@@ -37,9 +40,11 @@ class GroupDrawable : public Drawable
 
 		/** \brief Get the ResourcesManager's drawables.
 		 * \return the drawable's ResourcesManager.*/
-		ResourcesManager<Drawable*> getDrawables(); //Return the list of drawables
+		std::list<Drawable*> getDrawables(); //Return the list of drawables
 	protected:
-		ResourcesManager<Drawable*> m_drawables; //The list of drawables
+		void deleteAuto(bool del);
+		bool m_deleteAuto;
+		std::list<Drawable*> m_drawables; //The list of drawables
 };
 
 #endif
