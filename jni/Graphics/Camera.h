@@ -25,7 +25,7 @@ class Camera : public Transformable
 		/** \brief Set the camera position
 		 * \param pos the camera position
 		 * \param useScale the camera position is multiply by the scale. You can set this parameter to false for nullify the effect of the scale*/
-		virtual void setPosition(const glm::vec3& pos, bool useScale=false);
+		virtual void move(const glm::vec3& pos, bool useScale=false);
 
 		/** \brief Set the camera orientation
 		 * \param orientation The x, y and z angle orientation */
