@@ -26,7 +26,7 @@ class Rectangle2
 		}
 
 		/** \brief Init the rectangle coordinates
-		 * \param pos the rectangle top left position
+		 * \param pos the rectangle y x position
 		 * \param size the rectangle width and height*/
 		Rectangle2(const glm::vec2& pos, const glm::vec2& size)
 		{
@@ -77,6 +77,17 @@ template<typename T>
 bool operator!=(const Rectangle2<T> &a, const Rectangle2<T> &b)
 {
 	return(!(a==b));
+}
+
+template <typename T>
+bool rectCollision(const Rectangle2<T> &rect1, const Rectangle2<T> &rect2)
+{
+	if(rect1.x + rect1.width <= rect2.x
+		||rect1.x >= rect2.x + rect2.width
+		||rect1.y + rect1.height <= rect2.y
+		||rect1.y >= rect2.y+rect2.height)
+		return false;
+	return true;
 }
 
 typedef Rectangle2<float>        FloatRect2;
