@@ -56,9 +56,14 @@ void Texture::setMaskColor(const Color& mask)
 	m_maskColor = mask;
 }
 
-glm::vec2 Texture::pixelsToTextureCoord(const glm::vec2& pos) const
+glm::vec2 Texture::pixelsToTextureDirectXCoord(const glm::vec2& pos) const
 {
 	return glm::vec2(pos.x, m_height-pos.y) / glm::vec2(m_width, m_height);
+}
+
+glm::vec2 Texture::pixelsToTextureCoord(const glm::vec2& pos) const
+{
+	return glm::vec2(pos.x, pos.y) / glm::vec2(m_width, m_height);
 }
 
 FloatRect2 Texture::getRect(const glm::vec2& pos, const glm::vec2& size) const
@@ -67,7 +72,7 @@ FloatRect2 Texture::getRect(const glm::vec2& pos, const glm::vec2& size) const
 	glm::vec2 v = pixelsToTextureCoord(pos);
 
 	rect.x = v.x;
-	rect.y = v.y - size.x / (float)m_height;
+	rect.y = v.y;
 	rect.width = size.x / (float)m_width;
 	rect.height = size.y / (float)m_height;
 
@@ -78,6 +83,25 @@ FloatRect2 Texture::getRect(const Rectangle2ui& rect) const
 {
 	return getRect(glm::vec2(rect.x, rect.y), glm::vec2(rect.width, rect.height));
 }
+
+FloatRect2 Texture::getDirectXRect(const glm::vec2& pos, const glm::vec2& size) const
+{
+	FloatRect2 rect;
+	glm::vec2 v = pixelsToTextureDirectXCoord(pos+glm::vec2(0.0, size.y));
+
+	rect.x = v.x;
+	rect.y = v.y;
+	rect.width = size.x / (float)m_width;
+	rect.height = size.y / (float)m_height;
+
+	return rect;
+}
+
+FloatRect2 Texture::getDirectXRect(const Rectangle2ui& rect) const
+{
+	return getDirectXRect(glm::vec2(rect.x, rect.y), glm::vec2(rect.width, rect.height));
+}
+
 
 GLuint Texture::getID() const
 {
@@ -97,4 +121,11 @@ int Texture::getHeight() const
 Color Texture::getMaskColor() const
 {
 	return m_maskColor;
+}
+
+Texture* Texture::loadAndroidFile(const char* filePath)
+{
+	JNIEnv* jenv = JniMadeOf::jenv;
+	jstring path = jenv->NewStringUTF(filePath);
+	return (Texture*) Java_com_gaulois94_Graphics_Texture_loadFromFileTexture(jenv, 0, path);
 }

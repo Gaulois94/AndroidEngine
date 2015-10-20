@@ -7,12 +7,15 @@
 #include <GLES2/gl2.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <jni.h>
 
 #include "Bitmap.h"
 #include "JniMadeOf.h"
 #include "Rectangle2.h"
 #include "logger.h"
 #include "Color.h"
+#include "nativeTexture.h"
+#include "JniMadeOf.h"
 
 /** \brief a OpenGL texture class*/
 class Texture : public JniMadeOf
@@ -55,6 +58,11 @@ class Texture : public JniMadeOf
 		 * \return the texture coordinates*/
 		glm::vec2 pixelsToTextureCoord(const glm::vec2& pos) const;
 
+		/** \brief Convert the pixels coordinates from DirectX norme to the texture coordinates
+		 * \param pos the pixels coordinates
+		 * \return the texture coordinates*/
+		glm::vec2 pixelsToTextureDirectXCoord(const glm::vec2& pos) const;
+
 		/** \brief Convert the pixels rectangle to the texture rectangle coordinates
 		 * \param pos the pixels(x, y) coordinates
 		 * \param size the pixels(width, height) dimensions in pixels 
@@ -65,6 +73,17 @@ class Texture : public JniMadeOf
 		 * \param rect the pixels rectangle
 		 * \return the texture rect which correspond to the pos and size in parameters*/
 		FloatRect2 getRect(const Rectangle2ui& rect) const;
+
+		/** \brief Convert the pixels rectangle from DirectX norme to the texture rectangle coordinates
+		 * \param rect the pixels rectangle
+		 * \return the texture rect which correspond to the pos and size in parameters*/
+		FloatRect2 getDirectXRect(const Rectangle2ui& rect) const;
+
+		/** \brief Convert the pixels rectangle from DirectX norme to the texture rectangle coordinates
+		 * \param pos the pixels(x, y) coordinates
+		 * \param size the pixels(width, height) dimensions in pixels 
+		 * \return the texture rect which correspond to the pos and size in parameters*/
+		FloatRect2 getDirectXRect(const glm::vec2& pos, const glm::vec2& size) const;
 
 		/** \brief get the opengl id texture from where the texture is stored in the graphics card.
 		 * \return the texture ID */
@@ -81,6 +100,8 @@ class Texture : public JniMadeOf
 		/** \brief get the mask color of the texture
 		 * \return the texture's mask color */
 		Color getMaskColor() const;
+
+		static Texture* loadAndroidFile(const char* filePath);
 	private:
 		int m_width;
 		int m_height;
