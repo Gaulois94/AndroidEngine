@@ -68,7 +68,7 @@ public class Updatable extends JniMadeOf
 
 	public boolean removeChild(Updatable child, int pos)
 	{
-		return removeChildUpdatable(m_ptr, pos);
+		return removeChildPosUpdatable(m_ptr, pos);
 	}
 
 	public boolean isChild(Updatable child)
@@ -89,7 +89,7 @@ public class Updatable extends JniMadeOf
 	protected native void      addChildUpdatable(long ptr, long child, int pos);
 	protected native void      setParentUpdatable(long ptr, long parent, int pos);
 	protected native boolean   removeChildUpdatable(long ptr, long child);
-	protected native boolean   removeChildUpdatable(long ptr, int pos);
+	protected native boolean   removeChildPosUpdatable(long ptr, int pos);
 	protected native boolean   isChildUpdatable(long ptr, long child);
 	protected native Updatable getParentUpdatable(long ptr);
 }

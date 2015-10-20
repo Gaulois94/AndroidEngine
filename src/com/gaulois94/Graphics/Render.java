@@ -6,6 +6,11 @@ import android.opengl.Matrix;
 
 public abstract class Render extends Updatable
 {
+	Render(long ptr)
+	{
+		super(ptr);
+	}
+
 	public void draw(Drawable drawable, float[] transMat)
 	{
 		drawRender(m_ptr, drawable.getPtr(), transMat);

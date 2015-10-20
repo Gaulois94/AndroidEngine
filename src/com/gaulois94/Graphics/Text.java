@@ -5,6 +5,7 @@ import com.gaulois94.Graphics.Materials.Material;
 import com.gaulois94.Graphics.Drawable;
 import com.gaulois94.Graphics.Font;
 import com.gaulois94.Graphics.Color;
+import com.gaulois94.Updatable;
 
 public class Text extends Drawable
 {
@@ -13,9 +14,9 @@ public class Text extends Drawable
 		super(ptr);
 	}
 
-	public Text(Material material, Font font, String text)
+	public Text(Updatable parent, Material material, Font font, String text)
 	{
-		super(createText(material.getPtr(), font.getPtr(), text));
+		super(createText(parent.getPtr(), material.getPtr(), font.getPtr(), text));
 	}
 
 	public void setFont(Font font)
@@ -39,7 +40,7 @@ public class Text extends Drawable
 		return getTextText(m_ptr);
 	}	
 
-	private static native long createText(long material, long font, String text);
+	private static native long createText(long parent, long material, long font, String text);
 	private native void setTextText(long ptr, String text);
 	private native void setFontText(long ptr, long font);
 

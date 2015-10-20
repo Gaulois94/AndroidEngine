@@ -2,6 +2,7 @@ package com.gaulois94;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.AssetManager;
 
 public class JniMadeOf
 {
@@ -12,7 +13,7 @@ public class JniMadeOf
 	public JniMadeOf(long ptr)
 	{
 		m_ptr = ptr;
-		setJobject(this);
+		setJobject();
 	}
 
 	public long getPtr()
@@ -26,19 +27,28 @@ public class JniMadeOf
 		m_ptr = 0;
 	}
 
-	public void setJobject(JniMadeOf j)
+	public void setJobject()
 	{
-		setJobjectJniMadeOf(j, m_ptr);
+		if(m_ptr != 0)
+			setJobjectJniMadeOf(m_ptr, this);
 	}
 
 	public static void setContext(Context c)
 	{
 		context = c;
 		res = context.getResources();
+		initJniMadeOf(c.getAssets(), c);
 	}
 
+	protected void setPtr(long ptr)
+	{
+		m_ptr = ptr;
+		setJobject();
+	}
+
+	protected static native void initJniMadeOf(AssetManager asset, Context c);
 	protected native void destroyJniMadeOf(long ptr);
-	protected native void setJobjectJniMadeOf(JniMadeOf j, long ptr);
+	protected native void setJobjectJniMadeOf(long ptr, JniMadeOf j);
 
 	static
 	{

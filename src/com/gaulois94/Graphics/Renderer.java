@@ -9,6 +9,7 @@ import com.gaulois94.Graphics.Shape.TriangleShape;
 import com.gaulois94.Graphics.Shape.Circle;
 import com.gaulois94.Graphics.Sprite;
 import com.gaulois94.Graphics.Materials.UniColorMaterial;
+import com.gaulois94.Graphics.PatternAnimation;
 
 import android.content.Context;
 
@@ -31,32 +32,32 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 	private Boolean m_open;
 	private Boolean m_isInit;
 	private Boolean m_reInit;
-	private long m_ptr;
+	private Boolean m_isCreated;
+	private boolean m_suspend;
 	private Text m_text;
 	private Font m_font;
-	private TriangleShape m_triangleShape;
-	private Circle m_circle;
-	private Sprite m_sprite;
-	private Boolean m_isCreated;
-	private int m_nbEdge;
+	private UniColorMaterial m_mtl;
 
     public Renderer(Context context)
     {
 		super(0);
 		JniMadeOf.setContext(context);
-		m_text        = null;
-		m_font        = null;
-		m_triangleShape = null;
-		m_circle      = null;
-		m_sprite      = null;
 		m_open        = false;
 		m_isInit      = false;
 		m_reInit      = false;
 		m_thread      = null;
 		m_isCreated   = false;
-		m_nbEdge      = 3;
+		m_suspend     = false;
 
-		m_surface     = new SurfaceView(context);
+		m_surface     = new SurfaceView(context)
+	   	{
+			@Override
+			public boolean onTouchEvent(MotionEvent e)
+			{
+				touchEvent(e);
+				return false;
+			}
+		};
 		m_surface.getHolder().addCallback(this);
     }
 
@@ -70,8 +71,9 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 		if(m_isCreated == false)
 		{
 			m_isCreated = true;
-			m_ptr = createRenderer(holder.getSurface());
+			setPtr(createRenderer(0, holder.getSurface()));
 			Drawable.loadShaders();
+			initRenderer(m_ptr);
 			onCreated();
 		}
 		m_isInit = false;
@@ -86,17 +88,9 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 
 	public void onCreated()
 	{
-		Color[] color = new Color[]{new Color(1.0f, 0.0f, 0.0f, 1.0f)};
-		Vector3f[] v = new Vector3f[]{new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(-1.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, -1.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(-1.0f, 0.0f, 0.0f)};
-		UniColorMaterial material = new UniColorMaterial(color[0]);
-
-//		m_triangleShape = new TriangleShape(material, v);
-//		m_font          = new Font("fonts/dejavusansmono.ttf", 3, 3, 126);
-//		m_text          = new Text(m_font, "Text", color[0]);
-		m_circle        = new Circle(material, 0.5f, 16);
-//		m_sprite        = new Sprite(m_font.getTexture());
-//		m_sprite.setScale(new Vector3f(2.0f, 2.0f, 1.0f));
-//		m_sprite.setPosition(new Vector3f(-0.5f, -0.5f, 0.0f));
+		m_mtl  = new UniColorMaterial(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+		m_font = new Font("fonts/dejavusansmono.ttf");
+		m_text = new Text(this, m_mtl, m_font, "AMj!}y");
 	}
 
 	public void onChanged(Rect rect)
@@ -111,12 +105,23 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 
 	public void run()
 	{
+		try
+		{
+			if(m_suspend)
+			{
+				synchronized(this)
+				{
+					while(m_suspend)
+						wait();
+				}
+			}
+		}catch(InterruptedException e){}
 		while(m_open)
 		{
 			if(m_reInit)
 			{
 				m_surface.getHolder().setFormat(PixelFormat.RGBA_8888);
-				initRenderer(m_ptr, m_surface.getHolder().getSurface());
+				initSurfaceRenderer(m_ptr, m_surface.getHolder().getSurface());
 		
 				m_reInit = false;
 				m_isInit = true;
@@ -127,33 +132,38 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 		}
 	}
 
-	public void onTouchEvent(MotionEvent e)
+	public void touchEvent(MotionEvent e)
 	{
-		int width2  = m_surface.getWidth()/2;
-		int height2 = m_surface.getHeight()/2;
+		m_suspend = true;
+		int width  = m_surface.getWidth();
+		int height = m_surface.getHeight();
 
-		float x = e.getX() / width2;
-		float y = e.getY() / height2;
+		float x = 2*e.getX() / width - 1;
+		//Y are mirrored
+		float y = -2*e.getY() / height + 1;
+		Log.e("Main", "X : " + Float.toString(x) + " Y : " + Float.toString(y));
 
 		switch(e.getFlags())
 		{
 			case MotionEvent.ACTION_DOWN:
-				onDownTouchRenderer(x, y);
+				onDownTouchRenderer(m_ptr, x, y);
 				break;
 
 			case MotionEvent.ACTION_CANCEL:
-				onUpTouchRenderer(x, y);
+				onUpTouchRenderer(m_ptr, x, y);
 				break;
 
 			case MotionEvent.ACTION_MOVE:
-				onMoveTouchRenderer(x, y);
+				onMoveTouchRenderer(m_ptr, x, y);
 				break;
 		}
+		m_suspend=false;
 	}
 
 	public void draw()
 	{
 		clear();
+		update(this);
 		display();
 	}
 
@@ -195,20 +205,21 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 		return m_surface;
 	}
 
-	private native long createRenderer(Surface surface);
-	private native void initRenderer(long renderer, Surface surface);
+	private native long createRenderer(long parent, Surface surface);
+	private native void initSurfaceRenderer(long renderer, Surface surface);
+	private native void initRenderer(long renderer);
 	private native void destroySurfaceRenderer(long renderer);
 	private native void destroyRenderer(long renderer);
 	private native void clearRenderer(long renderer);
 	private native void displayRenderer(long renderer);
 	private native Boolean hasDisplayRenderer(long renderer);
 
-	private native void onDownTouchRenderer(float x, float y);
-	private native void onMoveTouchRenderer(float x, float y);
-	private native void onUpTouchRenderer(float x, float y);
+	private native void onDownTouchRenderer(long ptr, float x, float y);
+	private native void onMoveTouchRenderer(long ptr, float x, float y);
+	private native void onUpTouchRenderer(long ptr, float x, float y);
 
 	static
 	{
-		System.loadLibrary("graphicsEngine");
+		System.loadLibrary("engine");
 	}
 }
