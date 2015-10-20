@@ -23,10 +23,10 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Text_setFontText(JNIEnv *jenv
 	text->setFont((Font*)font);
 }
 
-JNIEXPORT long JNICALL Java_com_gaulois94_Graphics_Text_getFontText(JNIEnv *jenv, jobject jobj, jlong ptr)
+JNIEXPORT jobject JNICALL Java_com_gaulois94_Graphics_Text_getFontText(JNIEnv *jenv, jobject jobj, jlong ptr)
 {
 	Text* text = (Text*) ptr;
-	return (long) (text->getFont());
+	return text->getFont()->getJobject();
 }
 
 JNIEXPORT jstring JNICALL Java_com_gaulois94_Graphics_Text_getTextText(JNIEnv *jenv, jobject jobj, jlong ptr)

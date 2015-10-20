@@ -14,9 +14,15 @@ extern "C"
 	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromBitmapTexture(JNIEnv* jenv, jclass jcls, jlong bmp);
 	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromFileTexture(JNIEnv* jenv, jclass jcls, jstring path);
 
+	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Texture_setMaskColorTexture(JNIEnv* jenv, jobject jobj, jlong texture, jfloatArray color);
+	JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Texture_pixelsToTextureCoordTexture(JNIEnv* jenv, jobject jobj, jlong texture, jintArray pos);
+
+	JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Texture_getRectTexture(JNIEnv* jenv, jobject jobj, jlong texture, jintArray pos, jintArray size);
+	JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Texture_getRectTexture(JNIEnv* jenv, jobject jobj, jlong texture, jintArray rect);
 	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_getIDTexture(JNIEnv* jenv, jobject jobj, jlong texture);
 	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_getWidthTexture(JNIEnv* jenv, jobject jobj, jlong texture);
 	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_getHeightTexture(JNIEnv* jenv, jobject jobj, jlong texture);
+	JNIEXPORT jfloatArray JNICALL Java_com_gaulois94_Graphics_Texture_getMaskColorTexture(JNIEnv* jenv, jobject jobj, jlong texture);
 };
 
 #endif

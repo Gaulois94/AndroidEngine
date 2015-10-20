@@ -1,6 +1,7 @@
 package com.gaulois94.Graphics;
 
 import com.gaulois94.JniMadeOf;
+import com.gaulois94.Updatable;
 import com.gaulois94.Graphics.Materials.Material;
 import com.gaulois94.Graphics.Drawable;
 import com.gaulois94.Graphics.Font;
@@ -31,8 +32,7 @@ public class Text extends Drawable
 
 	public Font getFont()
 	{
-		long fontPtr = getFontText(m_ptr);
-		return new Font(fontPtr);
+		return getFontText(m_ptr);
 	}
 
 	public String getText()
@@ -44,6 +44,6 @@ public class Text extends Drawable
 	private native void setTextText(long ptr, String text);
 	private native void setFontText(long ptr, long font);
 
-	private native long getFontText(long ptr);
+	private native Font getFontText(long ptr);
 	private native String getTextText(long ptr);
 }

@@ -9,11 +9,11 @@
 extern "C" {
 #endif
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Text_createText(JNIEnv *, jclass, jlong, jlong, jlong, jstring);
-JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Text_setTextText(JNIEnv *, jobject, jlong, jstring);
-JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Text_setFontText(JNIEnv *, jobject, jlong, jlong);
+JNIEXPORT jlong   JNICALL Java_com_gaulois94_Graphics_Text_createText(JNIEnv *, jclass, jlong, jlong, jlong, jstring);
+JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Text_setTextText(JNIEnv *, jobject, jlong, jstring);
+JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Text_setFontText(JNIEnv *, jobject, jlong, jlong);
 
-JNIEXPORT long JNICALL Java_com_gaulois94_Graphics_Text_getFontText(JNIEnv *, jobject, jlong);
+JNIEXPORT jobject JNICALL Java_com_gaulois94_Graphics_Text_getFontText(JNIEnv *, jobject, jlong);
 JNIEXPORT jstring JNICALL Java_com_gaulois94_Graphics_Text_getTextText(JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

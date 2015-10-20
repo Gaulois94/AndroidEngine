@@ -14,6 +14,7 @@ class GroupDrawable : public Drawable
 {
 	public:
 		/** \brief Init the GroupDrawable with the same material for each drawables.
+		 * \param material The drawables material.
 		 * \param parent its parent
 		 * \param material The drawables material.
 		 * \param defaultConf The default configuration (pos and size) of the GroupDrawable*/
