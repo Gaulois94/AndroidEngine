@@ -9,13 +9,15 @@ Cylinder::Cylinder(Updatable* parent, Material* material, float radius, float he
 	circle1->move(glm::vec3(0.0f, 0.0f, -height/2));
 	circle2->move(glm::vec3(0.0f, 0.0f, height/2));
 
-	m_drawables.add("circle1", circle1);
-	m_drawables.add("circle2", circle2);
-	m_drawables.add("lateral", lateralCylinder);
+	m_drawables.push_back(circle1);
+	m_drawables.push_back(circle2);
+	m_drawables.push_back(lateralCylinder);
 
 	//Define the default configuration of a cylinder
 	glm::vec3 cDefaultSize  = circle1->getDefaultSize();
 	glm::vec3 cDefaultPos   = circle1->getPosition();
 	Rectangle3f defaultConf = Rectangle3f(cDefaultPos.x, cDefaultPos.y, cDefaultPos.z, cDefaultSize.x, cDefaultSize.y, height);
 	setDefaultConf(defaultConf);
+
+	deleteAuto(true);
 }
