@@ -15,6 +15,8 @@ class Render : public Updatable
 		/** \brief Constructor of Render. Do nothing.*/
 		Render(Updatable* parent);
 
+		~Render();
+
 		/** \brief function draw. It init the draw function, call Drawable's call function, and use stopDraw function
 		 * \param drawable the object being drawn
 		 * \param transformation could apply a transformation to the Drawable object before being drawn.*/
@@ -42,7 +44,7 @@ class Render : public Updatable
 		Rectangle3f getRectOnScreen(const Transformable& trans) const;
 
 		glm::vec3 getPositionOnScreen(const glm::vec3& p) const;
-	private:
+	protected:
 		Color m_ambientColor;
 		Camera m_camera;
 };

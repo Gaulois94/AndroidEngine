@@ -15,9 +15,10 @@
 #include "Render.h"
 #include "EventManager.h"
 #include "Rectangle2.h"
-#include "Updatable.h"
-
-class Updatable;
+#include "Shape/Circle.h"
+#include "Materials/UniColorMaterial.h"
+#include "Widgets/CheckBox.h"
+#include "PatternAnimation.h"
 
 /** \brief The renderer class. It is a representative of the screen. */
 class Renderer : public Render
@@ -42,6 +43,11 @@ class Renderer : public Render
 		/** \brief clear the full screen*/
 		void clear();
 
+		/** \brief function called when the Renderer could init all its children Drawable (because the android on the java side should init things before) */
+		void init();
+
+		void update(Render& render);
+		void updateFocus();
 		void initDraw();
 		void stopDraw();
 
@@ -68,10 +74,6 @@ class Renderer : public Render
 		/** \brief tell if the renderer has a display where it can draw to. 
 		 * \return return if it has a display where it can draw to.*/
 		bool hasDisplay();
-
-		/** \brief get the renderer ambient color
-		 * \return the renderer ambient color*/
-		Color getAmbientColor();
 	private:
 		void terminate();
 		EGLDisplay m_disp;
@@ -86,6 +88,10 @@ class Renderer : public Render
 		int m_height;
 		bool m_start;
 		ANativeWindow *m_window;
+		CheckBox* m_checkBox;
+		UniColorMaterial* m_boxMaterial;
+		UniColorMaterial* m_crossMaterial;
+		PatternAnimation* m_animation;
 };
 
 #endif

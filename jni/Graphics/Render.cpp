@@ -2,7 +2,12 @@
 #include "Drawable.h"
 
 Render::Render(Updatable* parent) : Updatable(parent), m_ambientColor(0.0, 0.0, 0.0, 1.0)
-{}
+{
+}
+
+Render::~Render()
+{
+}
 
 void Render::draw(Drawable& drawable, const glm::mat4& transformation)
 {
