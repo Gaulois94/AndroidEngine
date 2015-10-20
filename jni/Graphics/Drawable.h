@@ -9,9 +9,9 @@
 #include "Updatable.h"
 #include "Shader.h"
 #include "Materials/Material.h"
+#include "EventManager.h"
+#include "Render.h"
 #include <GLES2/gl2.h>
-
-class Material;
 
 /** \brief Basic class drawable */
 class Drawable : public Transformable, public Updatable
@@ -29,7 +29,7 @@ class Drawable : public Transformable, public Updatable
 		 * \param transformation Transform the coord of the drawable itself transformed by the render's camera before.*/
 		virtual void draw(Render& render, const glm::mat4& transformation=glm::mat4(1.0));
 
-		virtual void updateFocus(Renderer& renderer);
+		virtual void updateFocus(Render& render);
 		virtual void update(Render& render);
 
 		/** \brief is called by draw.

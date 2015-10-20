@@ -1,9 +1,6 @@
 #include "Drawable.h"
-#include "Materials/Material.h"
-#include "Renderer.h"
-#include "Render.h"
 
-Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : Transformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_setTransToChildren(false)
+Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : Transformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_setTransToChildren(false), m_staticToCamera(false)
 {
 	setMaterial(m_material);
 }
@@ -25,23 +22,24 @@ void Drawable::update(Render& render)
 		renderCamera.setApplyTransformation(getMatrix() * renderCamera.getApplyTransformation());
 
 		//Call the usual update function
+		draw(render);
 		Updatable::update(render);
 
 		//restore the apply transformation matrix
 		renderCamera.setApplyTransformation(currentApplyTransformation);
 	}
-
-	Updatable::update(render);
+	else
+	{
+		draw(render);
+		Updatable::update(render);
+	}
 }
 
-void Drawable::updateFocus(Renderer& renderer)
+void Drawable::updateFocus(Render& render)
 {
-	Updatable::updateFocus(renderer);
-	if(touchInRect(renderer.getRectOnScreen(*this)))
-	{
-		Updatable::focusIsCheck = true;
-		onFocus(renderer);
-	}
+	Updatable::updateFocus(render);
+	if(!m_staticToCamera && touchInRect(render.getRectOnScreen(*this)) || (m_staticToCamera && touchInRect(getRect())))
+		onFocus(render);
 }
 
 void Drawable::draw(Render& render, const glm::mat4& transformation)
