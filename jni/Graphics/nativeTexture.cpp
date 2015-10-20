@@ -23,9 +23,13 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromBitmapTextur
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Texture_loadFromFileTexture(JNIEnv* jenv, jclass jcls, jstring path)
 {
 	//Load the android Bitmap
-	jclass BitmapFactory = jenv->FindClass("android/graphics/BitmapFactory");
-	jmethodID decodeFileMethod = jenv->GetStaticMethodID(BitmapFactory, "decodeFile", "(Ljava/lang/String;)Landroid/graphics/BitmapFactory;");
-	jobject jbmp = jenv->CallStaticObjectMethod(BitmapFactory, decodeFileMethod, path);
+	//Function : Bitmap bmp = BitmapFactory.decodeStream(JniMadeOf::jassetsManager.open(path))
+	jclass BitmapFactory   = jenv->FindClass("android/graphics/BitmapFactory");
+	jmethodID decodeStream = jenv->GetStaticMethodID(BitmapFactory, "decodeStream", "(Ljava/io/InputStream;)Landroid/graphics/Bitmap;");
+	jclass AssetManager    = jenv->FindClass("android/content/res/AssetManager");
+	jmethodID open         = jenv->GetMethodID(AssetManager, "open", "(Ljava/lang/String;)Ljava/io/InputStream;");
+	jobject jstream        = jenv->CallObjectMethod(JniMadeOf::jassetsManager, open, path);
+	jobject jbmp           = jenv->CallStaticObjectMethod(BitmapFactory, decodeStream, jstream);
 	
 	//Load the texture
 	Bitmap*	bmp = (Bitmap*) Java_com_gaulois94_Graphics_Bitmap_createBitmap(jenv, BitmapFactory, jbmp);

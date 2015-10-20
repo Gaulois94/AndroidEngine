@@ -5,12 +5,11 @@
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
 
-#include "Renderer.h"
-
 extern "C"
 {
 	JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Renderer_createRenderer(JNIEnv* jenv, jclass jcls, jlong parent, jobject surface);
-	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_initRenderer(JNIEnv* jenv, jobject jobj, jlong rendererPtr, jobject surface);
+	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_initSurfaceRenderer(JNIEnv* jenv, jobject jobj, jlong rendererPtr, jobject surface);
+	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_initRenderer(JNIEnv* jenv, jobject jobj, jlong rendererPtr);
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_destroySurfaceRenderer(JNIEnv* jenv, jobject jobj, jlong rendererPtr);
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_destroyRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr);
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_clearRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr);

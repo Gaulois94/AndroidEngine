@@ -1,4 +1,5 @@
 #include "nativeRenderer.h"
+#include "Renderer.h"
 
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Renderer_createRenderer(JNIEnv* jenv, jclass jcls, jlong parent, jobject surface)
 {
@@ -9,13 +10,19 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Renderer_createRenderer(JNIE
 	return (jlong)renderer;
 }
 
-JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_initRenderer(JNIEnv* jenv, jobject jobj, jlong rendererPtr, jobject surface)
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_initSurfaceRenderer(JNIEnv* jenv, jobject jobj, jlong rendererPtr, jobject surface)
 {
 	if(rendererPtr == 0)
 		return;
 	Renderer* renderer = (Renderer*) rendererPtr;
 	ANativeWindow* window = ANativeWindow_fromSurface(jenv, surface);
 	renderer->initializeSurface(window);
+}
+
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_initRenderer(JNIEnv* jenv, jobject jobj, jlong rendererPtr)
+{
+	Renderer* renderer = (Renderer*) rendererPtr;
+	renderer->init();
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_destroyRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr)
@@ -35,8 +42,6 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_destroySurfaceRender
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_clearRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr)
 {
-	if(rendererPtr == 0)
-		return;
 	Renderer* renderer = (Renderer*) rendererPtr;
 	renderer->clear();
 }
