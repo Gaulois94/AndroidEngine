@@ -1,6 +1,6 @@
 #include "Transformable.h"
 
-Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f), m_position(1.0f), m_applyTransformation(1.0), m_theta(0.0f), m_phi(0.0f)
+Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f), m_position(1.0f), m_positionOrigin(1.0f), m_applyTransformation(1.0), m_theta(0.0f), m_phi(0.0f)
 {
 	m_defaultPos = glm::vec3(defaultConf.x, defaultConf.y, defaultConf.z);
 	m_defaultSize = glm::vec3(defaultConf.width, defaultConf.height, defaultConf.depth);
@@ -18,6 +18,12 @@ void Transformable::move(const glm::vec3 &v, bool useScale)
 
 void Transformable::onMove(const glm::vec3 &v, bool useScale)
 {}
+
+void Transformable::setPositionOrigin(const glm::vec3 &p)
+{
+	m_positionOrigin = glm::translate(glm::mat4(1.0f), p);
+	setMVPMatrix();
+}
 
 void Transformable::setPosition(const glm::vec3 &v, bool useScale)
 {
@@ -114,13 +120,11 @@ glm::vec3 Transformable::getScale() const
 
 glm::vec3 Transformable::getPosition(bool useScale) const
 {
-	if(useScale)
-	{
-		glm::vec3 v = glm::vec3(m_mvpMatrix[3][0], m_mvpMatrix[3][1], m_mvpMatrix[3][2]);
-		return v+m_defaultPos;
-	}
 	glm::vec3 v = glm::vec3(m_position[3][0], m_position[3][1], m_position[3][2]);
-	return v+m_defaultPos;
+	v = v + m_defaultPos;
+	if(useScale)
+		v = v / getScale();
+	return v;
 }
 
 const glm::vec3& Transformable::getDefaultPos() const
@@ -179,25 +183,27 @@ Rectangle3f Transformable::getRect(const glm::mat4& m) const
 	glm::mat4 tMat = getMatrix();
 	tMat = m * tMat;
 
-	//Take the object 3D rect and apply it to the
+	//Take the object 3D rect from its default configuration
 	glm::vec4 v[8] = {
-		glm::vec4(0.0, 0.0, 0.0, 0.0), glm::vec4(0.0, m_defaultSize[1], 0.0, 0.0), 
-		glm::vec4(m_defaultSize[0], 0.0, 0.0, 0.0), glm::vec4(m_defaultSize[0], m_defaultSize[1], 0.0, 0.0), //Front face
+		glm::vec4(0.0, 0.0, 0.0, 1.0), glm::vec4(0.0, m_defaultSize[1], 0.0, 1.0), 
+		glm::vec4(m_defaultSize[0], 0.0, 0.0, 1.0), glm::vec4(m_defaultSize[0], m_defaultSize[1], 0.0, 1.0), //Front face
 		
-		glm::vec4(0.0, 0.0, 0.0, 0.0), glm::vec4(0.0, m_defaultSize[1], 0.0, 0.0),
-	   	glm::vec4(m_defaultSize[0], 0.0, 0.0, 0.0), glm::vec4(m_defaultSize[0], m_defaultSize[1], 0.0, 0.0)}; //Will be the back face
+		glm::vec4(0.0, 0.0, 0.0, 1.0), glm::vec4(0.0, m_defaultSize[1], 0.0, 1.0),
+	   	glm::vec4(m_defaultSize[0], 0.0, 0.0, 1.0), glm::vec4(m_defaultSize[0], m_defaultSize[1], 0.0, 1.0)}; //Will be the back face
 
-	//Fit the vector position with the trans position
-	for(uint32_t i=0; i < 8; i++)
-		v[i] = v[i] + glm::vec4(m_defaultPos, 0.0);
 
 	//Get the back face position
 	for(uint32_t i=4; i < 8; i++)
 		v[i] = v[i] + glm::vec4(0.0, 0.0, m_defaultSize[2], 0.0);
 
-	//Calculate the transformation to these vec
 	for(uint32_t i=0; i < 8; i++)
+	{
+		//Add the default position
+		v[i] = v[i] + glm::vec4(m_defaultPos, 0.0);
+		//Then Calculate the transformation to these vec
 		v[i] = tMat * v[i];
+		LOG_ERROR("V[I][0] %f", m_mvpMatrix[3][0]);
+	}
 	
 	//Determine the maximum and minimum coord of the v[i] table
 	float xMin, yMin, zMin, xMax, zMax, yMax;
@@ -208,6 +214,7 @@ Rectangle3f Transformable::getRect(const glm::mat4& m) const
 			xMin = xMax = v[i][0];
 			yMin = yMax = v[i][1];
 			zMin = zMax = v[i][2];
+			continue;
 		}
 
 		if(v[i][0] < xMin)
@@ -231,6 +238,6 @@ Rectangle3f Transformable::getRect(const glm::mat4& m) const
 
 void Transformable::setMVPMatrix()
 {	
-	m_mvpMatrix = m_scale * m_position;
+	m_mvpMatrix = m_scale * (m_positionOrigin * m_position);
 	m_mvpMatrix = m_mvpMatrix * m_rotate;
 }

@@ -54,6 +54,10 @@ class Transformable : public JniMadeOf
 		 * \param useScale Because of the scale, the position of the object will be multiply by the object scale. That's why, if you don't want this effect, you must set this parameter to false for dividing the position and get the real one (considering the scale) */
 		virtual void setPosition(const glm::vec3 &v, bool useScale=false);
 
+		/** \brief set the position origin of the transformable (another matrix which set the position of the position matrix)
+		 * \param p the new position origin*/
+		virtual void setPositionOrigin(const glm::vec3 &p);
+
 		/** \brief rotate the object
 		 * \param angle the angle of the rotation
 		 * \param v the axis of the rotation
@@ -167,6 +171,7 @@ class Transformable : public JniMadeOf
 		glm::mat4 m_rotate;
 		glm::mat4 m_scale;
 		glm::mat4 m_position;
+		glm::mat4 m_positionOrigin;
 		glm::mat4 m_applyTransformation;
 
 		glm::vec3 m_defaultSize;
