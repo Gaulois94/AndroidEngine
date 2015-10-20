@@ -60,9 +60,7 @@ void Text::setText(const char* text)
 			continue;
 		}
 
-		glm::vec2 pos = m_font->getPosition(text[i]);
-		glm::vec2 size = m_font->getSize(text[i]);
-		FloatRect2 rectTexture = m_font->getTexture()->getRect(pos, size);
+		FloatRect2 rectTexture = m_font->getTexture()->getDirectXRect(m_font->getCharRect(i));
 
 		size = size/200.0f;
 
@@ -98,19 +96,19 @@ void Text::onDraw(Render& render, const glm::mat4& mvp)
 	if(m_font == NULL || m_text == NULL || m_material == NULL)
 		return;
 
-	if(!m_material)
-		return;
 	m_material->init(render, mvp);
 
 	glBindTexture(GL_TEXTURE_2D, m_font->getTexture()->getID());
+	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	m_material->bindTexture(m_font->getTexture());
 	{
-		GLuint vPosition      = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
-		GLuint vTextureCoord  = glGetAttribLocation(m_material->getShader()->getProgramID(), "vTextureCoord");
+		GLint vPosition      = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
+		GLint vTextureCoord  = glGetAttribLocation(m_material->getShader()->getProgramID(), "vTextureCoord");
+
 		glEnableVertexAttribArray(vPosition);
 		glEnableVertexAttribArray(vTextureCoord);
 
-		GLuint uMvp           = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
+		GLint uMvp           = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
 
 		glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
 
@@ -123,6 +121,7 @@ void Text::onDraw(Render& render, const glm::mat4& mvp)
 		}
 	}
 	m_material->unbindTexture();
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
