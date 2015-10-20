@@ -2,6 +2,8 @@
 #define JNIMADEOF_INCLUDE
 
 #include <jni.h>
+#include <android/asset_manager_jni.h>
+#include <android/asset_manager.h>
 
 /** \brief Base class of JNI Objects
  * */
@@ -27,6 +29,9 @@ class JniMadeOf
 		jobject getJobject() const;
 
 		static JNIEnv* jenv; /* <the java environment. Should be constante while the application run.*/
+		static AAssetManager* assetsManager;
+		static jobject context;
+		static jobject jassetsManager;
 	protected:
 		jobject m_obj;
 };

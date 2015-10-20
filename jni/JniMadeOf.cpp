@@ -1,6 +1,9 @@
 #include "JniMadeOf.h"
 
 JNIEnv* JniMadeOf::jenv = 0;
+jobject JniMadeOf::context = 0;
+jobject JniMadeOf::jassetsManager = 0;
+AAssetManager* JniMadeOf::assetsManager = NULL;
 
 JniMadeOf::JniMadeOf(){}
 

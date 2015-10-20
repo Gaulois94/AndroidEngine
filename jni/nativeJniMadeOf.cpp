@@ -6,13 +6,16 @@ JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_destroyJniMadeOf(JNIEnv* jen
 	delete obj;
 }
 
-JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_setJNIEnvJniMadeOf(JNIEnv* jenv, jclass jcls)
-{
-	JniMadeOf::jenv = jenv;
-}
-
-JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_setJobjectJniMadeOf(JNIEnv* jenv, jobject jobj, jlong ptr)
+JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_setJobjectJniMadeOf(JNIEnv* jenv, jlong ptr, jobject jobj)
 {
 	JniMadeOf* jniMadeOf = (JniMadeOf*) ptr;
-	jniMadeOf->setJobject(jobj);
+	jniMadeOf->setJobject(jenv->NewGlobalRef(jobj));
+}
+
+JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_initJniMadeOf(JNIEnv* jenv, jclass jcls, jobject assetManager, jobject context)
+{
+	JniMadeOf::jenv           = jenv;
+	JniMadeOf::assetsManager  = AAssetManager_fromJava(jenv, assetManager);
+	JniMadeOf::jassetsManager = jenv->NewGlobalRef(assetManager);
+	JniMadeOf::context        = jenv->NewGlobalRef(context);
 }
