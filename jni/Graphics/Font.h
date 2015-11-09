@@ -12,9 +12,12 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <string>
+#include <jni.h>
 #include "Texture.h"
 #include "Bitmap.h"
 #include "Color.h"
+#include "JniMadeOf.h"
 
 /** \brief The edges (or the metrics) of the Font.*/
 struct FontMetrics
@@ -29,7 +32,7 @@ struct FontMetrics
 };
 
 /** \brief The font object generate by a font file. */
-class Font
+class Font : public JniMadeOf
 {
 	public:
 		/** \brief Init the font generated before and store in the texture.
@@ -72,6 +75,13 @@ class Font
 		/** \brief get the font metrics of this font
 		 * \return the font metrics.*/
 		const FontMetrics& getFontMetrics() const;
+
+		/** \brief create a font from assets. It need the java lib associated with this file
+		 * \param path the file path on the assets directory
+		 * \param padX the x space between each character
+		 * \param padY the y space between each character
+		 * \param size the character size on the texture */
+		static Font* fontFromAssets(const std::string path, uint32_t padX=1, uint32_t padY=1, uint32_t size=36);
 	private:
 		std::vector<glm::vec2> m_charSize;
 		std::vector<glm::vec2> m_charPos;

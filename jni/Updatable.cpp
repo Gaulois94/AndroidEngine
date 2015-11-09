@@ -11,15 +11,7 @@ Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m
 
 Updatable::~Updatable()
 {
-	if(m_parent)
-		m_parent->removeChild(this);
-
-	for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-	{
-		if(*it)
-			delete (*it);
-		it = m_child.erase(it);
-	}
+	setParent(NULL);
 }
 
 void Updatable::updateFocus(Render& render)
@@ -74,6 +66,11 @@ void Updatable::addChild(Updatable *child, int pos)
 void Updatable::setUpdateFocus(bool u)
 {
 	m_updateFocus = u;
+}
+
+void Updatable::setCanUpdate(bool u)
+{
+	m_canUpdate = u;
 }
 
 void Updatable::setParent(Updatable *parent, int pos)

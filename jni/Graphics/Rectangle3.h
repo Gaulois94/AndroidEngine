@@ -19,7 +19,7 @@ class Rectangle3
 		 * \param w the width
 		 * \param h the height
 		 * \param d the depth*/
-		Rectangle3<T>(T a, T b, T c, T w, T h, T d)
+		Rectangle3<T>(T a=0.0, T b=0.0, T c=0.0, T w=0.0, T h=0.0, T d=0.0)
 		{
 			x      = a;
 			y      = b;
@@ -50,10 +50,10 @@ class Rectangle3
 template <typename T>
 bool rectCollision2(const Rectangle3<T> &rect1, const Rectangle3<T> &rect2)
 {
-	if(rect1.x + rect1.width <= rect2.x
-		||rect1.x >= rect2.x + rect2.width
-		||rect1.y + rect1.height <= rect2.y
-		||rect1.y >= rect2.y+rect2.height)
+	if(rect1.y + rect1.height <= rect2.y
+		||rect1.y >= rect2.y+rect2.height
+		||rect1.x + rect1.width <= rect2.x
+		||rect1.x >= rect2.x + rect2.width)
 		return false;
 	return true;
 }

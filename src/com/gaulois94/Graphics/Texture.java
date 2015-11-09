@@ -52,13 +52,13 @@ public class Texture extends JniMadeOf
 
 	public Rectangle2f getRect(Vector2i pos, Vector2i size)
 	{
-		float[] r = getRectTexture(m_ptr, new int[]{pos.x, pos.y}, new int[]{size.x, size.y});
+		float[] r = getRectVectTexture(m_ptr, new int[]{pos.x, pos.y}, new int[]{size.x, size.y});
 		return new Rectangle2f(r[0], r[1], r[2], r[3]);
 	}
 
 	public Rectangle2f getRect(Rectangle2i rect)
 	{
-		float[] r = getRectTexture(m_ptr, new int[]{rect.x, rect.y, rect.width, rect.height});
+		float[] r = getRectRectTexture(m_ptr, new int[]{rect.x, rect.y, rect.width, rect.height});
 		return new Rectangle2f(r[0], r[1], r[2], r[3]);
 	}
 
@@ -86,7 +86,7 @@ public class Texture extends JniMadeOf
 	private native int getWidthTexture(long texture);
 	private native int getHeightTexture(long texture);
 	private native float[] getMaskColortTexture(long texture);
-	private native float[] getRectTexture(long texture, float[] pos, float[] size);
-	private native float[] getRectTexture(long texture, float[] rect);
+	private native float[] getRectVectTexture(long texture, int[] pos, int[] size);
+	private native float[] getRectRectTexture(long texture, int[] rect);
 	private native float[] pixelsToTextureCoordTexture(long texture, float[] pos);
 }

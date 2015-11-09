@@ -25,7 +25,11 @@ import android.graphics.Rect;
 import android.opengl.GLES20;
 import android.util.Log;
 
-public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+
+public class Renderer extends Render implements SurfaceHolder.Callback, Runnable, SensorEventListener
 {
 	private SurfaceView m_surface;
 	private Thread m_thread;
@@ -71,13 +75,19 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 		if(m_isCreated == false)
 		{
 			m_isCreated = true;
-			setPtr(createRenderer(0, holder.getSurface()));
+			setPtr(createPtr(0, holder.getSurface()));
 			Drawable.loadShaders();
 			initRenderer(m_ptr);
 			onCreated();
 		}
 		m_isInit = false;
 		m_reInit = true;
+	}
+
+	//Need to be override if ndk is used
+	public long createPtr(long parent,  Surface surface)
+	{
+		return createRenderer(parent, surface);
 	}
 
 	public void surfaceDestroyed(SurfaceHolder holder)
@@ -88,9 +98,11 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 
 	public void onCreated()
 	{
+		/*
 		m_mtl  = new UniColorMaterial(new Color(1.0f, 0.0f, 0.0f, 1.0f));
 		m_font = new Font("fonts/dejavusansmono.ttf");
 		m_text = new Text(this, m_mtl, m_font, "AMj!}y");
+		*/
 	}
 
 	public void onChanged(Rect rect)
@@ -141,7 +153,6 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 		float x = 2*e.getX() / width - 1;
 		//Y are mirrored
 		float y = -2*e.getY() / height + 1;
-		Log.e("Main", "X : " + Float.toString(x) + " Y : " + Float.toString(y));
 
 		switch(e.getFlags())
 		{
@@ -159,6 +170,23 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 		}
 		m_suspend=false;
 	}
+
+	public void onSensorChanged(SensorEvent e)
+	{
+		if(m_ptr == 0)
+			return;
+		m_suspend = true;
+		switch(e.sensor.getType())
+		{
+			case Sensor.TYPE_ACCELEROMETER:
+				accelerometerRenderer(m_ptr, e.values[0], e.values[1], e.values[2]);
+				break;
+		}
+		m_suspend=false;
+	}
+
+	public void onAccuracyChanged(Sensor e, int accuracy)
+	{}
 
 	public void draw()
 	{
@@ -217,6 +245,7 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 	private native void onDownTouchRenderer(long ptr, float x, float y);
 	private native void onMoveTouchRenderer(long ptr, float x, float y);
 	private native void onUpTouchRenderer(long ptr, float x, float y);
+	private native void accelerometerRenderer(long ptr, float x, float y, float z);
 
 	static
 	{

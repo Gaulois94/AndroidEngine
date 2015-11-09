@@ -1,6 +1,6 @@
 #include "Active.h"
 
-Active::Active(bool select, bool active, bool alwaysUpdateSelection, bool alwaysUpdateActivation) : m_isSelect(select), m_isActive(active), m_alwaysUpdateSelection(alwaysUpdateSelection), m_alwaysUpdateActivation(alwaysUpdateActivation), m_permanentSelected(false), m_permanentActivated(false), m_selectOnce(true), m_activeOnce(true), m_activeFunc(0)
+Active::Active(bool select, bool active, bool alwaysUpdateSelection, bool alwaysUpdateActivation) : m_isSelect(select), m_isActive(active), m_alwaysUpdateSelection(alwaysUpdateSelection), m_alwaysUpdateActivation(alwaysUpdateActivation), m_permanentSelected(false), m_permanentActivated(false), m_selectOnce(true), m_activeOnce(true), m_activeFunc(0), m_activeParam(0)
 {}
 
 void Active::update()
@@ -63,10 +63,9 @@ void Active::deselectIt()
 
 void Active::activeIt()
 {
-	LOG_ERROR("ACTIVED !");
 	m_isActive = true;
 	if(m_activeFunc)
-		m_activeFunc();
+		m_activeFunc(m_activeParam);
 }
 
 void Active::disactiveIt()
@@ -107,9 +106,10 @@ void Active::setActiveOnce(bool activeOnce)
 	m_activeOnce = activeOnce;
 }
 
-void Active::setActiveFunc(void(*f)(void))
+void Active::setActiveFunc(void(*f)(void*), void* param)
 {
 	m_activeFunc = f;
+	m_activeParam = param;
 }
 
 bool Active::isPermanentSelected() const

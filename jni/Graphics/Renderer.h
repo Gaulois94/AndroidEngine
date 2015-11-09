@@ -16,9 +16,6 @@
 #include "EventManager.h"
 #include "Rectangle2.h"
 #include "Shape/Circle.h"
-#include "Materials/UniColorMaterial.h"
-#include "Widgets/CheckBox.h"
-#include "PatternAnimation.h"
 
 /** \brief The renderer class. It is a representative of the screen. */
 class Renderer : public Render
@@ -68,6 +65,8 @@ class Renderer : public Render
 		 * \param y the y coord in opengl format*/
 		void onMoveTouchEvent(float x, float y);
 
+		void accelerometerEvent(float x, float y, float z);
+
 		/** \brief delete the current surface of the screen*/
 		void deleteSurface();
 
@@ -88,10 +87,6 @@ class Renderer : public Render
 		int m_height;
 		bool m_start;
 		ANativeWindow *m_window;
-		CheckBox* m_checkBox;
-		UniColorMaterial* m_boxMaterial;
-		UniColorMaterial* m_crossMaterial;
-		PatternAnimation* m_animation;
 };
 
 #endif

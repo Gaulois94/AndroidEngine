@@ -1,6 +1,6 @@
 #include "Drawable.h"
 
-Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : Transformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_setTransToChildren(false), m_staticToCamera(false)
+Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : Transformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_staticToCamera(false), m_setTransToChildren(false)
 {
 	setMaterial(m_material);
 }

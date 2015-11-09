@@ -30,6 +30,13 @@ RendererTexture::RendererTexture(Updatable* parent, int width, int height) : Ren
 	glDeleteRenderbuffers(GL_FRAMEBUFFER, m_framebufferID);
 }
 
+void RendererTexture::update(Render& render)
+{
+	initDraw();
+	Render::update(render);
+	stopDraw();
+}
+
 void RendererTexture::display()
 {
 	stopDraw();

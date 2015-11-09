@@ -111,7 +111,7 @@ class Active
 
 		/** \brief The active function is the function called when the system is activated
 		 * \param f the new active function. Must be void func(void); prototype*/
-		void setActiveFunc(void(*f)(void));
+		void setActiveFunc(void(*f)(void*), void* param);
 	protected:
 		bool m_isSelect;
 		bool m_isActive;
@@ -121,7 +121,8 @@ class Active
 		bool m_permanentActivated;
 		bool m_selectOnce;
 		bool m_activeOnce;
-		void (*m_activeFunc)();
+		void (*m_activeFunc)(void*);
+		void* m_activeParam;
 };
 
 #endif

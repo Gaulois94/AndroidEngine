@@ -55,14 +55,15 @@ class Transformable : public JniMadeOf
 		virtual void setPosition(const glm::vec3 &v, bool useScale=false);
 
 		/** \brief set the position origin of the transformable (another matrix which set the position of the position matrix)
-		 * \param p the new position origin*/
-		virtual void setPositionOrigin(const glm::vec3 &p);
+		 * \param p the new position origin
+		 * \param useScale Same as setPosition param*/
+		virtual void setPositionOrigin(const glm::vec3 &p, bool useScale=false);
 
 		/** \brief rotate the object
 		 * \param angle the angle of the rotation
 		 * \param v the axis of the rotation
 		 * \param origin the origin of the rotation */
-		virtual void rotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f));
+		virtual void rotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f), bool useScale=false);
 
 		/** \brief Function called during a rotation
 		 * \param angle the angle of the rotation
@@ -74,7 +75,7 @@ class Transformable : public JniMadeOf
 		 * \param angle the angle of the new rotation
 		 * \param v the axis of the rotation
 		 * \param origin the origin of the rotation */
-		virtual void setRotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f));
+		virtual void setRotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f), bool useScale=false);
 
 		/** \brief scale the object
 		 * \param v values of the scale (x, y, z)*/
@@ -107,9 +108,14 @@ class Transformable : public JniMadeOf
 		virtual void rotateTheta(float theta);
 
 		/** \brief return the position of the object
-		 * \param useScale if set to false, the matrix position will be divided by the scale
+		 * \param useScale if set to true, the matrix position will be multiplied by the scale
 		 * \return the position of the object, considering or not the object scale*/
-		virtual glm::vec3 getPosition(bool useScale=false) const;
+		virtual glm::vec3 getPosition(bool useScale=true) const;
+
+		/** \brief Get the origin position of this object
+		 * \param useScale if set to true, the matrix position will be multiplied by the scale
+		 * \return the position origin of this object*/
+		virtual glm::vec3 getPositionOrigin(bool useScale=false) const;
 
 		/** \brief return the size of the transformable with a scale at (1, 1, 1)
 		 * \return the size by default of the object*/
@@ -149,7 +155,11 @@ class Transformable : public JniMadeOf
 
 		/** \brief get the 3D rectangle of the transformable given its default position and default size
 		 * \param m if you want to apply a transformation before getting the 3D rectangle coordinates*/
-		Rectangle3f getRect(const glm::mat4& m = glm::mat4(1.0f)) const;
+		Rectangle3f getRect(const glm::mat4& m) const;
+
+		/** \brief get the 3D rectangle of the transformable given its default position and default size
+		 * \return the object rectangle in opengl coordinate*/
+		const Rectangle3f& getRect() const;
 	protected:
 		/** \brief create the new matrix result from the position, the scale and the rotation. */
 		void setMVPMatrix();
@@ -179,6 +189,7 @@ class Transformable : public JniMadeOf
 
 		float     m_theta;
 		float     m_phi;
+		Rectangle3f m_rect;
 };
 
 #endif

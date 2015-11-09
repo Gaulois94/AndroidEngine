@@ -33,7 +33,7 @@ public class Font extends JniMadeOf
 
 	public Font(String fileName)
 	{
-		this(fileName, 3, 3, 36);
+		this(fileName, 1, 1, 36);
 	}
 
 	public Font(String fileName, int padX, int padY)
@@ -77,7 +77,7 @@ public class Font extends JniMadeOf
 		return getFontMetricsFont(m_ptr);
 	}
 
-	static private long initPtr(String fileName, int padX, int padY, int size)
+	static public long initPtr(String fileName, int padX, int padY, int size)
 	{
 		//Data's for the font
 		int[] charWidth   = new int[CHAR_END-CHAR_START];

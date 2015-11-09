@@ -25,16 +25,25 @@ void Text::setFont(Font* font)
 
 void Text::setText(const char* text)
 {
-	if(m_text)
-		free(m_text);
+	if(text != m_text)
+	{
+		if(m_text != NULL)
+			free(m_text);
+
+		//We copy the new text and store it
+		m_text = (char*) malloc(strlen(text)*sizeof(char));
+		strcpy(m_text, text);
+
+		if(!m_font || !m_text)
+		{
+			setDefaultSize(glm::vec3(0.0f, 0.0f, 0.0f));//No text, no size
+			return;
+		}
+	}
 
 	//A text is just a number of letter drawn one by one
 	float *textureCoords = (float*) malloc(strlen(text) * 4 * 2 * sizeof(float));
 	float *letterCoords = (float*) malloc(strlen(text) * 4 * 3 * sizeof(float));
-
-	//We copy the new text and store it
-	m_text = (char*) malloc(strlen(text)*sizeof(char));
-	strcpy(m_text, text);
 
 	//We start at the position (0.0, 0.0)
 	float posX = 0.0f;
@@ -60,9 +69,9 @@ void Text::setText(const char* text)
 			continue;
 		}
 
-		FloatRect2 rectTexture = m_font->getTexture()->getDirectXRect(m_font->getCharRect(i));
+		FloatRect2 rectTexture = m_font->getTexture()->getDirectXRect(m_font->getCharRect(m_text[i]));
 
-		size = size/200.0f;
+		glm::vec2 size = m_font->getSize(m_text[i])/200.f;
 
 		float rectTextureCoord[] = {rectTexture.x, rectTexture.y,
 									rectTexture.x + rectTexture.width, rectTexture.y,
@@ -86,7 +95,7 @@ void Text::setText(const char* text)
 	}
 
 	initVbos(letterCoords, textureCoords);
-	setDefaultSize(glm::vec3(posX, posY, 0.0f));//We readjust the default size of the text
+	setDefaultSize(glm::vec3(posX, -posY + m_font->getLineHeight()/200.f, 0.0f));//We readjust the default size of the text
 	free(letterCoords);
 	free(textureCoords);
 }

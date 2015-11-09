@@ -1,10 +1,9 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-LOCAL_C_INCLUDES += $(NDK_APP_PROJECT_PATH)/jni/Game/
-LOCAL_STATIC_LIBRARIES := gameEngine
+LOCAL_C_INCLUDES += $(NDK_APP_PROJECT_PATH)/jni/Graphics/
 LOCAL_MODULE := engine
-LOCAL_CFLAGS := -Wall --std=c++0x
+LOCAL_CFLAGS := -Wall --std=c++11
 APP_OPTIM := debug
 
 LOCAL_SRC_FILES := File.cpp JniMadeOf.cpp Updatable.cpp nativeUpdatable.cpp nativeJniMadeOf.cpp utils.cpp EventManager.cpp nativeEventManager.cpp
@@ -15,7 +14,7 @@ LOCAL_SRC_FILES += Graphics/Shape/TriangleShape.cpp Graphics/Shape/nativeTriangl
 
 LOCAL_SRC_FILES += Graphics/Effect/Explosion.cpp Graphics/Effect/Effect.cpp
 
-LOCAL_SRC_FILES += Graphics/Materials/Material.cpp Graphics/Materials/ColorMaterial.cpp Graphics/Materials/UniColorMaterial.cpp Graphics/Materials/nativeMaterial.cpp Graphics/Materials/nativeUniColorMaterial.cpp Graphics/Materials/ObjMaterial.cpp Graphics/MaterialWrapper.cpp Graphics/Materials/EffectMaterial.cpp Graphics/Materials/ExplosionMaterial.cpp
+LOCAL_SRC_FILES += Graphics/Materials/Material.cpp Graphics/Materials/ColorMaterial.cpp Graphics/Materials/UniColorMaterial.cpp Graphics/Materials/nativeMaterial.cpp Graphics/Materials/nativeUniColorMaterial.cpp Graphics/Materials/ObjMaterial.cpp Graphics/MaterialWrapper.cpp Graphics/Materials/EffectMaterial.cpp Graphics/Materials/ExplosionMaterial.cpp Graphics/Materials/TextureMaterial.cpp
 
 LOCAL_SRC_FILES += Graphics/Animation.cpp Graphics/nativeAnimation.cpp Graphics/ Graphics/PatternAnimation.cpp Graphics/nativePatternAnimation.cpp Graphics/SelectAnimation.cpp Graphics/nativeSelectAnimation.cpp
 
@@ -25,5 +24,3 @@ LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv2 -ljnigraphics -latomic
 include $(BUILD_SHARED_LIBRARY)
 
 ZPATH := $(LOCAL_PATH)
-include $(ZPATH)/Game/Android.mk
-

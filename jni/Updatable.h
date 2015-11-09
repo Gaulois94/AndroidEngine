@@ -67,6 +67,10 @@ class Updatable : public JniMadeOf
 		 * \param f the new value of m_updateFocus*/
 		void setUpdateFocus(bool f);
 
+		/** \brief set if the updatable should be updated
+		 * \param u the value of canUpdate*/
+		void setCanUpdate(bool u);
+
 		/** \brief Return Updatable's parent.
 		 * \return the Updatable parent
 		*/

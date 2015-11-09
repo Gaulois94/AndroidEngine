@@ -41,10 +41,13 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 		GLint uMvp              = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
 
 		glEnableVertexAttribArray(vPosition);
-		glEnableVertexAttribArray(vNormal);
 
 		glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, 0, BUFFER_OFFSET(0));
-		glVertexAttribPointer(vNormal, 3, GL_FLOAT, false, 0, BUFFER_OFFSET(sizeof(float)*3*m_nbVertex));
+		if(vNormal != -1)
+		{
+			glEnableVertexAttribArray(vNormal);
+			glVertexAttribPointer(vNormal, 3, GL_FLOAT, false, 0, BUFFER_OFFSET(sizeof(float)*3*m_nbVertex));
+		}
 		glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
 
 		if(glIsBuffer(m_drawOrderVboID))

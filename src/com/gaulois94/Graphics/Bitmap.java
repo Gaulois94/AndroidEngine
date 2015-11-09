@@ -6,7 +6,6 @@ public class Bitmap extends JniMadeOf
 	public Bitmap(long ptr)
 	{
 		super(ptr);
-		setJobject(this);
 	}
 
 	public Bitmap(android.graphics.Bitmap bmp)

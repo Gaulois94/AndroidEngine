@@ -1,16 +1,11 @@
 #include "Renderer.h"
 
-Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT), m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0), m_checkBox(0), m_boxMaterial(0), m_crossMaterial(0), m_animation(0)
+Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT), m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
 }
 
 Renderer::~Renderer()
 {
-	delete m_checkBox;
-	delete m_animation->getTexture();
-	delete m_boxMaterial;
-	delete m_crossMaterial;
-	delete m_animation;
 	terminate();
 }
 
@@ -121,22 +116,13 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glViewport(0, 0, m_width, m_height);
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	m_start = true;
 }
 
 void Renderer::init()
 {
-	m_boxMaterial = new UniColorMaterial(Color::WHITE);
-	m_crossMaterial = new UniColorMaterial(Color::GREEN);
-	m_checkBox = new CheckBox(this, 0, glm::vec2(0.5, 0.5));
-	m_animation = new PatternAnimation(this, m_boxMaterial, Texture::loadAndroidFile("tileset.png"),
-				Vector2ui(32*6, 32*4), Vector2ui(0, 0), Vector2ui(32, 32), Vector2ui(3, 1), 3, 20);
-	m_animation->move(glm::vec3(-0.5, 0.0, 0.0));
-	m_checkBox->setRectangleMaterial(m_boxMaterial);
-	m_checkBox->setCrossMaterial(m_crossMaterial);
-	m_checkBox->move(glm::vec3(-0.5, 0.2, 0.0));
 }
 
 void Renderer::display()
@@ -183,6 +169,10 @@ void Renderer::onDownTouchEvent(float x, float y)
 	touchCoord.y      = y;
 
 	updateFocus();
+}
+
+void Renderer::accelerometerEvent(float x, float y, float z)
+{
 }
 
 void Renderer::onUpTouchEvent(float x, float y)

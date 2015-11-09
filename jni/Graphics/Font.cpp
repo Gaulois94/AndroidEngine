@@ -29,8 +29,8 @@ glm::vec2 Font::getSize(char character) const
 FloatRect2 Font::getCharRect(char character) const
 {
 	//The texture font letter is in directX norme. Remember that the position of a text in the font is given at the baseline of the text, that's why we subtract that position with the top position (which is negative, that's why we do + and not -)
-	return FloatRect2(getPosition(text[i])+glm::vec2(0.0, m_fontMetrics.top),
-					  getSize(text[i]));
+	return FloatRect2(getPosition(character)+glm::vec2(0.0, m_fontMetrics.top),
+					  getSize(character));
 
 }
 
@@ -47,4 +47,14 @@ float Font::getLineHeight() const
 const FontMetrics& Font::getFontMetrics() const
 {
 	return m_fontMetrics;
+}
+
+Font* Font::fontFromAssets(const std::string path, uint32_t padX, uint32_t padY, uint32_t size)
+{
+	JNIEnv* jenv      = JniMadeOf::jenv;
+	jclass fontClass  = jenv->FindClass("com/gaulois94/Graphics/Font");
+	jmethodID initPtr = jenv->GetStaticMethodID(fontClass, "initPtr", "(Ljava/lang/String;III)J");
+	jstring p         = jenv->NewStringUTF(path.c_str());
+	long f            = jenv->CallStaticLongMethod(fontClass, initPtr, p, padX, padY, size);
+	return (Font*)f;
 }

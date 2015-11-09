@@ -79,3 +79,9 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onMoveTouchRenderer(
 	Renderer* renderer = (Renderer*)rendererPtr;
 	renderer->onMoveTouchEvent(x, y);
 }
+
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_accelerometerRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y, jfloat z)
+{
+	Renderer* renderer = (Renderer*)rendererPtr;
+	renderer->accelerometerEvent(x, y, z);
+}
