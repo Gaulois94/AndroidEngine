@@ -29,7 +29,7 @@ class Circle : public TriangleShape
 		 * \return the center of this circle.*/
 		glm::vec3 getCenter() const;
 	private:
-		static glm::vec3* initVertex(float radius, int nbEdge);
+		static glm::vec3* initVertex(float radius, uint32_t nbEdge);
 		float m_radius;
 		int m_nbEdge;
 		glm::vec3* buffer;
