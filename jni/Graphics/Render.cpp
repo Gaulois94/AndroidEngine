@@ -16,6 +16,18 @@ void Render::draw(Drawable& drawable, const glm::mat4& transformation)
 	stopDraw();
 }
 
+void Render::updateFocus(uint32_t pID, Render& render)
+{
+	Updatable::updateFocus(pID, *this);
+}
+
+void Render::update(Render& render)
+{
+	initDraw();
+	Render::update(*this);
+	stopDraw();
+}
+
 Camera& Render::getCamera()
 {
 	return m_camera;

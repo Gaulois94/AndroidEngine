@@ -1,4 +1,5 @@
 #include "Drawable.h"
+#include "nativeDrawable.h"
 
 Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : Transformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_staticToCamera(false), m_setTransToChildren(false)
 {
@@ -12,6 +13,8 @@ Drawable::~Drawable()
 
 void Drawable::update(Render& render)
 {
+	if(!m_canUpdate)
+		return;
 	if(m_setTransToChildren)
 	{
 		//Set the camera current apply transformation.
@@ -35,11 +38,11 @@ void Drawable::update(Render& render)
 	}
 }
 
-void Drawable::updateFocus(Render& render)
+void Drawable::updateFocus(uint32_t indicePointer, Render& render)
 {
-	Updatable::updateFocus(render);
-	if(!m_staticToCamera && touchInRect(render.getRectOnScreen(*this)) || (m_staticToCamera && touchInRect(getRect())))
-		onFocus(render);
+	Updatable::updateFocus(indicePointer, render);
+	if(!m_staticToCamera && touchInRect(render.getRectOnScreen(*this), indicePointer) || (m_staticToCamera && touchInRect(getRect(), indicePointer)))
+		onFocus(indicePointer, render);
 }
 
 void Drawable::draw(Render& render, const glm::mat4& transformation)
@@ -115,4 +118,9 @@ void Drawable::deleteVbos()
 {
 	if(glIsBuffer(m_vboID))
 		glDeleteBuffers(1, &m_vboID);
+}
+
+void Drawable::initShaders()
+{
+	Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(JniMadeOf::jenv, 0, JniMadeOf::context);
 }

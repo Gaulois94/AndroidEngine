@@ -14,7 +14,7 @@ Updatable::~Updatable()
 	setParent(NULL);
 }
 
-void Updatable::updateFocus(Render& render)
+void Updatable::updateFocus(uint32_t pointerEvent, Render& render)
 {
 	if(!m_updateFocus)
 		return;
@@ -23,11 +23,11 @@ void Updatable::updateFocus(Render& render)
 	{
 		if(Updatable::focusIsCheck == true)
 			return;
-		(*it)->updateFocus(render);
+		(*it)->updateFocus(pointerEvent, render);
 	}
 }
 
-void Updatable::onFocus(Render& render)
+void Updatable::onFocus(uint32_t pointerEvent, Render& render)
 {}
 
 void Updatable::update(Render &render)
@@ -123,6 +123,11 @@ bool Updatable::isChild(const Updatable *child)
 		}
 
 	return isChild;
+}
+
+bool Updatable::getCanUpdate() const
+{
+	return m_canUpdate;
 }
 
 const Updatable* Updatable::getParent() const

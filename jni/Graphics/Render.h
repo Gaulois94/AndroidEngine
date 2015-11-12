@@ -22,6 +22,13 @@ class Render : public Updatable
 		 * \param transformation could apply a transformation to the Drawable object before being drawn.*/
 		virtual void draw(Drawable& drawable, const glm::mat4& transformation=glm::mat4(1.0));
 
+		/** \brief update all child focus with it as the Render object
+		 * \param pointerEvent the indice of the Motion Event
+		 * \param render the previous render object (for exemple a Renderer which call a RendererTexture)*/
+		virtual void updateFocus(uint32_t pointerEvent, Render& render);
+
+		virtual void update(Render& render);
+
 		/** \brief draw all the information got by draw function*/
 		virtual void display()=0;
 

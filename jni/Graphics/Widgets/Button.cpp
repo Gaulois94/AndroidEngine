@@ -7,7 +7,7 @@ Button::Button(Updatable *parent, Text &text, const Rectangle3f &rect) : GroupDr
 
 	m_drawables.push_back(m_text);
 	m_drawables.push_back(m_background);
-	m_text->setUpdateFocus(false);
+	m_text->setParent(NULL);
 	m_activeOnce = true;
 	centerText();
 }
@@ -18,7 +18,7 @@ Button::Button(Updatable *parent, Sprite &image, const Rectangle3f &rect) : Grou
 		setDefaultConf(m_background->getDefaultConf());
 	m_drawables.push_back(m_text);
 	m_drawables.push_back(m_background);
-	m_background->setUpdateFocus(false);
+	m_background->setParent(NULL);
 	m_activeOnce = true;
 }
 
@@ -28,8 +28,8 @@ Button::Button(Updatable *parent, Text &text, Sprite &image, const Rectangle3f &
 		setDefaultConf(m_background->getDefaultConf());
 	m_drawables.push_back(m_text);
 	m_drawables.push_back(m_background);
-	m_text->setUpdateFocus(false);
-	m_background->setUpdateFocus(false);
+	m_background->setParent(NULL);
+	m_text->setParent(NULL);
 	centerText();
 	m_activeOnce = true;
 }
@@ -41,29 +41,28 @@ Button::Button(Updatable *parent, const Rectangle3f &rect) : GroupDrawable(paren
 	m_activeOnce = true;
 }
 
-void Button::onFocus(Render &render)
+void Button::onFocus(uint32_t indicePointer, Render &render)
 {
 	activeIt();
 }
 
 void Button::update(Render &render)
 {
-	if(!m_canUpdate)
-		return;
 	GroupDrawable::update(render);
 }
 
 void Button::onUpdate(Render &render)
 {
+	GroupDrawable::onUpdate(render);
 	Active::update();
 }
 
 void Button::centerText()
 {
-	if(m_text != NULL)
+    if(m_text != NULL)
 	{
-		m_text->setPositionOrigin(-m_text->getDefaultSize()/2.0f);
-		m_text->setPosition(getDefaultSize()/2.0f);
+		m_text->setPositionOrigin(m_text->getDefaultPos() + m_text->getDefaultSize()/2.0f, true);
+		m_text->setPosition(getDefaultPos() + getDefaultSize()/2.0f);
 	}
 }
 

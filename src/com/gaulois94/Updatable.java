@@ -2,7 +2,7 @@ package com.gaulois94;
 
 import com.gaulois94.JniMadeOf;
 import com.gaulois94.Graphics.Render;
-import com.gaulois94.Graphics.Renderer;
+import com.gaulois94.Graphics.Render;
 
 public class Updatable extends JniMadeOf
 {
@@ -21,14 +21,14 @@ public class Updatable extends JniMadeOf
 		this(createUpdatable(0));
 	}
 
-	public void updateFocus(Renderer renderer)
+	public void updateFocus(int pID, Render render)
 	{
-		updateFocusUpdatable(m_ptr, renderer.getPtr());
+		updateFocusUpdatable(m_ptr, pID, render.getPtr());
 	}
 
-	public void onFocus(Renderer renderer)
+	public void onFocus(int pID, Render render)
 	{
-		onFocusUpdatable(m_ptr, renderer.getPtr());
+		onFocusUpdatable(m_ptr, pID, render.getPtr());
 	}
 
 	public void update(Render render)
@@ -82,8 +82,8 @@ public class Updatable extends JniMadeOf
 	}
 
 	protected static native long      createUpdatable(long parent);
-	protected native void      updateFocusUpdatable(long ptr, long renderer);
-	protected native void      onFocusUpdatable(long ptr, long renderer);
+	protected native void      updateFocusUpdatable(long ptr, int pID, long render);
+	protected native void      onFocusUpdatable(long ptr, int pID, long render);
 	protected native void      updateUpdatable(long ptr, long render);
 	protected native void      onUpdateUpdatable(long ptr, long render);
 	protected native void      addChildUpdatable(long ptr, long child, int pos);

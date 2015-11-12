@@ -17,9 +17,9 @@ extern "C"
 	JNIEXPORT bool JNICALL Java_com_gaulois94_Graphics_Renderer_hasDisplayRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr);
 
 	//Event Function
-	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onDownTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y);
-	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onUpTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y);
-	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onMoveTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y);
+	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onDownTouchRenderer(JNIEnv* jenv, jobject obj, jint pID, jlong rendererPtr, jfloat x, jfloat y);
+	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onUpTouchRenderer(JNIEnv* jenv, jobject obj, jint pID, jlong rendererPtr, jfloat x, jfloat y);
+	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onMoveTouchRenderer(JNIEnv* jenv, jobject obj, jint pID, jlong rendererPtr, jfloat x, jfloat y);
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_accelerometerRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y, jfloat z);
 };
 

@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
-Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT), m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
+Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT),
+										m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
 }
 
@@ -14,7 +15,6 @@ void Renderer::terminate()
 	if(m_disp == EGL_NO_DISPLAY)
 		return;
 
-	eglReleaseThread();
 	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	eglDestroyContext(m_disp, m_context);
 	eglDestroySurface(m_disp, m_surface);
@@ -73,14 +73,15 @@ bool Renderer::initializeContext(ANativeWindow* window)
 		return false;
 	}
 
-	if(!(m_context = eglCreateContext(m_disp, m_conf, 0, eglAttribs)))
+	if(!(m_context = eglCreateContext(m_disp, m_conf, m_context, eglAttribs)))
 	{
 		LOG_ERROR("Can't create an EGL context. Error : %d", eglGetError());
 		return false;
 	}
 
+	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
+	Drawable::initShaders();
 	initializeSurface(window);
-
 	return true;
 }
 
@@ -89,6 +90,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	if(window == NULL)
 		return;
 	deleteSurface();
+	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	m_window = window;
 	m_start = false;
 
@@ -135,9 +137,9 @@ void Renderer::clear()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::updateFocus()
+void Renderer::updateFocus(uint32_t pID)
 {
-	Updatable::updateFocus(*this);
+	Updatable::updateFocus(pID, *this);
 	Updatable::focusIsCheck = false;
 }
 
@@ -150,7 +152,7 @@ void Renderer::initDraw()
 {
 	if(!eglMakeCurrent(m_disp, m_surface, m_surface, m_context))
 	{
-		LOG_ERROR("Can't make this context the current one. Error : %d", eglGetError());
+		LOG_ERROR("Init Draw Can't make this context the current one. Error : %d", eglGetError());
 		return;
 	}
 }
@@ -160,38 +162,37 @@ void Renderer::stopDraw()
 	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 }
 
-void Renderer::onDownTouchEvent(float x, float y)
+void Renderer::onDownTouchEvent(uint32_t i, float x, float y)
 {
-	touchCoord.type   = DOWN;
-	touchCoord.startX = x;
-	touchCoord.x      = x;
-	touchCoord.startY = y;
-	touchCoord.y      = y;
+	touchCoord[i].type   = DOWN;
+	touchCoord[i].startX = x;
+	touchCoord[i].x      = x;
+	touchCoord[i].startY = y;
+	touchCoord[i].y      = y;
 
-	updateFocus();
+	updateFocus(i);
 }
 
 void Renderer::accelerometerEvent(float x, float y, float z)
 {
 }
 
-void Renderer::onUpTouchEvent(float x, float y)
+void Renderer::onUpTouchEvent(uint32_t i, float x, float y)
 {
-	touchCoord.type = UP;
-	touchCoord.x    = x;
-	touchCoord.y    = y;
+	touchCoord[i].type = UP;
+	touchCoord[i].x    = x;
+	touchCoord[i].y    = y;
 }
 
-void Renderer::onMoveTouchEvent(float x, float y)
+void Renderer::onMoveTouchEvent(uint32_t i, float x, float y)
 {
-	touchCoord.x    = x;
-	touchCoord.y    = y;
-	touchCoord.type = MOVE;
+	touchCoord[i].x    = x;
+	touchCoord[i].y    = y;
+	touchCoord[i].type = MOVE;
 }
 
 void Renderer::deleteSurface()
 {
-	eglReleaseThread();
 	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	if(m_surface != EGL_NO_SURFACE)
 		eglDestroySurface(m_disp, m_surface);

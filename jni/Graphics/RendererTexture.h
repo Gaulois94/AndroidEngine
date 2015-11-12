@@ -11,7 +11,6 @@ class RendererTexture : public Render
 		RendererTexture(Updatable* parent, int width, int height);
 		~RendererTexture();
 		
-		void update(Render& render);
 		void initDraw();
 		void stopDraw();
 		void clear();

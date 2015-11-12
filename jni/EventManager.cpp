@@ -1,16 +1,16 @@
 #include "EventManager.h"
 
 //Initialize the TouchCoord struct.
-TouchCoord touchCoord = {.type=UP, .startX=0, .startY=0, .x=0, .y=0};
+TouchCoord touchCoord[5];
 
-bool touchInRect(const Rectangle3f& rect)
+bool touchInRect(const Rectangle3f& rect, uint32_t i)
 {
-	return (touchCoord.x > rect.x && touchCoord.x < rect.x + rect.width &&
-			touchCoord.y > rect.y && touchCoord.y < rect.y + rect.height);
+	return (touchCoord[i].x > rect.x && touchCoord[i].x < rect.x + rect.width &&
+			touchCoord[i].y > rect.y && touchCoord[i].y < rect.y + rect.height);
 }
 
-bool touchInRect(const Rectangle2f& rect)
+bool touchInRect(const Rectangle2f& rect, uint32_t i)
 {
-	return (touchCoord.x > rect.x && touchCoord.x < rect.x + rect.width &&
-			touchCoord.y > rect.y && touchCoord.y < rect.y + rect.height);
+	return (touchCoord[i].x > rect.x && touchCoord[i].x < rect.x + rect.width &&
+			touchCoord[i].y > rect.y && touchCoord[i].y < rect.y + rect.height);
 }

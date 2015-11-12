@@ -29,7 +29,7 @@ class Drawable : public Transformable, public Updatable
 		 * \param transformation Transform the coord of the drawable itself transformed by the render's camera before.*/
 		virtual void draw(Render& render, const glm::mat4& transformation=glm::mat4(1.0));
 
-		virtual void updateFocus(Render& render);
+		virtual void updateFocus(uint32_t indicePointer, Render& render);
 		virtual void update(Render& render);
 
 		/** \brief is called by draw.
@@ -75,6 +75,8 @@ class Drawable : public Transformable, public Updatable
 		/** \brief Tell if the transformation should be passed to all the children
 		 * \return transformation is applied to children or not*/
 		virtual bool getTransToChildren() const;
+
+		static void initShaders();
 	protected:
 		virtual void deleteVbos();
 		Material* m_material;

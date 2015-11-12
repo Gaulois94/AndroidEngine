@@ -18,7 +18,7 @@ class CheckBox : public Active, public GroupDrawable
 
 		~CheckBox();
 
-		virtual void onFocus(Render& render);
+		virtual void onFocus(uint32_t indicePointer, Render& render);
 		virtual void onUpdate(Render &render);
 
 		/** \brief set the cross material.

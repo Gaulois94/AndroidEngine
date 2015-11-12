@@ -35,37 +35,41 @@ class Renderer : public Render
 		void initializeSurface(ANativeWindow *window);
 
 		/** \brief update the full screen*/
-		void display();
+		virtual void display();
 
 		/** \brief clear the full screen*/
-		void clear();
+		virtual void clear();
 
 		/** \brief function called when the Renderer could init all its children Drawable (because the android on the java side should init things before) */
-		void init();
+		virtual void init();
 
 		void update(Render& render);
-		void updateFocus();
-		void initDraw();
-		void stopDraw();
+		/* *\brief update all child function with it as Render object*/
+		void updateFocus(uint32_t pointerEvent);
+		virtual void initDraw();
+		virtual void stopDraw();
 
 		//Events function
 		
 		/** \brief function called when the Renderer is released. Called by the View which contain the Renderer (from the Renderer java class for example, or a C++ native activity)
+		 * \param indice the indice pointer to the touch Event
 		 * \param x the x coord in opengl format
 		 * \param y the y coord in opengl format*/
-		void onUpTouchEvent(float x, float y);
+		virtual void onUpTouchEvent(uint32_t indice, float x, float y);
 
 		/** \brief function called when the Renderer is touched. Called by the View which contain the Renderer (from the Renderer java class for example, or a C++ native activity)
+		 * \param indice the indice pointer to the touch Event
 		 * \param x the x coord in opengl format
 		 * \param y the y coord in opengl format*/
-		void onDownTouchEvent(float x, float y);
+		virtual void onDownTouchEvent(uint32_t indice, float x, float y);
 
 		/** \brief function called when the Renderer is touched and the (x, y) coords are changing. Called by the View which contain the Renderer (from the Renderer java class for example, or a C++ native activity)
+		 * \param indice the indice pointer to the touch Event
 		 * \param x the x coord in opengl format
 		 * \param y the y coord in opengl format*/
-		void onMoveTouchEvent(float x, float y);
+		virtual void onMoveTouchEvent(uint32_t indice, float x, float y);
 
-		void accelerometerEvent(float x, float y, float z);
+		virtual void accelerometerEvent(float x, float y, float z);
 
 		/** \brief delete the current surface of the screen*/
 		void deleteSurface();
@@ -73,7 +77,7 @@ class Renderer : public Render
 		/** \brief tell if the renderer has a display where it can draw to. 
 		 * \return return if it has a display where it can draw to.*/
 		bool hasDisplay();
-	private:
+	protected:
 		void terminate();
 		EGLDisplay m_disp;
 		EGLSurface m_surface;

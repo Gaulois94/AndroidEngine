@@ -3,6 +3,7 @@
 
 JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Renderer_createRenderer(JNIEnv* jenv, jclass jcls, jlong parent, jobject surface)
 {
+	JniMadeOf::jenv = jenv;
 	Renderer* renderer = new Renderer((Updatable*)parent);
 	ANativeWindow* window = ANativeWindow_fromSurface(jenv, surface);
 	renderer->initializeContext(window);
@@ -62,22 +63,22 @@ JNIEXPORT bool JNICALL Java_com_gaulois94_Graphics_Renderer_hasDisplayRenderer(J
 	return renderer->hasDisplay();
 }
 
-JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onDownTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y)
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onDownTouchRenderer(JNIEnv* jenv, jobject obj, jint pID, jlong rendererPtr, jfloat x, jfloat y)
 {
 	Renderer* renderer = (Renderer*)rendererPtr;
-	renderer->onDownTouchEvent(x, y);
+	renderer->onDownTouchEvent(pID, x, y);
 }
 
-JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onUpTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y)
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onUpTouchRenderer(JNIEnv* jenv, jobject obj, jint pID, jlong rendererPtr, jfloat x, jfloat y)
 {
 	Renderer* renderer = (Renderer*)rendererPtr;
-	renderer->onUpTouchEvent(x, y);
+	renderer->onUpTouchEvent(pID, x, y);
 }
 
-JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onMoveTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y)
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onMoveTouchRenderer(JNIEnv* jenv, jobject obj, jint pID, jlong rendererPtr, jfloat x, jfloat y)
 {
 	Renderer* renderer = (Renderer*)rendererPtr;
-	renderer->onMoveTouchEvent(x, y);
+	renderer->onMoveTouchEvent(pID, x, y);
 }
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_accelerometerRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y, jfloat z)

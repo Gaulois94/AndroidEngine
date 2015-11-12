@@ -14,16 +14,16 @@ enum TouchEventType
 /** \brief structure which contain the touch information*/
 struct TouchCoord
 {
-	TouchEventType type; /** <The type of the touching*/
-	float startX; /** <Where the touch event has started on X axis*/
-	float startY; /** <Where the touch event has started on Y axis*/
-	float x; /** <The last x coords*/
-	float y; /** <The last y coords*/
+	TouchEventType type=UP; /** <The type of the touching*/
+	float startX=0.0f; /** <Where the touch event has started on X axis*/
+	float startY=0.0f; /** <Where the touch event has started on Y axis*/
+	float x=0.0f; /** <The last x coords*/
+	float y=0.0f; /** <The last y coords*/
 };
 
-extern TouchCoord touchCoord;
+extern TouchCoord touchCoord[5];
 
-bool touchInRect(const Rectangle3f& rect);
-bool touchInRect(const Rectangle2f& rect);
+bool touchInRect(const Rectangle3f& rect, uint32_t indice);
+bool touchInRect(const Rectangle2f& rect, uint32_t indice);
 
 #endif

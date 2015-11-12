@@ -17,12 +17,14 @@ class Updatable : public JniMadeOf
 		virtual ~Updatable();
 
 		/** \brief call when a TouchEvent is called. Try to get the Updatable who get the focus
+		 * \param pointerEvent the indice pointer of the Touch Event
 		 * \param render the Render which has catch the event.*/
-		virtual void updateFocus(Render& render);
+		virtual void updateFocus(uint32_t pointerEvent, Render& render);
 
 		/** \brief called when the object has the focus
+		 * \param pointerEvent the indice pointer of the Touch Event
 		 * \param render the Render which has catch the event.*/
-		virtual void onFocus(Render& render);
+		virtual void onFocus(uint32_t pointerEvent, Render& render);
 
 		/** \brief Update the Updatable and its children.
 		 *  \param render the render from where the updatable could interact
@@ -75,6 +77,10 @@ class Updatable : public JniMadeOf
 		 * \return the Updatable parent
 		*/
 		const Updatable* getParent() const;
+
+		/** \brief tell if the updatable will be updated after each call of update()
+		 * \return return the value of m_canUpdate*/
+		bool getCanUpdate() const;
 	protected:
 		std::list <Updatable*> m_child; /**< Child's list. */
 		Updatable *m_parent; /**< The Updatable's parent. */

@@ -31,16 +31,13 @@ import android.hardware.SensorEventListener;
 
 public class Renderer extends Render implements SurfaceHolder.Callback, Runnable, SensorEventListener
 {
-	private SurfaceView m_surface;
-	private Thread m_thread;
-	private Boolean m_open;
-	private Boolean m_isInit;
-	private Boolean m_reInit;
-	private Boolean m_isCreated;
-	private boolean m_suspend;
-	private Text m_text;
-	private Font m_font;
-	private UniColorMaterial m_mtl;
+	protected SurfaceView m_surface;
+	protected Thread m_thread;
+	protected Boolean m_open;
+	protected Boolean m_isInit;
+	protected Boolean m_reInit;
+	protected Boolean m_isCreated;
+	protected boolean m_suspend;
 
     public Renderer(Context context)
     {
@@ -58,8 +55,7 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 			@Override
 			public boolean onTouchEvent(MotionEvent e)
 			{
-				touchEvent(e);
-				return false;
+				return touchEvent(e);
 			}
 		};
 		m_surface.getHolder().addCallback(this);
@@ -72,16 +68,18 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 
 	public void surfaceCreated(SurfaceHolder holder)
 	{
-		if(m_isCreated == false)
+		synchronized(this)
 		{
-			m_isCreated = true;
-			setPtr(createPtr(0, holder.getSurface()));
-			Drawable.loadShaders();
-			initRenderer(m_ptr);
-			onCreated();
+			if(m_isCreated == false)
+			{
+				m_isCreated = true;
+				setPtr(createPtr(0, holder.getSurface()));
+				initRenderer(m_ptr);
+				onCreated();
+			}
+			m_isInit = false;
+			m_reInit = true;
 		}
-		m_isInit = false;
-		m_reInit = true;
 	}
 
 	//Need to be override if ndk is used
@@ -98,11 +96,6 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 
 	public void onCreated()
 	{
-		/*
-		m_mtl  = new UniColorMaterial(new Color(1.0f, 0.0f, 0.0f, 1.0f));
-		m_font = new Font("fonts/dejavusansmono.ttf");
-		m_text = new Text(this, m_mtl, m_font, "AMj!}y");
-		*/
 	}
 
 	public void onChanged(Rect rect)
@@ -144,31 +137,41 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 		}
 	}
 
-	public void touchEvent(MotionEvent e)
+	public boolean touchEvent(MotionEvent e)
 	{
 		m_suspend = true;
-		int width  = m_surface.getWidth();
-		int height = m_surface.getHeight();
-
-		float x = 2*e.getX() / width - 1;
-		//Y are mirrored
-		float y = -2*e.getY() / height + 1;
-
-		switch(e.getFlags())
+		synchronized(this)
 		{
-			case MotionEvent.ACTION_DOWN:
-				onDownTouchRenderer(m_ptr, x, y);
-				break;
 
-			case MotionEvent.ACTION_CANCEL:
-				onUpTouchRenderer(m_ptr, x, y);
-				break;
+			int width  = m_surface.getWidth();
+			int height = m_surface.getHeight();
 
-			case MotionEvent.ACTION_MOVE:
-				onMoveTouchRenderer(m_ptr, x, y);
-				break;
+			for(int i=0; i < e.getPointerCount(); i++)
+			{
+				int pID = e.getPointerId(i);
+				Log.e("Main", "PID = " + Integer.toString(pID));
+				float x = 2*e.getX(pID) / width - 1;
+				//Y are mirrored
+				float y = -2*e.getY(pID) / height + 1;
+
+				switch(e.getAction())
+				{
+					case MotionEvent.ACTION_DOWN:
+						onDownTouchRenderer(m_ptr, pID, x, y);
+						break;
+
+					case MotionEvent.ACTION_UP:
+						onUpTouchRenderer(m_ptr, pID, x, y);
+						break;
+
+					case MotionEvent.ACTION_MOVE:
+						onMoveTouchRenderer(m_ptr, pID, x, y);
+						break;
+				}
+			}
 		}
 		m_suspend=false;
+		return true;
 	}
 
 	public void onSensorChanged(SensorEvent e)
@@ -233,19 +236,19 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 		return m_surface;
 	}
 
-	private native long createRenderer(long parent, Surface surface);
-	private native void initSurfaceRenderer(long renderer, Surface surface);
-	private native void initRenderer(long renderer);
-	private native void destroySurfaceRenderer(long renderer);
-	private native void destroyRenderer(long renderer);
-	private native void clearRenderer(long renderer);
-	private native void displayRenderer(long renderer);
-	private native Boolean hasDisplayRenderer(long renderer);
+	protected native long createRenderer(long parent, Surface surface);
+	protected native void initSurfaceRenderer(long renderer, Surface surface);
+	protected native void initRenderer(long renderer);
+	protected native void destroySurfaceRenderer(long renderer);
+	protected native void destroyRenderer(long renderer);
+	protected native void clearRenderer(long renderer);
+	protected native void displayRenderer(long renderer);
+	protected native Boolean hasDisplayRenderer(long renderer);
 
-	private native void onDownTouchRenderer(long ptr, float x, float y);
-	private native void onMoveTouchRenderer(long ptr, float x, float y);
-	private native void onUpTouchRenderer(long ptr, float x, float y);
-	private native void accelerometerRenderer(long ptr, float x, float y, float z);
+	protected native void onDownTouchRenderer(long ptr, int pID, float x, float y);
+	protected native void onMoveTouchRenderer(long ptr, int pID, float x, float y);
+	protected native void onUpTouchRenderer(long ptr, int pID, float x, float y);
+	protected native void accelerometerRenderer(long ptr, float x, float y, float z);
 
 	static
 	{

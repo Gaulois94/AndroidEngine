@@ -33,7 +33,7 @@ CheckBox::~CheckBox()
 	delete m_rectangle;
 }
 
-void CheckBox::onFocus(Render& render)
+void CheckBox::onFocus(uint32_t indicePointer, Render& render)
 {
 	if(m_isActive)
 		disactiveIt();

@@ -1,6 +1,5 @@
 attribute vec3 vPosition;
 attribute vec4 vColor;
-attribute vec3 vNormal;
 attribute vec2 vTextureCoord;
 
 uniform mat4 uMVP;

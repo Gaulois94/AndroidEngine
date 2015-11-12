@@ -8,8 +8,8 @@
 extern "C"
 {
 	JNIEXPORT jlong   JNICALL Java_com_gaulois94_Updatable_createUpdatable(JNIEnv* jenv, jclass jcls, jlong parent);
-	JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_updateFocusUpdatable(JNIEnv* jenv, jobject jobj, jlong ptr, jlong renderer);
-	JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_onFocusUpdatable(JNIEnv* jenv, jobject jobj, jlong ptr, jlong renderer);
+	JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_updateFocusUpdatable(JNIEnv* jenv, jobject jobj, jint pID, jlong ptr, jlong renderer);
+	JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_onFocusUpdatable(JNIEnv* jenv, jobject jobj, jint pID, jlong ptr, jlong renderer);
 	JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_updateUpdatable(JNIEnv* jenv, jobject jobj, jlong ptr, jlong render);
 	JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_onUpdateUpdatable(JNIEnv* jenv, jobject jobj, jlong ptr, jlong render);
 	JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_addChildUpdatable(JNIEnv* jenv, jobject jobj, jlong ptr, jlong child, int pos);

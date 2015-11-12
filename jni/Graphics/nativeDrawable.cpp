@@ -99,7 +99,6 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(
 
 		File vertexFile        = File(jenv, context, pathvString.c_str(), "r");
 		File fragFile          = File(jenv, context, pathfString.c_str(), "r");
-
 		Shader::shaders.add(files[i], Shader::loadFromFiles(vertexFile, fragFile, attribs));
 	}
 }
