@@ -27,13 +27,17 @@ void Material::init(Render& render, const glm::mat4& mvp)
 	{
 		float maskColor[4];
 		m_texture->getMaskColor().getFloatArray(maskColor);
-		glUniform4fv(uMaskColor, 1, maskColor);
-		glUniform1i(uUseTexture, true);
-		glUniform1i(uTextureHandle, 0);
+		if(uMaskColor != -1)
+			glUniform4fv(uMaskColor, 1, maskColor);
+		if(uUseTexture != -1)
+			glUniform1i(uUseTexture, true);
+		if(uTextureHandle != -1)
+			glUniform1i(uTextureHandle, 0);
 	}
 
 	else
-		glUniform1i(uUseTexture, false);
+		if(uUseTexture != -1)
+			glUniform1i(uUseTexture, false);
 }
 
 void Material::bindTexture(const Texture* texture)

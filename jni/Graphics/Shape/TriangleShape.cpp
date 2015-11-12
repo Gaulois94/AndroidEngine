@@ -32,6 +32,8 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 	if(!m_material)
 		return;
 
+	if(!glIsBuffer(m_vboID))
+		return;
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
 		m_material->init(render, mvp);
@@ -59,7 +61,6 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 		else
 			glDrawArrays(m_mode, 0, m_nbVertex);
 	}
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 

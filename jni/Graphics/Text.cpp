@@ -1,7 +1,5 @@
 #include "Text.h"
 
-short Text::drawOrder[6] = {0, 1, 2, 0, 2, 3};
-
 Text::Text(Updatable* parent, Material* material, Font* font, const char* text) : Drawable(parent, material), m_font(font), m_text(NULL)
 {
 	setText(text);
@@ -31,10 +29,10 @@ void Text::setText(const char* text)
 			free(m_text);
 
 		//We copy the new text and store it
-		m_text = (char*) malloc(strlen(text)*sizeof(char));
+		m_text = (char*) malloc((strlen(text)+1)*sizeof(char));
 		strcpy(m_text, text);
 
-		if(!m_font || !m_text)
+		if(!m_font || !text)
 		{
 			setDefaultSize(glm::vec3(0.0f, 0.0f, 0.0f));//No text, no size
 			return;
@@ -75,13 +73,13 @@ void Text::setText(const char* text)
 
 		float rectTextureCoord[] = {rectTexture.x, rectTexture.y,
 									rectTexture.x + rectTexture.width, rectTexture.y,
-									rectTexture.x + rectTexture.width, rectTexture.y + rectTexture.height,
-									rectTexture.x, rectTexture.y + rectTexture.height};
+									rectTexture.x, rectTexture.y + rectTexture.height,
+									rectTexture.x + rectTexture.width, rectTexture.y + rectTexture.height};
 
 		float rectLetterCoord[]  = {posX, posY, 0,
 									posX + size.x, posY, 0,
-									posX + size.x, posY + size.y, 0,
-									posX, posY + size.y, 0};
+									posX, posY + size.y, 0,
+									posX + size.x, posY + size.y, 0};
 
 		for(int j =0; j < 4; j++)
 		{
@@ -102,36 +100,33 @@ void Text::setText(const char* text)
 
 void Text::onDraw(Render& render, const glm::mat4& mvp)
 {
-	if(m_font == NULL || m_text == NULL || m_material == NULL)
+	if(m_font == NULL || m_text == NULL || m_material == NULL || !glIsBuffer(m_vboID))
 		return;
 
-	m_material->init(render, mvp);
-
-	glBindTexture(GL_TEXTURE_2D, m_font->getTexture()->getID());
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	m_material->bindTexture(m_font->getTexture());
+	m_material->init(render, mvp);
 	{
 		GLint vPosition      = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
 		GLint vTextureCoord  = glGetAttribLocation(m_material->getShader()->getProgramID(), "vTextureCoord");
 
 		glEnableVertexAttribArray(vPosition);
-		glEnableVertexAttribArray(vTextureCoord);
+		if(vTextureCoord != -1)
+			glEnableVertexAttribArray(vTextureCoord);
 
 		GLint uMvp           = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
 
 		glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
 
-		for(unsigned int i=0; i < strlen(m_text); i++)
-		{
-			glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, 0, BUFFER_OFFSET(i*4*3 * sizeof(float)));
-			glVertexAttribPointer(vTextureCoord, 2, GL_FLOAT, false, 0, BUFFER_OFFSET(4 * 3 * sizeof(float) * strlen(m_text) + i*2*4*sizeof(float)));
+		glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, 3*sizeof(float), BUFFER_OFFSET(NULL));
+		if(vTextureCoord != -1)
+			glVertexAttribPointer(vTextureCoord, 2, GL_FLOAT, false, 2*sizeof(float), BUFFER_OFFSET(4 * 3 * sizeof(float) * strlen(m_text)));
 
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, Text::drawOrder);
-		}
+		for(uint32_t i=0; i < strlen(m_text); i++)
+			glDrawArrays(GL_TRIANGLE_STRIP, i*4, 4);
 	}
 	m_material->unbindTexture();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 const Font* Text::getFont() const
@@ -152,7 +147,7 @@ void Text::initVbos(float* letterCoords, float* textureCoords)
 	{
 		int size = 4 * sizeof(float) * strlen(m_text);
 		//3 for letterCoord and 2 for textureCoord
-		glBufferData(GL_ARRAY_BUFFER, (5) * size, NULL, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 5*size, NULL, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, 3*size, letterCoords);
 		glBufferSubData(GL_ARRAY_BUFFER, 3*size, 2*size, textureCoords);
 	}

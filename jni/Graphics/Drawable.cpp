@@ -41,8 +41,14 @@ void Drawable::update(Render& render)
 void Drawable::updateFocus(uint32_t indicePointer, Render& render)
 {
 	Updatable::updateFocus(indicePointer, render);
+	if(!m_updateFocus || !m_canUpdate)
+		return;
+
 	if(!m_staticToCamera && touchInRect(render.getRectOnScreen(*this), indicePointer) || (m_staticToCamera && touchInRect(getRect(), indicePointer)))
+	{
 		onFocus(indicePointer, render);
+		Updatable::focusIsCheck = true;
+	}
 }
 
 void Drawable::draw(Render& render, const glm::mat4& transformation)

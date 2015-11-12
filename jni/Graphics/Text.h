@@ -50,8 +50,6 @@ class Text : public Drawable
 		void initVbos(float* letterCoords, float* textureCoord);
 		Font*  m_font;
 		char*  m_text;
-
-		static short drawOrder[6];
 };
 
 #endif

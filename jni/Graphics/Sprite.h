@@ -45,7 +45,6 @@ class Sprite : public Drawable
 		 * \return the subtexture rect.*/
 		const FloatRect2& getSubTextureRect() const;
 	protected:
-		static short drawOrder[6];
 		static float normalCoords[12];
 		void initVbos(float* vertexCoords, float* textureCoords);
 		FloatRect2 m_subTextureRect;

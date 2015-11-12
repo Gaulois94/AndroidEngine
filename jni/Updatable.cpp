@@ -16,7 +16,7 @@ Updatable::~Updatable()
 
 void Updatable::updateFocus(uint32_t pointerEvent, Render& render)
 {
-	if(!m_updateFocus)
+	if(!m_updateFocus || !m_canUpdate)
 		return;
 
 	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); ++it)

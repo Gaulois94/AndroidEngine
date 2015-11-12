@@ -25,6 +25,7 @@ CheckBox::CheckBox(Updatable* parent, Material* material, const glm::vec2& size)
 	m_activeOnce = false;
 	m_drawables.push_back(m_rectangle);
 	m_drawables.push_back(m_cross);
+	m_updateFocus = true;
 }
 
 CheckBox::~CheckBox()

@@ -149,7 +149,7 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 			for(int i=0; i < e.getPointerCount(); i++)
 			{
 				int pID = e.getPointerId(i);
-				Log.e("Main", "PID = " + Integer.toString(pID));
+
 				float x = 2*e.getX(pID) / width - 1;
 				//Y are mirrored
 				float y = -2*e.getY(pID) / height + 1;

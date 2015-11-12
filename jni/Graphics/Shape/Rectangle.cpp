@@ -1,10 +1,9 @@
 #include "Shape/Rectangle.h"
 
-Rectangle::Rectangle(Updatable* parent, Material* material, const glm::vec2& size) : TriangleShape(parent, material, buffer=initVertex(size), NULL, 4), m_size(size)
+Rectangle::Rectangle(Updatable* parent, Material* material, const glm::vec2& size) : TriangleShape(parent, material, buffer=initVertex(size), NULL, 4, GL_TRIANGLE_STRIP), m_size(size)
 {
 	free(buffer);
 	buffer=NULL;
-	unsigned int drawOrder[] = {0, 1, 2, 0, 2, 3};
 	glm::vec3 normalCoord[] = {
 		glm::vec3(0, 0, 1),
 		glm::vec3(0, 0, 1),
@@ -12,7 +11,6 @@ Rectangle::Rectangle(Updatable* parent, Material* material, const glm::vec2& siz
 		glm::vec3(0, 0, 1)
 	};
 	setNormalCoord(normalCoord);
-	setDrawOrder(drawOrder, 6);
 }
 
 glm::vec3* Rectangle::initVertex(const glm::vec2& size)

@@ -140,6 +140,8 @@ void Renderer::clear()
 void Renderer::updateFocus(uint32_t pID)
 {
 	Updatable::updateFocus(pID, *this);
+	if(focusIsCheck == false)
+		onFocus(pID, *this);
 	Updatable::focusIsCheck = false;
 }
 
@@ -170,7 +172,9 @@ void Renderer::onDownTouchEvent(uint32_t i, float x, float y)
 	touchCoord[i].startY = y;
 	touchCoord[i].y      = y;
 
+	LOG_ERROR("DOWN %d", i);
 	updateFocus(i);
+	LOG_ERROR("DOWN FINISH %d", i);
 }
 
 void Renderer::accelerometerEvent(float x, float y, float z)
