@@ -148,26 +148,31 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 
 			for(int i=0; i < e.getPointerCount(); i++)
 			{
-				int pID = e.getPointerId(i);
-
-				float x = 2*e.getX(pID) / width - 1;
-				//Y are mirrored
-				float y = -2*e.getY(pID) / height + 1;
-
-				switch(e.getAction())
+				try
 				{
-					case MotionEvent.ACTION_DOWN:
-						onDownTouchRenderer(m_ptr, pID, x, y);
-						break;
+					int pID = e.getPointerId(i);
 
-					case MotionEvent.ACTION_UP:
-						onUpTouchRenderer(m_ptr, pID, x, y);
-						break;
+					float x = 2*e.getX(pID) / width - 1;
+					//Y are mirrored
+					float y = -2*e.getY(pID) / height + 1;
 
-					case MotionEvent.ACTION_MOVE:
-						onMoveTouchRenderer(m_ptr, pID, x, y);
-						break;
+					switch(e.getAction())
+					{
+						case MotionEvent.ACTION_DOWN:
+							onDownTouchRenderer(m_ptr, pID, x, y);
+							break;
+
+						case MotionEvent.ACTION_UP:
+							onUpTouchRenderer(m_ptr, pID, x, y);
+							break;
+
+						case MotionEvent.ACTION_MOVE:
+							onMoveTouchRenderer(m_ptr, pID, x, y);
+							break;
+					}
 				}
+				catch(IllegalArgumentException exc)
+				{}
 			}
 		}
 		m_suspend=false;

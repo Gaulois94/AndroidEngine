@@ -65,3 +65,15 @@ JNIEXPORT jobject JNICALL Java_com_gaulois94_Updatable_getParentUpdatable(JNIEnv
 	Updatable* u = (Updatable*)ptr;
 	return u->getParent()->getJobject();
 }
+
+JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_setCanDrawUpdatable(JNIEnv *jenv, jobject jobj, jlong ptr, jint canUpdatable)
+{
+	Updatable* updatable = (Updatable*)ptr;
+	updatable->setCanDraw(canUpdatable);
+}
+
+JNIEXPORT jint JNICALL Java_com_gaulois94_Updatable_canDrawUpdatable(JNIEnv *jenv, jobject jobj, jlong ptr)
+{
+	Updatable* updatable = (Updatable*) ptr;
+	return updatable->canDraw();
+}

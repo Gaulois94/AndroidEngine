@@ -11,9 +11,9 @@ Drawable::~Drawable()
 	deleteVbos();
 }
 
-void Drawable::update(Render& render)
+void Drawable::updateGPU(Render& render)
 {
-	if(!m_canUpdate)
+	if(!m_canUpdate || !m_canDraw)
 		return;
 	if(m_setTransToChildren)
 	{
@@ -26,7 +26,7 @@ void Drawable::update(Render& render)
 
 		//Call the usual update function
 		draw(render);
-		Updatable::update(render);
+		Updatable::updateGPU(render);
 
 		//restore the apply transformation matrix
 		renderCamera.setApplyTransformation(currentApplyTransformation);
@@ -34,7 +34,7 @@ void Drawable::update(Render& render)
 	else
 	{
 		draw(render);
-		Updatable::update(render);
+		Updatable::updateGPU(render);
 	}
 }
 
@@ -80,11 +80,6 @@ void Drawable::onScale(const glm::vec3& s)
 {
 }
 
-void Drawable::setCanDraw(bool d)
-{
-	m_canDraw = d;
-}
-
 void Drawable::setMaterial(Material* material)
 {
 	m_material = material;
@@ -110,11 +105,6 @@ bool Drawable::getTransToChildren() const
 	return m_setTransToChildren;
 }
 
-bool Drawable::canDraw() const
-{
-	return m_canDraw;
-}
-
 const Material* Drawable::getMaterial() const
 {
 	return m_material;
@@ -124,6 +114,7 @@ void Drawable::deleteVbos()
 {
 	if(glIsBuffer(m_vboID))
 		glDeleteBuffers(1, &m_vboID);
+	m_vboID = 0;
 }
 
 void Drawable::initShaders()

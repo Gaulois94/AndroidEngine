@@ -28,10 +28,6 @@ JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Drawable_onRotateDrawable(
 JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Drawable_onScaleDrawable(JNIEnv *jenv, jobject jobj, jlong ptr, jfloatArray);
 
 
-JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Drawable_setCanDrawDrawable(JNIEnv *, jobject, jlong, bool);
-JNIEXPORT jint    JNICALL Java_com_gaulois94_Graphics_Drawable_canDrawDrawable(JNIEnv *, jobject, jlong);
-
-
 JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Drawable_staticToCameraDrawable(JNIEnv *, jclass, jlong, jint);
 JNIEXPORT jint    JNICALL Java_com_gaulois94_Graphics_Drawable_isStaticToCameraDrawable(JNIEnv *, jclass, jlong);
 

@@ -70,7 +70,6 @@ void Active::activeIt()
 
 void Active::disactiveIt()
 {
-	LOG_ERROR("DISACTIVED !");
 	m_isActive = false;
 }
 

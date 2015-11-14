@@ -1,6 +1,6 @@
 #include "Shape/TriangleShape.h"
 
-TriangleShape::TriangleShape(Updatable* parent, Material* material, const glm::vec3* vertexCoords, const glm::vec3* normalCoords, uint32_t nbVertex, GLuint mode) : Drawable(parent, material), m_nbVertex(nbVertex), m_mode(mode), m_drawOrderLength(0)
+TriangleShape::TriangleShape(Updatable* parent, Material* material, const glm::vec3* vertexCoords, const glm::vec3* normalCoords, uint32_t nbVertex, GLuint mode) : Drawable(parent, material), m_nbVertex(nbVertex), m_mode(mode), m_drawOrderVboID(0), m_drawOrderLength(0)
 {
 	if(normalCoords)
 		setDatas(vertexCoords, normalCoords, nbVertex);
@@ -15,7 +15,7 @@ TriangleShape::TriangleShape(Updatable* parent, Material* material, const glm::v
 	}
 }
 
-TriangleShape::TriangleShape(Updatable* parent, Material* material, const float* vertexCoords, const float* normalCoords, uint32_t nbVertex, GLuint mode) : Drawable(parent, material), m_nbVertex(nbVertex), m_mode(mode), m_drawOrderLength(0)
+TriangleShape::TriangleShape(Updatable* parent, Material* material, const float* vertexCoords, const float* normalCoords, uint32_t nbVertex, GLuint mode) : Drawable(parent, material), m_nbVertex(nbVertex), m_mode(mode), m_drawOrderVboID(0), m_drawOrderLength(0)
 {
 	if(normalCoords)
 		setDatas(vertexCoords, normalCoords, nbVertex);
@@ -34,10 +34,9 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 
 	if(!glIsBuffer(m_vboID))
 		return;
+	m_material->init(render, mvp);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
-		m_material->init(render, mvp);
-
 		GLint vPosition         = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
 		GLint vNormal           = glGetAttribLocation(m_material->getShader()->getProgramID(), "vNormal");
 		GLint uMvp              = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
@@ -60,6 +59,10 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 		}
 		else
 			glDrawArrays(m_mode, 0, m_nbVertex);
+
+		glDisableVertexAttribArray(vPosition);
+		if(vNormal != -1)
+			glDisableVertexAttribArray(vNormal);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -73,9 +76,7 @@ void TriangleShape::setDatas(const glm::vec3* vertexCoords, const glm::vec3* nor
 	Drawable::deleteVbos();
 	glGenBuffers(1, &m_vboID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
-	{
 		glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
-	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	setVertexCoord(vertexCoords);
@@ -149,6 +150,7 @@ void TriangleShape::initVbos(const float* vertexCoords, const float* normalCoord
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 		glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	LOG_ERROR("SIZE VBO %d", size);
 
 	setArrayVertex(vertexCoords);
 	if(normalCoords)
@@ -212,9 +214,12 @@ void TriangleShape::setArrayVertex(const float* vertexCoords)
 	setDefaultSize(defaultPositionMax-defaultPositionMin);
 
 	//Then we store the vertex coords to the buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, COORD_PER_TRIANGLES*m_nbVertex*sizeof(float), vertexCoords);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	if(glIsBuffer(m_vboID))
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, COORD_PER_TRIANGLES*m_nbVertex*sizeof(float), vertexCoords);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
 }
 
 void TriangleShape::setArrayNormal(const float* normalCoords)

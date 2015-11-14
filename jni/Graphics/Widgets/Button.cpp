@@ -37,7 +37,7 @@ Button::Button(Updatable *parent, Text &text, Sprite &image, const Rectangle3f &
 	m_updateFocus = true;
 }
 
-Button::Button(Updatable *parent, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_text(NULL), m_background(NULL)
+Button::Button(Updatable *parent, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(NULL), m_text(NULL)
 {
 	m_drawables.push_back(m_text);
 	m_drawables.push_back(m_background);
@@ -63,7 +63,7 @@ void Button::onUpdate(Render &render)
 
 void Button::centerText()
 {
-    if(m_text != NULL)
+    if(m_text)
 	{
 		m_text->setPositionOrigin(m_text->getDefaultPos() + m_text->getDefaultSize()/2.0f, true);
 		m_text->setPosition(getDefaultPos() + getDefaultSize()/2.0f);

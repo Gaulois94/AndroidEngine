@@ -21,7 +21,7 @@ struct TouchCoord
 	float y=0.0f; /** <The last y coords*/
 };
 
-extern TouchCoord touchCoord[5];
+extern TouchCoord touchCoord[10];
 
 bool touchInRect(const Rectangle3f& rect, uint32_t indice);
 bool touchInRect(const Rectangle2f& rect, uint32_t indice);

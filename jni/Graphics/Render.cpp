@@ -23,8 +23,13 @@ void Render::updateFocus(uint32_t pID, Render& render)
 
 void Render::update(Render& render)
 {
+	Updatable::update(*this);
+}
+
+void Render::updateGPU(Render& render)
+{
 	initDraw();
-	Render::update(*this);
+	Updatable::updateGPU(*this);
 	stopDraw();
 }
 

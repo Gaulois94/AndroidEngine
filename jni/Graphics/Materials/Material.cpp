@@ -1,5 +1,7 @@
 #include "Materials/Material.h"
 
+float Material::maskColor[4];
+
 Material::Material(const Shader *shader) : m_shader(shader), m_texture(NULL), m_vboID(0), m_isUsingShader(false)
 {}
 
@@ -25,10 +27,11 @@ void Material::init(Render& render, const glm::mat4& mvp)
 
 	if(m_texture)
 	{
-		float maskColor[4];
-		m_texture->getMaskColor().getFloatArray(maskColor);
 		if(uMaskColor != -1)
+		{
+			m_texture->getMaskColor().getFloatArray(maskColor);
 			glUniform4fv(uMaskColor, 1, maskColor);
+		}
 		if(uUseTexture != -1)
 			glUniform1i(uUseTexture, true);
 		if(uTextureHandle != -1)
@@ -36,8 +39,16 @@ void Material::init(Render& render, const glm::mat4& mvp)
 	}
 
 	else
+	{
+		if(uMaskColor != -1)
+		{
+			glUniform4fv(uMaskColor, 1, maskColor);
+		}
 		if(uUseTexture != -1)
 			glUniform1i(uUseTexture, false);
+		if(uTextureHandle != -1)
+			glUniform1i(uTextureHandle, 0);
+	}
 }
 
 void Material::bindTexture(const Texture* texture)
@@ -49,6 +60,7 @@ void Material::bindTexture(const Texture* texture)
 
 void Material::unbindTexture()
 {
+	m_texture = NULL;
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 

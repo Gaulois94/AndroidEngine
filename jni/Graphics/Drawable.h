@@ -30,7 +30,7 @@ class Drawable : public Transformable, public Updatable
 		virtual void draw(Render& render, const glm::mat4& transformation=glm::mat4(1.0));
 
 		virtual void updateFocus(uint32_t indicePointer, Render& render);
-		virtual void update(Render& render);
+		virtual void updateGPU(Render& render);
 
 		/** \brief is called by draw.
 		 * \param render The render where the drawable will be drawn.
@@ -48,10 +48,6 @@ class Drawable : public Transformable, public Updatable
 		 * \param s the value of the staticity of the object.*/
 		virtual void staticToCamera(bool s);
 
-		/** \brief set the drawacity of the object. If true, this object will be drawn by draw function (else, draw function will be ignored)
-		 * \param d the value of the drawacity of the object.*/
-		virtual void setCanDraw(bool d);
-
 		/** \brief set the material (and thus the shader) of the object. For many fo the drawable, if the material is null, the draw function will be ignored.
 		 * \param material the new material associated with the Drawable. */
 		virtual void setMaterial(Material* material);
@@ -59,10 +55,6 @@ class Drawable : public Transformable, public Updatable
 		/** \brief set all the transformation to children
 		 * \param t transformation is applied to children or not*/
 		virtual void setTransToChildren(bool t);
-
-		/** \brief Tell if the drawable can be drawn.
-		 * \return the drawacity of the object.*/
-		virtual bool canDraw() const;
 
 		/** \brief Get the material associated with the drawable.
 		 * \return The material associated with the object. Can't be modified.*/

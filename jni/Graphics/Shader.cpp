@@ -16,11 +16,6 @@ Shader::~Shader()
 
 Shader* Shader::loadFromFiles(File vertexFile, File fragFile)
 {
-	return loadFromFiles(vertexFile, fragFile, std::map<std::string, int>());
-}
-
-Shader* Shader::loadFromFiles(File vertexFile, File fragFile, const std::map<std::string, int>& attrib)
-{
 	std::string vertexCode;
 	std::string fragCode;
 
@@ -30,6 +25,7 @@ Shader* Shader::loadFromFiles(File vertexFile, File fragFile, const std::map<std
 		if(line == NULL)
 			break;
 		vertexCode.append(line);	
+		LOG_ERROR("%s", line);
 		free(line);
 	}
 
@@ -41,15 +37,10 @@ Shader* Shader::loadFromFiles(File vertexFile, File fragFile, const std::map<std
 		free(line);
 	}
 
-	return loadFromStrings(vertexCode, fragCode, attrib);
+	return loadFromStrings(vertexCode, fragCode);
 }
 
 Shader* Shader::loadFromStrings(const std::string& vertexString, const std::string& fragString)
-{
-	return loadFromStrings(vertexString, fragString, std::map<std::string, int>());
-}
-
-Shader* Shader::loadFromStrings(const std::string& vertexString, const std::string& fragString, const std::map<std::string, int>& attrib)
 {
 	Shader* shader = new Shader();
 	shader->m_programID = glCreateProgram();
@@ -59,7 +50,6 @@ Shader* Shader::loadFromStrings(const std::string& vertexString, const std::stri
 	glAttachShader(shader->m_programID, shader->m_vertexID);
 	glAttachShader(shader->m_programID, shader->m_fragID);
 
-	shader->bindAttribLocation(attrib);
 	glLinkProgram(shader->m_programID);
 	int linkStatus;
 	glGetProgramiv(shader->m_programID, GL_LINK_STATUS, &linkStatus);
@@ -99,12 +89,6 @@ int Shader::loadShader(const std::string& code, int type)
 	}
 
 	return shader;
-}
-
-void Shader::bindAttribLocation(const std::map<std::string, int>& attrib)
-{
-	for(std::map<std::string, int>::const_iterator it = attrib.begin(); it != attrib.end(); it++)
-		glBindAttribLocation(m_programID, it->second, it->first.c_str());
 }
 
 int Shader::getProgramID() const

@@ -18,8 +18,8 @@ void Circle::setNbEdge(uint32_t nbEdge, float radius)
 	m_nbEdge = nbEdge;
 	glm::vec3* vertexCoords = initVertex(radius, nbEdge);
 	setVertexCoord(vertexCoords);
-	glm::vec3* normalCoord = (glm::vec3*)malloc(nbEdge*3*sizeof(glm::vec3));
-	for(uint32_t i=0; i < nbEdge*3; i++)
+	glm::vec3* normalCoord = (glm::vec3*)malloc((nbEdge+2)*sizeof(glm::vec3));
+	for(uint32_t i=0; i < nbEdge+2; i++)
 		normalCoord[i] = glm::vec3(0, 0, 1);
 	setNormalCoord(normalCoord);
 	free(vertexCoords);
@@ -38,7 +38,7 @@ glm::vec3 Circle::getCenter() const
 
 glm::vec3* Circle::initVertex(float radius, uint32_t nbEdge)
 {
-	glm::vec3* vertexCoord = (glm::vec3*)malloc(nbEdge*3*sizeof(glm::vec3));
+	glm::vec3* vertexCoord = (glm::vec3*)malloc((nbEdge+2)*sizeof(glm::vec3));
 	vertexCoord[0][0] = 0.0f;
 	vertexCoord[0][1] = 0.0f;
 	vertexCoord[0][2] = 0.0f;

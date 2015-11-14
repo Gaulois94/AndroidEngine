@@ -80,8 +80,8 @@ bool Renderer::initializeContext(ANativeWindow* window)
 	}
 
 	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
-	Drawable::initShaders();
 	initializeSurface(window);
+	Drawable::initShaders();
 	return true;
 }
 
@@ -148,6 +148,7 @@ void Renderer::updateFocus(uint32_t pID)
 void Renderer::update(Render& render)
 {
 	Updatable::update(render);
+	Updatable::updateGPU(render);
 }
 
 void Renderer::initDraw()
@@ -172,9 +173,7 @@ void Renderer::onDownTouchEvent(uint32_t i, float x, float y)
 	touchCoord[i].startY = y;
 	touchCoord[i].y      = y;
 
-	LOG_ERROR("DOWN %d", i);
 	updateFocus(i);
-	LOG_ERROR("DOWN FINISH %d", i);
 }
 
 void Renderer::accelerometerEvent(float x, float y, float z)

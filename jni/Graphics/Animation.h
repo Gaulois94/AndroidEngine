@@ -19,7 +19,7 @@ class Animation : public Sprite
 		/** \brief set the current sub sprite to the n position.
 		 * \param n the n sub sprite of the animation.*/
 		virtual void setSubNSpriteCoords(uint32_t n);
-		void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+		void onUpdate(Render& render);
 
 		/** \brief tell if the animation should continue or not.
 		 * \param inAnimation The animation continue

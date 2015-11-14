@@ -38,22 +38,11 @@ class Shader : JniMadeOf
 		 * \param fragmentFile the fragment file.*/
 		static Shader* loadFromFiles(File vertexFile, File fragFile);
 
-		/** \brief create a shader from a vertex and a fragment file.
-		 * \param vertexFile the vertex file.
-		 * \param fragmentFile the fragment file.
-		 * \param attrib the shader attributes associated with an id*/
-		static Shader* loadFromFiles(File vertexFile, File fragFile, const std::map<std::string, int>& attrib); 
-
-		/** \brief create a shader from a vertex and a fragment string.
-		 * \param vertexString the vertex string.
-		 * \param fragmentString the fragment string.*/
-		static Shader* loadFromStrings(const std::string& vertexString, const std::string& fragString);
-
 		/** \brief create a shader from a vertex and a fragment string.
 		 * \param vertexString the vertex string.
 		 * \param fragmentString the fragment string.
-		 * \param attrib the shader attributes associated with an id*/
-		static Shader* loadFromStrings(const std::string& vertexString, const std::string& fragString, const std::map<std::string, int>& attrib);
+		 * */
+		static Shader* loadFromStrings(const std::string& vertexString, const std::string& fragString);
 		static ResourcesManager<Shader*> shaders; 
 	private:
 		GLuint m_programID;
@@ -61,7 +50,6 @@ class Shader : JniMadeOf
 		GLuint m_fragID;
 
 		/** \brief Bind the attributes key string by an ID */
-		void bindAttribLocation(const std::map<std::string, int>& attrib);
 		static int loadShader(const std::string& code, int type);
 };
 

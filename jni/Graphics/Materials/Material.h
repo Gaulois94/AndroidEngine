@@ -46,6 +46,7 @@ class Material : public JniMadeOf
 		const Texture* m_texture;
 		GLuint m_vboID;
 		bool m_isUsingShader;
+		static float maskColor[4];
 };
 
 #endif

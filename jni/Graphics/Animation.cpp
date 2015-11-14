@@ -4,7 +4,7 @@ Animation::Animation(Updatable* parent, Material* material, const Texture* textu
 {
 }
 
-void Animation::onDraw(Render& render, const glm::mat4& mvp)
+void Animation::onUpdate(Render& render)
 {
 	if(m_inAnimation)
 	{
@@ -16,7 +16,7 @@ void Animation::onDraw(Render& render, const glm::mat4& mvp)
 		else
 			m_iFrame++;
 	}
-	Sprite::onDraw(render, mvp);
+	Sprite::onUpdate(render);
 }
 
 void Animation::setSubNSpriteCoords(uint32_t n)

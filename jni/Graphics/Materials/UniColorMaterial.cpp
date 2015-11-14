@@ -19,11 +19,8 @@ UniColorMaterial::~UniColorMaterial()
 void UniColorMaterial::init(Render& render, const glm::mat4& mvp)
 {
 	Material::init(render, mvp);
-	GLint uUseColor = glGetUniformLocation(m_shader->getProgramID(), "uUseColor");
-	GLint uColor    = glGetUniformLocation(m_shader->getProgramID(), "uColor");
-
-	glUniform4fv(uColor, 1, m_color);
-	glUniform1i(uUseColor, true);
+	GLint vColor    = glGetAttribLocation(m_shader->getProgramID(), "vColor");
+	glVertexAttrib4fv(vColor, m_color);
 }
 
 void UniColorMaterial::setColor(const Color& color)

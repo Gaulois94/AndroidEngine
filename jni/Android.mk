@@ -16,7 +16,7 @@ LOCAL_SRC_FILES += Graphics/Effect/Explosion.cpp Graphics/Effect/Effect.cpp
 
 LOCAL_SRC_FILES += Graphics/Materials/Material.cpp Graphics/Materials/ColorMaterial.cpp Graphics/Materials/UniColorMaterial.cpp Graphics/Materials/nativeMaterial.cpp Graphics/Materials/nativeUniColorMaterial.cpp Graphics/Materials/ObjMaterial.cpp Graphics/MaterialWrapper.cpp Graphics/Materials/EffectMaterial.cpp Graphics/Materials/ExplosionMaterial.cpp Graphics/Materials/TextureMaterial.cpp
 
-LOCAL_SRC_FILES += Graphics/Animation.cpp Graphics/nativeAnimation.cpp Graphics/ Graphics/PatternAnimation.cpp Graphics/nativePatternAnimation.cpp Graphics/SelectAnimation.cpp Graphics/nativeSelectAnimation.cpp
+LOCAL_SRC_FILES += Graphics/Animation.cpp Graphics/nativeAnimation.cpp Graphics/PatternAnimation.cpp Graphics/nativePatternAnimation.cpp Graphics/SelectAnimation.cpp Graphics/nativeSelectAnimation.cpp
 
 LOCAL_SRC_FILES += Graphics/Widgets/Button.cpp Graphics/Widgets/CheckBox.cpp Graphics/Widgets/Active.cpp
 

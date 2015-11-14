@@ -31,6 +31,11 @@ class Updatable : public JniMadeOf
 		 */
 		virtual void update(Render &render);
 
+		/** \brief Update the Updatable and its children toward the GPU (draw function for example)
+		 *  \param render the render from where the updatable could interact
+		 */
+		virtual void updateGPU(Render &render);
+
 		/** \brief because maybe you don't want to update the Updatable children on some case, you can just put your updates operations here.
 		 * \param render the render from where the updatable could interact*/
 		virtual void onUpdate(Render &render);
@@ -73,6 +78,10 @@ class Updatable : public JniMadeOf
 		 * \param u the value of canUpdate*/
 		void setCanUpdate(bool u);
 
+		/** \brief Tell if the Updatableshould be updated on GPU side
+		 * \param d the value of m_canDraw.*/
+		virtual void setCanDraw(bool d);
+
 		/** \brief Return Updatable's parent.
 		 * \return the Updatable parent
 		*/
@@ -81,11 +90,16 @@ class Updatable : public JniMadeOf
 		/** \brief tell if the updatable will be updated after each call of update()
 		 * \return return the value of m_canUpdate*/
 		bool getCanUpdate() const;
+
+		/** \brief Tell if the Updatable can be update on GPU side.
+		 * \return m_canDraw*/
+		virtual bool canDraw() const;
 	protected:
 		std::list <Updatable*> m_child; /**< Child's list. */
 		Updatable *m_parent; /**< The Updatable's parent. */
 		bool m_updateFocus;
 		bool m_canUpdate;
+		bool m_canDraw;
 
 		/** \brief extract a list of T object from the Updatable child's list(Widget for example)
 		 * \return a list of all T objects from Updatable's children*/

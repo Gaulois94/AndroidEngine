@@ -28,6 +28,7 @@ class Render : public Updatable
 		virtual void updateFocus(uint32_t pointerEvent, Render& render);
 
 		virtual void update(Render& render);
+		virtual void updateGPU(Render& render);
 
 		/** \brief draw all the information got by draw function*/
 		virtual void display()=0;

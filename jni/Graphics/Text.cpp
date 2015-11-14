@@ -40,15 +40,16 @@ void Text::setText(const char* text)
 	}
 
 	//A text is just a number of letter drawn one by one
-	float *textureCoords = (float*) malloc(strlen(text) * 4 * 2 * sizeof(float));
-	float *letterCoords = (float*) malloc(strlen(text) * 4 * 3 * sizeof(float));
+	float *textureCoords = (float*) malloc(strlen(m_text) * 4 * 2 * sizeof(float));
+	float *letterCoords = (float*) malloc(strlen(m_text) * 4 * 3 * sizeof(float));
 
 	//We start at the position (0.0, 0.0)
 	float posX = 0.0f;
 	float posY = 0.0f;
 
-	for(unsigned int i=0; i < strlen(text); i++)
+	for(unsigned int i=0; m_text[i] != '\0'; i++)
 	{
+		LOG_ERROR("%c", m_text[i]);
 		//If the character is \n, we jump to the next line (posY -= m_font->getLineHeight())
 		if(text[i] == CHAR_NL)
 		{
@@ -103,30 +104,41 @@ void Text::onDraw(Render& render, const glm::mat4& mvp)
 	if(m_font == NULL || m_text == NULL || m_material == NULL || !glIsBuffer(m_vboID))
 		return;
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	m_material->bindTexture(m_font->getTexture());
 	m_material->init(render, mvp);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
 		GLint vPosition      = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
+		GLint vNormal        = glGetAttribLocation(m_material->getShader()->getProgramID(), "vNormal");
 		GLint vTextureCoord  = glGetAttribLocation(m_material->getShader()->getProgramID(), "vTextureCoord");
 
+		if(vNormal != -1)
+			glVertexAttrib3f(vNormal, 0.0, 0.0, 1.0);
+
 		glEnableVertexAttribArray(vPosition);
-		if(vTextureCoord != -1)
-			glEnableVertexAttribArray(vTextureCoord);
 
 		GLint uMvp           = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
 
 		glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
 
-		glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, 3*sizeof(float), BUFFER_OFFSET(NULL));
+		glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, 3*sizeof(float), BUFFER_OFFSET(0));
 		if(vTextureCoord != -1)
+		{
+			glEnableVertexAttribArray(vTextureCoord);
 			glVertexAttribPointer(vTextureCoord, 2, GL_FLOAT, false, 2*sizeof(float), BUFFER_OFFSET(4 * 3 * sizeof(float) * strlen(m_text)));
+		}
 
 		for(uint32_t i=0; i < strlen(m_text); i++)
 			glDrawArrays(GL_TRIANGLE_STRIP, i*4, 4);
+
+		glDisableVertexAttribArray(vPosition);
+		if(vNormal != -1)
+			glDisableVertexAttribArray(vNormal);
+		if(vTextureCoord != -1)
+			glDisableVertexAttribArray(vTextureCoord);
 	}
-	m_material->unbindTexture();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	m_material->unbindTexture();
 }
 
 const Font* Text::getFont() const
@@ -147,7 +159,7 @@ void Text::initVbos(float* letterCoords, float* textureCoords)
 	{
 		int size = 4 * sizeof(float) * strlen(m_text);
 		//3 for letterCoord and 2 for textureCoord
-		glBufferData(GL_ARRAY_BUFFER, 5*size, NULL, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 5*size, NULL, GL_DYNAMIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, 3*size, letterCoords);
 		glBufferSubData(GL_ARRAY_BUFFER, 3*size, 2*size, textureCoords);
 	}

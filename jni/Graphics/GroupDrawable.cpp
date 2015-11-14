@@ -27,13 +27,19 @@ void GroupDrawable::draw(Render& render, const glm::mat4& transformation)
 	glm::mat4 mvp = transformation*getMatrix();
 
 	for(std::list<Drawable*>::iterator it = m_drawables.begin(); it != m_drawables.end(); it++)
-		if((*it) != NULL)
+		if((*it))
 			(*it)->draw(render, mvp);
+
+	if(m_material)
+		m_material->enableShader();
 
 	if(m_staticToCamera)
 		onDraw(render, mvp);
 	else
 		onDraw(render, render.getCamera().getMatrix() * mvp);
+
+	if(m_material)
+		m_material->disableShader();
 }
 
 void GroupDrawable::onDraw(Render& render, const glm::mat4& transformation)

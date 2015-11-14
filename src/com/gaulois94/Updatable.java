@@ -81,15 +81,27 @@ public class Updatable extends JniMadeOf
 		return getParentUpdatable(m_ptr);
 	}
 
+	public void setCanDraw(Boolean d)
+	{
+		setCanDrawUpdatable(m_ptr, d ? 1 : 0);
+	}
+
+	public Boolean canDraw()
+	{
+		return canDrawUpdatable(m_ptr) != 0;
+	}
+
 	protected static native long      createUpdatable(long parent);
-	protected native void      updateFocusUpdatable(long ptr, int pID, long render);
-	protected native void      onFocusUpdatable(long ptr, int pID, long render);
-	protected native void      updateUpdatable(long ptr, long render);
-	protected native void      onUpdateUpdatable(long ptr, long render);
-	protected native void      addChildUpdatable(long ptr, long child, int pos);
-	protected native void      setParentUpdatable(long ptr, long parent, int pos);
-	protected native boolean   removeChildUpdatable(long ptr, long child);
-	protected native boolean   removeChildPosUpdatable(long ptr, int pos);
-	protected native boolean   isChildUpdatable(long ptr, long child);
+	protected native void    updateFocusUpdatable(long ptr, int pID, long render);
+	protected native void    onFocusUpdatable(long ptr, int pID, long render);
+	protected native void    updateUpdatable(long ptr, long render);
+	protected native void    onUpdateUpdatable(long ptr, long render);
+	protected native void    addChildUpdatable(long ptr, long child, int pos);
+	protected native void    setParentUpdatable(long ptr, long parent, int pos);
+	protected native boolean removeChildUpdatable(long ptr, long child);
+	protected native boolean removeChildPosUpdatable(long ptr, int pos);
+	protected native boolean isChildUpdatable(long ptr, long child);
 	protected native Updatable getParentUpdatable(long ptr);
+	protected native void    setCanDrawUpdatable(long ptr, int d);
+	protected native int     canDrawUpdatable(long ptr);
 }

@@ -26,16 +26,6 @@ public abstract class Drawable extends Transformable
 		return;
 	}
 
-	public void setCanDraw(Boolean d)
-	{
-		setCanDrawDrawable(m_ptr, d ? 1 : 0);
-	}
-
-	public Boolean canDraw()
-	{
-		return canDrawDrawable(m_ptr) != 0;
-	}
-
 	public void staticToCamera(Boolean s)
 	{
 		staticToCameraDrawable(m_ptr, s ? 1:0);
@@ -115,8 +105,6 @@ public abstract class Drawable extends Transformable
 
 	protected native void drawDrawable(long ptr, long rendererPtr);
 
-	protected native void    setCanDrawDrawable(long ptr, int d);
-	protected native int     canDrawDrawable(long ptr);
 	protected native void    staticToCameraDrawable(long ptr, int s);
 	protected native int     isStaticToCameraDrawable(long ptr);
 	protected native long    getMaterialDrawable(long ptr);

@@ -3,7 +3,7 @@
 
 bool Updatable::focusIsCheck = false;
 
-Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true)
+Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true), m_canDraw(true)
 {
 	if(parent)
 		parent->addChild(this);
@@ -40,6 +40,15 @@ void Updatable::update(Render &render)
 			(*it)->update(render);
 }
 
+void Updatable::updateGPU(Render& render)
+{
+	if(!m_canUpdate || !m_canDraw)
+		return;
+	for(std::list<Updatable*>::iterator it = m_child.begin(); it!=m_child.end(); ++it)
+		if(*it)
+			(*it)->updateGPU(render);
+}
+
 void Updatable::onUpdate(Render &render)
 {}
 
@@ -71,6 +80,11 @@ void Updatable::setUpdateFocus(bool u)
 void Updatable::setCanUpdate(bool u)
 {
 	m_canUpdate = u;
+}
+
+void Updatable::setCanDraw(bool d)
+{
+	m_canDraw = d;
 }
 
 void Updatable::setParent(Updatable *parent, int pos)
@@ -129,6 +143,12 @@ bool Updatable::getCanUpdate() const
 {
 	return m_canUpdate;
 }
+
+bool Updatable::canDraw() const
+{
+	return m_canDraw;
+}
+
 
 const Updatable* Updatable::getParent() const
 {

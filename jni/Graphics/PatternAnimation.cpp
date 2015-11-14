@@ -13,6 +13,6 @@ void PatternAnimation::setSubNSpriteCoords(uint32_t n)
 	if(m_texture)
 	{
 		glm::vec2 pos = glm::vec2(m_posX + (m_padX+m_width) * (n%m_nX), m_posY + (m_padY + m_height)*(n/m_nX));
-		Sprite::setSubTextureRect(m_texture->getRect(pos, glm::vec2(m_width, m_height)));
+		setSubTextureRect(m_texture->getRect(pos, glm::vec2(m_width, m_height)));
 	}
 }

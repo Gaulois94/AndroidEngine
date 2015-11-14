@@ -18,6 +18,10 @@ extern "C"
 	JNIEXPORT bool    JNICALL Java_com_gaulois94_Updatable_removeChildPosUpdatable(JNIEnv* jenv, jobject jobj, jlong ptr, int pos);
 	JNIEXPORT bool    JNICALL Java_com_gaulois94_Updatable_isChildUpdatable(JNIEnv* jenv, jobject jobj, jlong ptr, jlong child);
 	JNIEXPORT jobject JNICALL Java_com_gaulois94_Updatable_getParentUpdatable(JNIEnv* jenv, jobject jobj, jlong ptr);
+
+	JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_setCanDrawUpdatable(JNIEnv *, jobject, jlong, bool);
+	JNIEXPORT jint    JNICALL Java_com_gaulois94_Updatable_canDrawUpdatable(JNIEnv *, jobject, jlong);
+
 }
 
 #endif

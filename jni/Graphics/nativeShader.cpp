@@ -9,7 +9,7 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Shader_loadFromFilesShader(J
 	if(attrib == NULL)
 		shader = Shader::loadFromFiles(vertexFile, fragFile);
 	else
-		shader = Shader::loadFromFiles(vertexFile, fragFile, makeMap(jenv, keys, values));
+		shader = Shader::loadFromFiles(vertexFile, fragFile);
 
 	return (jlong) shader;
 }
@@ -20,8 +20,7 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Shader_loadFromStringShader(
 		return (jlong) Shader::loadFromStrings(std::string(jenv->GetStringUTFChars(vertexCode, 0)), 
 				std::string(jenv->GetStringUTFChars(fragCode, 0)));
 	return (jlong) Shader::loadFromStrings(std::string(jenv->GetStringUTFChars(vertexCode, 0)), 
-			std::string(jenv->GetStringUTFChars(fragCode, 0)), 
-			makeMap(jenv, keys, values));
+			std::string(jenv->GetStringUTFChars(fragCode, 0)));
 }
 
 JNIEXPORT jint JNICALL Java_com_gaulois94_Graphics_Shader_getProgramIDShader(JNIEnv* jenv, jobject jobj, jlong ptr)
