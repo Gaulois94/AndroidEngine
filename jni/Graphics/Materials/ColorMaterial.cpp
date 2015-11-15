@@ -21,6 +21,13 @@ void ColorMaterial::init(Render& render, const glm::mat4& mvp)
 	glVertexAttribPointer(vColor, 4, GL_FLOAT, false, 0, NULL);
 }
 
+void ColorMaterial::disableShader()
+{
+	Material::disableShader();
+	GLint vColor    = glGetAttribLocation(m_shader->getProgramID(), "vColor");
+	glDisableVertexAttribArray(vColor);
+}
+
 void ColorMaterial::setColor(const Color* color, int nbVertex)
 {
 	float* c = (float*) malloc(nbVertex * 4 * sizeof(float));

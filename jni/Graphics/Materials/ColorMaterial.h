@@ -28,6 +28,7 @@ class ColorMaterial : public Material
 		ColorMaterial(const float* color, int nbVertex);
 
 		virtual void init(Render& render, const glm::mat4& mvp);
+		virtual void disableShader();
 
 		/** \brief set the color of all the vertices
 		 * \param color the array of color. One value per vertex

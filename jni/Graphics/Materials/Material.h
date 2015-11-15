@@ -18,7 +18,7 @@ class Material : public JniMadeOf
 		~Material();
 
 		/** \brief enable the shader then the material. Disable the material with disableShader after you have finish to draw your Drawable (or anything) associated with this material*/
-		void enableShader();
+		virtual void enableShader();
 
 		/** \brief bind a texture with this material
 		 * \param texture the Texture which will be bind with this material.*/
@@ -33,7 +33,7 @@ class Material : public JniMadeOf
 		void unbindTexture();
 
 		/** \brief disable the shader thus the material (should be call after this material is used)*/
-		void disableShader();
+		virtual void disableShader();
 
 		/** \brief get the shader used by this material
 		 * \return the shader.*/
