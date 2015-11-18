@@ -110,8 +110,19 @@ class Active
 		bool isActiveOnce() const;
 
 		/** \brief The active function is the function called when the system is activated
-		 * \param f the new active function. Must be void func(void); prototype*/
+		 * \param f the new active function. Must be void func(void*); prototype
+		 * \param param the void parameters send to the function*/
 		void setActiveFunc(void(*f)(void*), void* param);
+
+		/** \brief The disactive function is the function called when the system is activated
+		 * \param f the new disactive function. Must be void func(void*); prototype
+		 * \param param the void parameters send to the function*/
+		void setDisactiveFunc(void(*f)(void*), void* param);
+
+		/** \brief The change function is the function called when the Active object change its state
+		 * \param f the new change function. Must be void func(Active*, void*); prototype
+		 * \param param the void parameters send to the function*/
+		void setOnChangeFunc(void(*f)(Active*, void*), void* param);
 	protected:
 		bool m_isSelect;
 		bool m_isActive;
@@ -123,6 +134,10 @@ class Active
 		bool m_activeOnce;
 		void (*m_activeFunc)(void*);
 		void* m_activeParam;
+		void (*m_disactiveFunc)(void*);
+		void* m_disactiveParam;
+		void (*m_changeFunc)(Active*, void*);
+		void* m_changeParam;
 };
 
 #endif

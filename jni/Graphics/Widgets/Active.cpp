@@ -1,6 +1,6 @@
 #include "Active.h"
 
-Active::Active(bool select, bool active, bool alwaysUpdateSelection, bool alwaysUpdateActivation) : m_isSelect(select), m_isActive(active), m_alwaysUpdateSelection(alwaysUpdateSelection), m_alwaysUpdateActivation(alwaysUpdateActivation), m_permanentSelected(false), m_permanentActivated(false), m_selectOnce(true), m_activeOnce(true), m_activeFunc(0), m_activeParam(0)
+Active::Active(bool select, bool active, bool alwaysUpdateSelection, bool alwaysUpdateActivation) : m_isSelect(select), m_isActive(active), m_alwaysUpdateSelection(alwaysUpdateSelection), m_alwaysUpdateActivation(alwaysUpdateActivation), m_permanentSelected(false), m_permanentActivated(false), m_selectOnce(true), m_activeOnce(true), m_activeFunc(0), m_activeParam(0), m_disactiveFunc(NULL), m_disactiveParam(NULL), m_changeFunc(NULL), m_changeParam(NULL)
 {}
 
 void Active::update()
@@ -66,11 +66,17 @@ void Active::activeIt()
 	m_isActive = true;
 	if(m_activeFunc)
 		m_activeFunc(m_activeParam);
+	if(m_changeFunc)
+		m_changeFunc(this, m_changeParam);
 }
 
 void Active::disactiveIt()
 {
 	m_isActive = false;
+	if(m_disactiveFunc)
+		m_disactiveFunc(m_disactiveParam);
+	if(m_changeFunc)
+		m_changeFunc(this, m_changeParam);
 }
 
 void Active::setPermanentSelected(bool permanentSelected)
@@ -109,6 +115,18 @@ void Active::setActiveFunc(void(*f)(void*), void* param)
 {
 	m_activeFunc = f;
 	m_activeParam = param;
+}
+
+void Active::setDisactiveFunc(void(*f)(void*), void* param)
+{
+	m_disactiveFunc = f;
+	m_disactiveParam = param;
+}
+
+void Active::setOnChangeFunc(void(*f)(Active*, void*), void* param)
+{
+	m_changeFunc = f;
+	m_changeParam = param;
 }
 
 bool Active::isPermanentSelected() const
