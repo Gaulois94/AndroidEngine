@@ -1,14 +1,14 @@
 package com.gaulois94.Graphics;
 
 import com.gaulois94.JniMadeOf;
-import com.gaulois94.Graphics.Transformable;
+import com.gaulois94.Graphics.GroupTransformable;
 import com.gaulois94.Graphics.Renderer;
 import com.gaulois94.Graphics.Shader;
 import com.gaulois94.Graphics.Materials.Material;
 
 import android.content.Context;
 
-public abstract class Drawable extends Transformable
+public abstract class Drawable extends GroupTransformable
 {
 	public Drawable(long ptr)
 	{
@@ -44,16 +44,6 @@ public abstract class Drawable extends Transformable
 	public Material getMaterial()
 	{
 		return new Material(getMaterialDrawable(m_ptr));
-	}
-
-	public boolean getTransToChildren()
-	{
-		return getTransToChildrenDrawable(m_ptr);
-	}
-
-	public void setTransToChildren(boolean trans)
-	{
-		setTransToChildrenDrawable(m_ptr, trans);
 	}
 
 	//Functions for managing shaders
@@ -109,6 +99,4 @@ public abstract class Drawable extends Transformable
 	protected native int     isStaticToCameraDrawable(long ptr);
 	protected native long    getMaterialDrawable(long ptr);
 	protected native void    setMaterialDrawable(long ptr, long materialPtr);
-	protected native void    setTransToChildrenDrawable(long ptr, boolean trans);
-	protected native boolean getTransToChildrenDrawable(long ptr);
 }

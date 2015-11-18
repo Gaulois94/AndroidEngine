@@ -1,6 +1,6 @@
 #include "Transformable.h"
 
-Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f), m_position(1.0f), m_positionOrigin(1.0f), m_applyTransformation(1.0), m_theta(0.0f), m_phi(0.0f)
+Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f), m_position(1.0f), m_positionOrigin(1.0f), m_applyTransformation(NULL), m_theta(0.0f), m_phi(0.0f)
 {
 	m_defaultPos = glm::vec3(defaultConf.x, defaultConf.y, defaultConf.z);
 	m_defaultSize = glm::vec3(defaultConf.width, defaultConf.height, defaultConf.depth);
@@ -116,7 +116,7 @@ void Transformable::setSphericCoordinate(float r, float theta, float phi)
 	setPosition(glm::vec3(x, y, z));
 }
 
-void Transformable::setApplyTransformation(const glm::mat4& transformation)
+void Transformable::setApplyTransformation(const glm::mat4* transformation)
 {
 	m_applyTransformation = transformation;
 }
@@ -170,7 +170,9 @@ Rectangle3f Transformable::getDefaultConf() const
 
 glm::mat4 Transformable::getMatrix() const
 {
-	return m_applyTransformation * m_mvpMatrix;
+	if(m_applyTransformation)
+		return (*m_applyTransformation) * m_mvpMatrix;
+	return m_mvpMatrix;
 }
 
 SphericCoord Transformable::getSphericCoord() const
@@ -188,7 +190,7 @@ float Transformable::getRadius() const
 	return getPosition().length();
 }
 
-const glm::mat4& Transformable::getApplyTransformation() const
+const glm::mat4* Transformable::getApplyTransformation() const
 {
 	return m_applyTransformation;
 }

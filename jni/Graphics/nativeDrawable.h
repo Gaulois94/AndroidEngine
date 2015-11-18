@@ -34,9 +34,6 @@ JNIEXPORT jint    JNICALL Java_com_gaulois94_Graphics_Drawable_isStaticToCameraD
 JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Drawable_setMaterialDrawable(JNIEnv *, jclass, jlong, jlong);
 JNIEXPORT jlong   JNICALL Java_com_gaulois94_Graphics_Drawable_getMaterialDrawable(JNIEnv *, jclass, jlong);
 
-JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Drawable_setTransToChildrenDrawable(JNIEnv *, jclass, jlong, bool);
-JNIEXPORT bool   JNICALL Java_com_gaulois94_Graphics_Drawable_getTransToChildrenDrawable(JNIEnv *, jclass, jlong);
-
 JNIEXPORT void    JNICALL Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(JNIEnv *, jclass, jobject);
 #ifdef __cplusplus
 }
