@@ -1,7 +1,7 @@
 #include "Drawable.h"
 #include "nativeDrawable.h"
 
-Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : Transformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_staticToCamera(false), m_setTransToChildren(false)
+Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : GroupTransformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_staticToCamera(false)
 {
 	setMaterial(m_material);
 }
@@ -15,27 +15,8 @@ void Drawable::updateGPU(Render& render)
 {
 	if(!m_canUpdate || !m_canDraw)
 		return;
-	if(m_setTransToChildren)
-	{
-		//Set the camera current apply transformation.
-		Camera renderCamera = render.getCamera();
-		//save the old apply matrix
-		glm::mat4 currentApplyTransformation = renderCamera.getApplyTransformation();
-		//apply our transformation to the current one
-		renderCamera.setApplyTransformation(getMatrix() * renderCamera.getApplyTransformation());
-
-		//Call the usual update function
-		draw(render);
-		Updatable::updateGPU(render);
-
-		//restore the apply transformation matrix
-		renderCamera.setApplyTransformation(currentApplyTransformation);
-	}
-	else
-	{
-		draw(render);
-		Updatable::updateGPU(render);
-	}
+	draw(render);
+	Updatable::updateGPU(render);
 }
 
 void Drawable::updateFocus(uint32_t indicePointer, Render& render)
@@ -85,11 +66,6 @@ void Drawable::setMaterial(Material* material)
 	m_material = material;
 }
 
-void Drawable::setTransToChildren(bool t)
-{
-	m_setTransToChildren = t;
-}
-
 void Drawable::staticToCamera(bool s)
 {
 	m_staticToCamera = s;
@@ -98,11 +74,6 @@ void Drawable::staticToCamera(bool s)
 bool Drawable::isStaticToCamera() const
 {
 	return m_staticToCamera;
-}
-
-bool Drawable::getTransToChildren() const
-{
-	return m_setTransToChildren;
 }
 
 const Material* Drawable::getMaterial() const

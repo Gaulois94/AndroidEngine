@@ -5,7 +5,7 @@
     #define BUFFER_OFFSET(offset) ((char*)NULL + (offset))
 #endif
 
-#include "Transformable.h"
+#include "GroupTransformable.h"
 #include "Updatable.h"
 #include "Shader.h"
 #include "Materials/Material.h"
@@ -14,7 +14,7 @@
 #include <GLES2/gl2.h>
 
 /** \brief Basic class drawable */
-class Drawable : public Transformable, public Updatable
+class Drawable : public GroupTransformable, public Updatable
 {
 	public:
 		/** \brief create a Drawable associated with a material (thus a shader)
@@ -52,10 +52,6 @@ class Drawable : public Transformable, public Updatable
 		 * \param material the new material associated with the Drawable. */
 		virtual void setMaterial(Material* material);
 
-		/** \brief set all the transformation to children
-		 * \param t transformation is applied to children or not*/
-		virtual void setTransToChildren(bool t);
-
 		/** \brief Get the material associated with the drawable.
 		 * \return The material associated with the object. Can't be modified.*/
 		virtual const Material* getMaterial() const;
@@ -64,10 +60,6 @@ class Drawable : public Transformable, public Updatable
 		 * \return the staticity of the Drawable*/
 		virtual bool isStaticToCamera() const;
 
-		/** \brief Tell if the transformation should be passed to all the children
-		 * \return transformation is applied to children or not*/
-		virtual bool getTransToChildren() const;
-
 		static void initShaders();
 	protected:
 		virtual void deleteVbos();
@@ -75,7 +67,6 @@ class Drawable : public Transformable, public Updatable
 		GLuint m_vboID;
 		bool m_canDraw;
 		bool m_staticToCamera;
-		bool m_setTransToChildren;
 };
 
 #endif
