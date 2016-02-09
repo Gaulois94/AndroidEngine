@@ -44,6 +44,11 @@ File::File(JNIEnv* env, jobject context, int id, const char* mode)
 	}
 }
 
+File::File(const char* path, const char* mode)
+{
+
+}
+
 File::File(JNIEnv* env, jobject context, const char* path, const char* mode)
 {
 	m_pos  = 0;

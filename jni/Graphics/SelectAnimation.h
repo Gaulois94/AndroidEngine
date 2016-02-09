@@ -19,7 +19,7 @@ class SelectAnimation : public Animation
 
 		virtual void setSubNSpriteCoords(uint32_t n);
 	private:
-		Rectangle2ui* m_rectAnimation;/** <Store the border of each animation. If null, we will use the other information about the animation (pad, ...)*/
+		Rectangle2ui* m_rectAnimation;/** <Store the border of each animation.*/
 };
 
 #endif

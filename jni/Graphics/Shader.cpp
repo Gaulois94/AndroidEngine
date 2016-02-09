@@ -19,20 +19,15 @@ Shader* Shader::loadFromFiles(File vertexFile, File fragFile)
 	std::string vertexCode;
 	std::string fragCode;
 
-	char* line;
+	char* line=NULL;
 	while((line = vertexFile.readLine()) != NULL)
 	{
-		if(line == NULL)
-			break;
 		vertexCode.append(line);	
-		LOG_ERROR("%s", line);
 		free(line);
 	}
 
 	while((line = fragFile.readLine()) != NULL)
 	{
-		if(line == NULL)
-			break;
 		fragCode.append(line);	
 		free(line);
 	}

@@ -7,6 +7,7 @@ void Active::update()
 {
 	if(m_alwaysUpdateSelection)
 		updateSelection();
+
 	if(m_alwaysUpdateActivation)
 		updateActivation();
 }

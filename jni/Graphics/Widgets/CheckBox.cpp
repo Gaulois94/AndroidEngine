@@ -60,14 +60,12 @@ void CheckBox::setRectangleMaterial(Material* material)
 
 void CheckBox::activeIt()
 {
-	LOG_ERROR("ACTIVE");
 	Active::activeIt();
 	m_cross->setCanDraw(true);
 }
 
 void CheckBox::disactiveIt()
 {
-	LOG_ERROR("DISACTIVE");
 	Active::disactiveIt();
 	m_cross->setCanDraw(false);
 }

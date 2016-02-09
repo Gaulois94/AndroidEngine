@@ -12,6 +12,7 @@
 #include "stdio.h"
 #include "jni.h"
 #include "logger.h"
+#include "JniMadeOf.h"
 
 /** \class File
  * \brief Files manager
@@ -41,6 +42,12 @@ class File
 		 * \param mode    The file mode access
 		 */
 		File(JNIEnv* env, jobject context, const char* path, const char* mode);
+		
+		/** \brief Create a file from an assets path on the assets directory.
+		 * Do the same job than its version with JNIEnv and the context with their default value (from JniMadeOf)
+		 * \param path The file path on the assets directory
+		 * \param mode The file mode access*/
+		File(const char* path, const char* mode);
 
 		~File();
 
