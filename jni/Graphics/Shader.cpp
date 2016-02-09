@@ -25,7 +25,6 @@ Shader* Shader::loadFromFiles(File vertexFile, File fragFile)
 		if(line == NULL)
 			break;
 		vertexCode.append(line);	
-		LOG_ERROR("%s", line);
 		free(line);
 	}
 

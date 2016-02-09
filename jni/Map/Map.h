@@ -77,22 +77,61 @@ class Map : public Updatable, GroupTransformable
 		 * \param y the y coords
 		 * \return tells if the coords are outsize the Map or not.*/
 		bool isOutside(int32_t x, int32_t y);
-	private:
-		XML_Parser parser;
+
+	//Don't modifie these variables. They are public because of the parser functions that need to modify them directly
+	public:
+		XML_Parser m_parser;
+		//Files
 		std::vector<Texture*> m_textures;
+		std::vector<StaticFile*> m_staticFiles;
+		std::vector<DynamicFile*> m_dynamicFiles;
+
+		//Traces
+		std::vector<StaticTrace*> m_staticTraces;
+		std::vector<DynamicTrace*> m_dynamicTraces;
 		uint32_t m_nbCasesX;
 		uint32_t m_nbCasesY;
 		uint32_t m_caseSizeX;
 		uint32_t m_caseSizeY;
 };
 
+/** \brief Default fonction called on a new element of the XML. It will set the correct startElement function following the section name (Files, Objects or Traces)
+ * \param name the name of the section
+ * \param attrs the attributes of the section
+ *  */
 void startElement(void* map, const char* name, const char** attrs);
+
+/** \brief Parse the section Files of the XML
+ * \param name the name of the section
+ * \param attrs the attributes of the section
+ *  */
 void startElementFiles(void* map, const char* name, const char** attrs);
+
+/** \brief Parse the section Objects of the XML
+ * \param name the name of the section
+ * \param attrs the attributes of the section
+ *  */
 void startElementObjects(void* map, const char* name, const char** attrs);
+
+/** \brief Parse the section Trace of the XML
+ * \param name the name of the section
+ * \param attrs the attributes of the section
+ *  */
 void startElementTraces(void* map, const char* name, const char** attrs);
+
+/** \brief Function called after that the section is readed
+ * \param name the name of the section
+ * \param attrs the attributes of the section*/
 void endElement(void* map, const char* name);
 
-extern uint32_t XML_depth;
-extern uint32_t XML_NthColumn;
+/** \brief extract x and y from a str like xxy where the second x is a cross
+ * \param str the str
+ * \param x pointer to store the x coordinate
+ * \param y pointer to store the y coordinate
+ *  */
+void getXYFromStr(const char* str, uint32_t* x, uint32_t* y);
+
+extern uint32_t XML_depth; /** <!XML depth on the current XML file*/
+extern uint32_t XML_NthColumn; /** <!XML column number for static files on the current XML file*/
 
 #endif
