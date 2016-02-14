@@ -3,8 +3,9 @@
 
 #include "Updatable.h"
 #include "Map/MapFiles.h"
-#include "Map/StaticDatas.h"
-#include "Map/ObjectDatas.h"
+#include "Map/Datas/StaticDatas.h"
+#include "Map/Datas/ObjectDatas.h"
+#include "Map/Datas/DynamicDatas.h"
 #include "expat.h"
 
 /** \class Map 
@@ -53,42 +54,72 @@ class Map : public Updatable, GroupTransformable
 
 		void onUpdate(Render& render);
 
-		/** \brief get static datas from name and type. This function is aimed to be overwrited.
+		/** \brief get the pointer function to create a static tile from name and type. This function is aimed to be overwrited.
 		 * \param name the name of the tile contained on the xml file
 		 * \param type the type of the tile contained on the xml file
-		 * \return a StaticDatas. NULL if not correct*/
-		virtual StaticDatas* getStaticDatas(const char* name, const char* type); 
+		 * \return a pointer function to create static tiles. NULL if not correct*/
+		virtual createStaticTilePtr getStaticTileFunction(const char* name, const char* type)const; 
 
-		/** \brief get the tile on the coord x, y on OpenGL coords
+		/** \brief Get a pointer to a Material for a specific static tile (following its name and its type). This function is aimed to be overwrited
+		 * \param name the name of the tile contained on the xml file
+		 * \param type the type of the tile contained on the xml file
+		 * \return a pointer to a Material. NULL if not correct*/
+		virtual Material*           getStaticTileMaterial(const char* name, const char* type)const;
+
+		/** \brief get the pointer function to create a dynamic tile from name and type. This function is aimed to be overwrited.
+		 * \param name the name of the tile contained on the xml file
+		 * \param type the type of the tile contained on the xml file
+		 * \return a pointer function to create dynamic tiles. NULL if not correct*/
+		virtual createDynamicTilePtr getDynamicTileFunction(const char* name, const char* type) const; 
+
+		/** \brief Get a pointer to a Material for a specific dynamic tile (following its name and its type). This function is aimed to be overwrited
+		 * \param name the name of the tile contained on the xml file
+		 * \param type the type of the tile contained on the xml file
+		 * \return a pointer to a Material. NULL if not correct*/
+		virtual Material*           getDynamicTileMaterial(const char* name, const char* type) const;
+
+		/** \brief set the pointer function for this ObjectDatas following its name and its type
+		 * \param name the name of the tile contained on the xml file
+		 * \param type the type of the tile contained on the xml file
+		 * \return a pointer function to create object. NULL if not correct*/
+		virtual createObjectPtr getObjectFunction(const char* name, const char* type) const;
+
+		/** \brief get the tile on the coord x, y in pixels coords (and not OpenGL)
 		 * \param x the x component
 		 * \param y the y component
 		 * \return the Tile at this position. NULL if nothing*/
-		Tile* getTile(int32_t x, int32_t y);
+		Tile* getTile(uint32_t x, uint32_t y);
 
-		/** \brief get the tile on the coord x, y on OpenGL coords in a specific trace
+		/** \brief get the tile on the coord x, y in pixels coords in a specific trace
 		 * \param x the x component
 		 * \param y the y component
 		 * \param traceName the trace name. We will check this position on this trace only.
 		 * \return the Tile at this position. NULL if nothing (trace not found or position not found)*/
-		Tile* getTile(int32_t x, int32_t y, const char* traceName);
+		Tile* getTile(uint32_t x, uint32_t y, const char* traceName);
 
 		/** \brief tell if the position x, y is outside the Map. The Map Rect is (0, 0, nbCaseX*tileSizeX, nbCaseY*tileSizeY)
 		 * \param x the x coords
 		 * \param y the y coords
 		 * \return tells if the coords are outsize the Map or not.*/
-		bool isOutside(int32_t x, int32_t y);
+		bool isOutside(uint32_t x, uint32_t y) const;
 
 	//Don't modifie these variables. They are public because of the parser functions that need to modify them directly
 	public:
+		//The Parser
 		XML_Parser m_parser;
 		//Files
-		std::vector<Texture*> m_textures;
-		std::vector<StaticFile*> m_staticFiles;
-		std::vector<DynamicFile*> m_dynamicFiles;
+		std::vector<Texture*>      m_textures;
+		std::vector<StaticFile*>   m_staticFiles;
+		std::vector<DynamicFile*>  m_dynamicFiles;
+
+		//Objects
+		std::vector<ObjectDatas*>  m_objects;
 
 		//Traces
-		std::vector<StaticTrace*> m_staticTraces;
+		std::vector<StaticTrace*>  m_staticTraces;
 		std::vector<DynamicTrace*> m_dynamicTraces;
+
+		//Map datas
 		uint32_t m_nbCasesX;
 		uint32_t m_nbCasesY;
 		uint32_t m_caseSizeX;
