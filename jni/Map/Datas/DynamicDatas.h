@@ -1,11 +1,13 @@
 #ifndef  DYNAMICDATAS_INC
 #define  DYNAMICDATAS_INC
 
-#include "Map/Tile.h"
-#include "Graphique/Texture.h"
-#include "Graphique/Rectangle2.h"
+#include "Map/Tile/DynamicTile.h"
+#include "Graphics/Texture.h"
+#include "Graphics/Rectangle2.h"
+#include "Updatable.h"
+#include <vector>
 
-typedef Tile*(*createDynamicTilePtr)(const Rectangle2f*, Texture*, const Rectangle2f**, uint32_t, uint32_t, uint32_t);
+typedef DynamicTile*(*createDynamicTilePtr)(Updatable*, Material*, Texture*, const Rectangle2f&, const std::vector<Rectangle2f*>&, uint32_t, uint32_t);
 
 struct DynamicEntity
 {

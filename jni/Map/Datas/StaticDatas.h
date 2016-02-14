@@ -1,9 +1,11 @@
 #ifndef  STATICDATAS_INC
 #define  STATICDATAS_INC
 
-#include "Graphique/Rectangle2.h"
+#include "Graphics/Rectangle2.h"
+#include "Graphics/Texture.h"
+#include "Updatable.h"
 
-typedef Tile*(*createStaticTilePtr)(Texture*, const Rectangle2f*);
+typedef StaticTile*(*createStaticTilePtr)(Updatable*, Texture*, const Rectangle2f&);
 
 struct StaticDatas
 {

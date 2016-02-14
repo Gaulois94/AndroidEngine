@@ -424,13 +424,8 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 				dest.width  = textureRect->w;
 				dest.height = textureRect->h;
 
-				//Need this array for giving all our Rectangle2f* on TectureRect to the animation
-				const Rectangle2f** subRects = (const Rectangle2f**)malloc(sizeof(Rectangle2f*)*List_getLen(de->tileRects));
-				for(i=0; i < List_getLen(de->tileRects); i++)
-					subRects[i] = de->tileRects[i];
-				
 				//Then finally create the tile
-				Tile* tile = de->createDynamicTile(&dest, df->file->getTexture(), subRects, de->tileRects->size(), 0, 8);
+				Tile* tile = de->createDynamicTile(df->material, df->file->getTexture(), dest, textureRect, de->tileRects->size(), 0, 8);
 				dt->addTile(tile);
 				free(subRects);
 			}
