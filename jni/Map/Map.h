@@ -16,12 +16,15 @@
  *
  *	<Files>
  *	 <Static file="path" spacing="axb" tileSize="axb">
- *	  <StaticTile name="name" type="type"/>
+ *	  <staticTile name="name" type="type"/>
  *	 </Static>
  *	 <Dynamic file="path"> //Used for animation
- *	  <DynamicEntity name="name">
- *	   <DynamicTile name="name" pos="axb" size="axb" type="type"/>
- *	  </DynamicEntity>
+ *	  <dynamicEntity name="name">
+ *	   <dynamicTile name="name" pos="axb" size="axb" type="type"/>
+ *	  </dynamicEntity>
+ *	  <staticEntity n="n" nX="nX" name="name" pos="axb" spacing="axb" size="axb">
+ *		<staticTile name="name" type="type"/>
+ *	  </staticEntity>
  *	 </Dynamic>
  *	</Files>
  *
@@ -31,7 +34,10 @@
  *
  *  <Traces>
  *   <StaticTrace name="name" shift="axb" size="axb">
- *    <Column fileID="fileID" tileID="tileID" objectID="objectID"/>
+ *    <Column>
+ *	   <Static fileID="fileID" tileID="tileID" objectID="objectID"/>
+ *	   <Animation fileID="fileID" tileID="tileID" name="name"/> #name is in CSV format
+ *    </Column>
  *   </StaticTraces>
  *   <DynamicTrace name="name">
  *    <DynamicTile animName="name" animeTime="time" fileID="fileID" origin="axb" position="axb" tileID="tileID"/>
