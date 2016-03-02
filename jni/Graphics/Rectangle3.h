@@ -39,6 +39,16 @@ class Rectangle3
 			depth  = size.z;
 		}
 
+		Rectangle3<T>(const Rectangle2<T>& rect, T rZ, T rDepth)
+		{
+			x = rect.x;
+			y = rect.y;
+			z = rZ;
+			width  = rect.width;
+			height = rect.height;
+			depth  = rDepth;
+		}
+
 		T x;
 		T y;
 		T z;

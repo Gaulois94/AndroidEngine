@@ -12,6 +12,7 @@ class GroupTransformable : public Transformable
 		GroupTransformable(const Rectangle3f& defaultConf);
 
 		/** \brief add a Transformable in the Group Transformable
+		 * If you add a Transformable, do not set its apply transformation after : indeed, this fonction set the transformable apply transformation of its own.
 		 * \param transformable The Transformable to add*/
 		void addTransformable(Transformable* transformable);
 
