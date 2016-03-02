@@ -20,6 +20,8 @@ LOCAL_SRC_FILES += Graphics/Animation.cpp Graphics/nativeAnimation.cpp Graphics/
 
 LOCAL_SRC_FILES += Graphics/Widgets/Button.cpp Graphics/Widgets/CheckBox.cpp Graphics/Widgets/Active.cpp Graphics/Widgets/CheckCircle.cpp Graphics/Widgets/GroupActivable.cpp
 
+LOCAL_SRC_FILES += Map/Map.cpp Map/MapFiles.cpp  Map/Traces/DynamicTrace.cpp Map/Traces/StaticTrace.cpp Map/Traces/Trace.cpp Map/Datas/DynamicDatas.cpp Map/Tiles/StaticTile.cpp Map/Tiles/Tile.cpp
+
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv2 -ljnigraphics -latomic
 include $(BUILD_SHARED_LIBRARY)
 
