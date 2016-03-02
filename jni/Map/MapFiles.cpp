@@ -1,6 +1,14 @@
 #include "Map/MapFiles.h"
 
-StaticFile::StaticFile(Texture* texture, uint32_t spacX, uint32_t spacY, uint32_t sizeX, uint32_t sizeY) : m_texture(texture), m_spacingX(spacX), m_spacingY(m_spacY), m_tileSizeX(sizeX), m_tileSizeY(sizeY)
+MapFile::MapFile(const Texture* texture) : m_texture(texture)
+{}
+
+const Texture* MapFile::getTexture() const
+{
+	return m_texture;
+}
+
+StaticFile::StaticFile(Texture* texture, uint32_t spacX, uint32_t spacY, uint32_t sizeX, uint32_t sizeY) : MapFile(texture), m_spacingX(spacX), m_spacingY(m_spacY), m_tileSizeX(sizeX), m_tileSizeY(sizeY)
 {
 }
 
@@ -16,7 +24,7 @@ void StaticFile::addTileDatas(TileDatas* tileDatas)
 	m_tileDatas.push_back(tileDatas);
 }
 
-Tile* StaticFile::createTile(uint32_t tileID, bool def)
+Tile* StaticFile::createTile(Updatable* parent, uint32_t tileID, bool def)
 {
 	if(tileID >= m_tileDatas.size())
 		return NULL;
@@ -35,16 +43,20 @@ Tile* StaticFile::createTile(uint32_t tileID, bool def)
 	subRect.height = m_tileSizeY;
 
     if(!def)
-        return tile->createStaticTile(m_texture, &subRect);
+        return tile->createStaticTile(parent, m_texture, &subRect);
     return new DefaultTile(texture, &subRect);
 }
 
-DynamicFile::DynamicFile(Texture* texture) : m_texture(texture)
+DynamicFile::DynamicFile(Texture* texture) : MapFile(texture)
 {}
 
 DynamicFile::~DynamicFile()
 {
     for(std::map<std::string, DynamicEntity*>::iterator it=m_dynamicEntities.begin(); it != m_dynamicEntities.end(); it++)
+        if(it->second)
+            delete it->second;
+
+    for(std::map<std::string, StaticEntity*>::iterator it=m_staticEntities.begin(); it != m_staticEntities.end(); it++)
         if(it->second)
             delete it->second;
 }
@@ -54,7 +66,33 @@ void DynamicFile::addDynamicEntity(const std::string& key, DynamicEntity* entity
     m_dynamicEntities.insert(std::pair<std::string, DynamicEntity*>(key, entity));
 }
 
-void DynamicFile::getLastDynamicEntity()
+void DynamicFile::addStaticEntity(const std::string& key, StaticEntity* entity)
+{
+    m_staticEntities.insert(std::pair<std::string, StaticEntity*>(key, entity));
+}
+
+DynamicEntity* DynamicFile::getDynamicEntity(const std::string& name)
+{
+    for(std::map<std::string, DynamicEntity*>::iterator it=m_dynamicEntities.begin(); it != m_dynamicEntities.end(); it++)
+        if(*(it->first) == name)
+            return it->second;
+	return NULL;
+}
+
+StaticEntity* DynamicFile::getStaticEntity(const std::string& name)
+{
+    for(std::map<std::string, StaticEntity*>::iterator it=m_staticEntities.begin(); it != m_staticEntities.end(); it++)
+        if(*(it->first) == name)
+            return it->second;
+	return NULL;
+}
+
+DynamicEntity* DynamicFile::getLastDynamicEntity()
 {
     return (m_dynamicEntities.rbegin()->second);
+}
+
+StaticEntity*  DynamicFile::getLastStaticEntity()
+{
+    return (m_staticEntities.rbegin()->second);
 }

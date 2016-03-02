@@ -1,30 +1,15 @@
-#include "csv.h"
+#include "CSV.h"
 
-CSVParser::CSVParser() : value(NULL), nbValue(0)
+bool IntCSVParser::onValue(const char* string)
 {
-}
-
-CSVParser::CSVParser(const char* string) : value(NULL), nbValue(0)
-{
-	parse(string);
-}
-
-CSVParser::~CSVParser()
-{
-	if(values)
-		free(values);
-}
-
-bool CSVParser::parse(const char* string)
-{
-	int32_t value=0;
-	int8_t signe=1;
-	int32_t exposant=1;
-	int8_t numberSize=-1;
+	int32_t  value         = 0;
+	int8_t   signe         = 1;
+	int32_t  exposant      = 1;
+	int8_t   numberSize    = -1;
 	uint32_t stringIndice;
 
 	//Get only a number
-	for(stringIndice=0; string[stringIndice] != ',' && string[stringIndice] != ';' && string[stringIndice] != '\0' && string[stringIndice] != '\n'; stringIndice++)
+	for(stringIndice=0; string[stringIndice] != '\0' && string[stringIndice] != '\n'; stringIndice++)
 	{
 		//Set the signe if needed
 		if(string[stringIndice] == '-' && value == 0)
@@ -68,24 +53,11 @@ bool CSVParser::parse(const char* string)
 	stringValue *= signe;
 
 	//Set our values array
-	values = (int32_t*)realloc(values, (self->nbValue + 1)*sizeof(int32_t));
-	values[self->nbValue] = stringValue;
-	nbValue++;
-
-	//If the string is finished to be read, return true
-	if(string[stringIndice] == '\n' || string[stringIndice] == '\0')	
-		return true;
-
-	//Else, continue to parse on the second number
-	return parse(&(string[stringIndice+1]));
+	m_values.push_back(stringValue);
+	return true;
 }
 
-const int32_t* CSVParser::getValues()
+bool StrCSVParser::onValue(const char* value)
 {
-	return values;
-}
-
-const uint32_t CSVParser::getLen()
-{
-	return nbValue;
+    m_values.push_back(std::string(value));
 }

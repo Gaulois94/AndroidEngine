@@ -149,41 +149,85 @@ void startElementFiles(void *data, const char* name, const char** attrs)
 			//Then get the last one
 			DynamicFile* df = map->m_dynamicFiles[map->m_dynamicFiles.size()-1];
 
-			//Creating a dynamic entity which will contain all the subrect for this animation (dynamic == animation), and the create function for this tile
+			//Get common value between animation
 			const char* name;
-			const char* type;
 			for(uint32_t i=0; attrs[i]; i+=2)
 			{
 				if(!strcmp(attrs[i], "name"))
 					name = attrs[i+1];
-				else if(!strcmp(attrs[i], "type"))
-					type = attrs[i+1];
 			}
-			DynamicEntity* de = new dynamicEntity();
-			de->createDynamicTile = map->getDynamicTileFunction(name, type);
-			df->addDynamicEntity(name, de);
+
+			if(!strcmp(name, "dynamicEntity"))
+			{
+				//Creating a dynamic entity which will contain all the subrect for this animation (dynamic == animation), and the create function for this tile
+				DynamicEntity* de = new dynamicEntity();
+				de->createDynamicAnim = map->getDynamicAnimFunction(name);
+				df->addDynamicEntity(name, de);
+			}
+
+			else if(!strcmp(name, "staticEntity"))
+			{
+				//get static animation values
+				uint32_t n, nX, posX, posY, spacingX, spacingY, sizeX, sizeY;
+				for(uint32_t i=0; attrs[i]; i+=2)
+				{
+					//The position
+					if(!strcmp(attrs[i], "pos"))
+						getXYFromStr(attrs[i+1], &(posX), &(posY));
+
+					//The spacing
+					else if(!strcmp(attrs[i], "spacing"))
+						getXYFromStr(attrs[i+1], &(spacingX), &(spacingY));
+
+					//And tile size
+					else if(!strcmp(attrs[i], "size"))
+						getXYFromStr(attrs[i+1], &(sizeX), &(sizeY));
+				}
+				
+				//Create the static animation entity
+				StaticEntity* se = new StaticEntity(map->getStaticAnimationFunction(name), n, nX, posX, posY, sizeX, sizeY, spacingX, spacingY);
+				df->addStaticEntity(se);
+			}
 		}
 	}
 
 	//This part is only for dynamic files, which contains position and size for dynamic entities
 	else if(XML_depth == 4)
 	{
-		//Get the last dynamic entity
-		DynamicFile* df   = map->m_dynamicFiles[map->m_dynamicFiles.size()-1];
-		DynamicEntity* de = df->getLastDynamicEntity();
-
-		//Then create the rect for this animation
-		Rectangle2f* rect = new Rectangle2f();
-		uint32_t i;
-		for(i=0; attrs[i]; i+=2)
+		if(!strcmp("dynamicTile"))
 		{
-			if(!strcmp(attrs[i], "pos"))
-				getXYFromStr(attrs[i+1], &(rect->x), &(rect->y));
+			//Get the last dynamic entity
+			DynamicFile* df   = map->m_dynamicFiles[map->m_dynamicFiles.size()-1];
+			DynamicEntity* de = df->getLastDynamicEntity();
 
-			else if(!strcmp(attrs[i], "size"))
-				getXYFromStr(attrs[i+1], &(rect->width), &(rect->height));
+			//Then create the rect for this animation
+			Rectangle2f* rect = new Rectangle2f();
+			uint32_t i;
+			for(i=0; attrs[i]; i+=2)
+			{
+				if(!strcmp(attrs[i], "pos"))
+					getXYFromStr(attrs[i+1], &(rect->x), &(rect->y));
+
+				else if(!strcmp(attrs[i], "size"))
+					getXYFromStr(attrs[i+1], &(rect->width), &(rect->height));
+			}
+			de->tileRects.push_back(rect);
 		}
-		de->tileRects.push_back(rect);
+
+		else if(!strcmp("staticTile"))
+		{
+			//Get the last static entity
+			DynamicFile* df   = map->m_dynamicFiles[map->m_dynamicFiles.size()-1];
+			StaticEntity* se  = df->getLastStaticEntity();
+
+			for(uint32_t i=0; attrs[i]; i+=2)
+			{
+				if(!strcmp(attrs[i], "name"))
+					se->names.push_back(std::string(name));
+				else if(!strcmp(attrs[i], "type"))
+					se->types.push_back(std::string(type));
+			}
+		}
 	}
 	XML_depth++; //We see to the next XML depth
 }
@@ -237,7 +281,7 @@ void startElementObjects(void *data, const char* name, const char** attrs)
 			}
 		}
 
-		//Create CSV datas
+		//Create IntCSV datas
 		ObjectDatas* objDatas = map->m_objects[map->m_objects.size()-1];
 		objDatas->CSVTileID.push_back(tileID);
 		objDatas->CSVFileID.push_back(fileID);
@@ -285,104 +329,8 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 
 	else if(XML_depth == 3)
 	{
-		//Column is for static tile
-		if(!strcmp(name, "Column"))
-		{
-			//Get the last static trace
-			StaticTrace* st = map->m_staticTraces[map->m_staticTraces.size()-1];
-
-			//Get tileID, object ID and fileID CSV values
-			CSVParser tileCSVID = CSVParser();
-			CSVParser fileCSVID = CSVParser();
-			CSVParser objectCSVID = CSVParser();
-
-			//And parse these CSV
-			uint32_t i;
-			for(i=0; attrs[i]; i+=2)
-			{
-				if(!strcmp(attrs[i], "fileID"))
-					fileCSVID.parse(attrs[i+1]);
-				else if(!strcmp(attrs[i], "tileID"))
-					tileCSVID.parse(attrs[i+1]);
-				else if(!strcmp(attrs[i], "objectID"))
-					objectCSVID.parse(attrs[i+1]);
-			}
-
-			//Get CSV values
-			const int32_t* tileID   = tileCSVID.getValues();
-			const int32_t* fileID   = fileCSVID.getValues();
-			const int32_t* objectID = objectCSVID.getValue();
-
-			//We check if we have normal tiles to parse
-			for(i=0; i < tileCSVID.getLen(); i++)
-			{
-				if(tileID[i] != -1 && fileID[i] != -1)
-				{
-					//Get the file following the file ID (id 0 --> first file created)
-					StaticFile* sf  = map->m_staticFiles[fileID[i]];
-
-					//And create this tile
-					Tile* tile      = sf->createTile(tileID[i], false);
-
-					//If the tile is created
-					if(tile != NULL)
-					{
-						if(st != NULL)
-							st->addTile(tile, XML_NthColumn, i); //Add it
-					}
-				}
-
-				//Then we look at the objects
-				//Object id start from 1.
-				else if(objectID[i] > 0)
-				{
-					//Get the object datas for this id
-					ObjectDatas* objDatas   = map->m_objects[objectID[i]-1];
-					if(objDatas->createObject == NULL)
-						continue;
-
-					//Create this object
-					Object* obj = objDatas->createObject(objDatas->nbCasesX, objDatas->nbCasesY, objDatas->tileSizeX, objDatas->tileSizeY);
-
-					uint32_t j;
-					for(j=0; j < objDatas->CSVTileID.size(); j++)
-					{
-						//Parse CSV fileID and tileID
-						CSVParser objectTileID = CSVParser();
-						CSVParser objectFileID = CSVParser();
-
-						objectTileID.parse(objDatas->CSVTileID[j]);
-						objectFileID.parse(objDatas->CSVFileID[j]);
-
-						const uint32_t* tileID = objectTileID.getValues();
-						const uint32_t* fileID = objectFileID.getValues();
-
-						//Then create the tiles bound to the Object
-						uint32_t k;
-						for(k=0; k < objectTileID.getLen(); k++)
-						{
-							//Get the file with the fileID
-							StaticFile* sf = map->m_staticFiles[fileID[k]];
-							if(sf == NULL)
-								continue;
-
-							//And create the tile
-							Tile* tile = sf->createTile(tileID[k], true);
-							if(tile == NULL)
-								continue;
-
-							//Then add this tile
-							obj->addTile(j, k, tile);
-						}
-					}
-					st->addTile(obj, XML_NthColumn, i);
-				}
-			}
-			XML_NthColumn++;
-		}
-
 		//If we are with dynamic tile
-		else if(!strcmp(name, "DynamicTile"))
+		if(!strcmp(name, "DynamicTile"))
 		{
 			//Get information about is
 			char name[50];
@@ -405,29 +353,206 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 
 			//Get the last dynamic trace
 			DynamicTrace* dt = map->m_dynamicTraces[map->m_dynamicTraces.size()-1];
-
 			//The correct dynamic file
 			DynamicFile* df = map->m_dynamicFiles[fileID - map->m_staticFiles.size()];
 			if(df)
 			{
 				uint32_t i;
 				//Get the entity of this tile
+				//Is this entity a dynamic one ?
 				DynamicEntity* de = df->getDynamicEntity(name);
+				if(de)
+				{
+					//Get the texture rect for this animation
+					Rectangle2f* textureRect = de->tileRects[tileID];
 
-				//Get the texture rect for this animation
-				Rectangle2f* textureRect = de->tileRects[tileID];
+					//Set the tile position
+					Rectangle2f dest;
+					dest.x      = posX;
+					dest.y      = posY;
+					dest.width  = textureRect->w;
+					dest.height = textureRect->h;
 
-				//Set the tile position
-				Rectangle2f dest;
-				dest.x      = posX;
-				dest.y      = posY;
-				dest.width  = textureRect->w;
-				dest.height = textureRect->h;
+					//Then finally create the tile
+					Tile* tile = de->createDynamicAnim(NULL, df->material, df->getTexture(), dest, textureRect, de->tileRects->size(), 0, 8);
+					dt->addTile(tile);
+					free(subRects);
+				}
+				else
+				{
+					StaticEntity* se = df->getStaticEntity(name);
+					if(se)
+					{
+						Tile* tile = se->createStaticAnim(NULL, df->getTexture(), tileID, posX, posY);
+						dt->addTile(tile);
+					}
+				}
+			}
+		}
 
-				//Then finally create the tile
-				Tile* tile = de->createDynamicTile(df->material, df->file->getTexture(), dest, textureRect, de->tileRects->size(), 0, 8);
+		else if(!strcmp(name, "StaticTile"))
+		{
+			uint32_t fileID, tileID, posX, posY;
+
+			for(uint32_t i=0; attrs[i]; i+=2)
+			{
+				if(!strcmp(attrs[i], "position"))
+					getXYFromStr(attrs[i+1], &posX, &posY);
+				else if(!strcmp(attrs[i], "fileID"))
+					fileID = atoi(attrs[i+1]);
+				else if(!strcmp(tattrs[i], "tileID"))
+					tileID = atoi(attrs[i+1]);
+			}
+
+			//Get the last dynamic trace
+			DynamicTrace* dt = map->m_dynamicTraces[map->m_dynamicTraces.size()-1];
+			//The correct dynamic file
+			StaticFile* sf = map->m_staticFiles[fileID];
+
+			if(sf)
+			{
+				Tile* tile = sf->createTile(NULL, tileID, false);
+				tile->setPosition(glm::vec2(posX, posY));
 				dt->addTile(tile);
-				free(subRects);
+			}
+		}
+	}
+
+	else if(XML_depth == 4)
+	{
+		//Column is for static tile in Column tree
+		if(!strcmp(name, "Static"))
+		{
+			//Get the last static trace
+			StaticTrace* st = map->m_staticTraces[map->m_staticTraces.size()-1];
+
+			//Get tileID, object ID and fileID IntCSV values
+			IntCSVParser tileCSVID = IntCSVParser();
+			IntCSVParser fileCSVID = IntCSVParser();
+			IntCSVParser objectCSVID = IntCSVParser();
+
+			//And parse these IntCSV
+			uint32_t i;
+			for(i=0; attrs[i]; i+=2)
+			{
+				if(!strcmp(attrs[i], "fileID"))
+					fileCSVID.parse(attrs[i+1]);
+				else if(!strcmp(attrs[i], "tileID"))
+					tileCSVID.parse(attrs[i+1]);
+				else if(!strcmp(attrs[i], "objectID"))
+					objectCSVID.parse(attrs[i+1]);
+			}
+
+			//Get IntCSV values
+			const std::vector<int32_t> tileID   = tileCSVID.getValues();
+			const std!!vector<int32_t> fileID   = fileCSVID.getValues();
+			const std::vector<int32_t> objectID = objectCSVID.getValues();
+
+			//We check if we have normal tiles to parse
+			for(i=0; i < tileID.size(); i++)
+			{
+				if(tileID[i] != -1 && fileID[i] != -1 && objectID[i] == -1)
+				{
+					//Get the file following the file ID (id 0 --> first file created)
+					StaticFile* sf  = map->m_staticFiles[fileID[i]];
+
+					//And create this tile
+					Tile* tile      = sf->createTile(NULL, tileID[i], false);
+
+					//If the tile is created
+					if(tile != NULL)
+					{
+						if(st != NULL)
+							st->addTile(tile, XML_NthColumn, i); //Add it
+					}
+				}
+
+				//Then we look for objects
+				//Object id is 1 if the tile is an object.
+				else if(objectID[i] == 1)
+				{
+					//Get the object datas for this id
+					ObjectDatas* objDatas   = map->m_objects[tileID[i]-1];
+					if(objDatas->createObject == NULL)
+						continue;
+
+					//Create this object
+					Object* obj = objDatas->createObject(objDatas->nbCasesX, objDatas->nbCasesY, objDatas->tileSizeX, objDatas->tileSizeY);
+
+					uint32_t j;
+					for(j=0; j < objDatas->CSVTileID.size(); j++)
+					{
+						//Parse IntCSV fileID and tileID
+						IntCSVParser objectTileID = IntCSVParser();
+						IntCSVParser objectFileID = IntCSVParser();
+
+						objectTileID.parse(objDatas->CSVTileID[j]);
+						objectFileID.parse(objDatas->CSVFileID[j]);
+
+						const std::vector<uint32_t> tileID = objectTileID.getValues();
+						const std::vector<uint32_t> fileID = objectFileID.getValues();
+
+						//Then create the tiles bound to the Object
+						uint32_t k;
+						for(k=0; k < tileID.size(); k++)
+						{
+							//Get the file with the fileID
+							StaticFile* sf = map->m_staticFiles[fileID[k]];
+							if(sf == NULL)
+								continue;
+
+							//And create the tile
+							Tile* tile = sf->createTile(NULL, tileID[k], true);
+							if(tile == NULL)
+								continue;
+
+							//Then add this tile
+							obj->addTile(j, k, tile);
+						}
+					}
+					st->addTile(obj, XML_NthColumn, i);
+				}
+			}
+		}
+
+		//Handle Animation tile in StaticTrace
+		else if(!strcmp("Animation"))
+		{
+			//Get the last StaticTrace
+			StaticTrace* st = map->m_staticTraces[map->m_staticTraces.size()-1];
+
+			//Parse all the parameters
+			IntCSVParser tileCSVID = IntCSVParser();
+			IntCSVParser fileCSVID = IntCSVParser();
+			StrCSVParser nameCSVID = StrCSVParser();
+			for(uint32_t i=0; attrs[i]; i+=2)
+			{
+				if(!strcmp(attrs[i], "fileID"))
+					fileCSVID.parse(attrs[i+1]);
+				else if(!strcmp(attrs[i], "tileID"))
+					tileCSVID.parse(attrs[i+1]);
+				else if(!strcmp(attrs[i], "name"))
+					nameCSVID.parse(attrs[i+1]);
+			}
+
+			//Get IntCSV values
+			const std::vector<int32_t>     tileID   = tileCSVID.getValues();
+			const std!!vector<int32_t>     fileID   = fileCSVID.getValues();
+			const std::vector<std::string> names    = nameCSVID.getValues();
+
+			for(uint32_t i=0; i < tileID.size(); i++)
+			{
+				DynamicFile* df  = map->m_dynamicFiles[fileID - map->m_staticFiles.size()];
+				if(df)
+				{
+					StaticEntity* se = df->getStaticEntity(names[i]);
+					if(se)
+					{
+						//Need to be changed
+						Tile* tile = se->createAnimTile(NULL, df->getTexture(), tileID[i], 0, 0);
+						st->addTile(tile, XML_NthColumn, i);
+					}
+				}
 			}
 		}
 	}
@@ -438,6 +563,9 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 void endElement(void *data, const char* name)
 {
 	XML_depth--;
+	//Move to the next column of the trace
+	if(XML_depth == 2 && !strcmp(name, "Column"))
+		XML_NthColumn++;
 	if(XML_depth == 1)
 		XML_SetElementHandler(((Map*)data)->m_parser, startElement, endElement);
 }
@@ -464,12 +592,12 @@ Material* Map::getStaticTileMaterial(const char* name, const char* type) const
 	return NULL;
 }
 
-createDynamicTilePtr Map::getDynamicTileFunction(const char* name, const char* type) const
+createDynamicAnimPtr Map::getDynamicAnimFunction(const char* name) const
 {
 	return NULL;
 }
 
-Material* Map::getDynamicTileMaterial(const char* name, const char* type) const
+Material* Map::getDynamicAnimMaterial(const char* name, const char* type) const
 {
 	return NULL;
 }

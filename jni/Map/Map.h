@@ -7,6 +7,7 @@
 #include "Map/Datas/ObjectDatas.h"
 #include "Map/Datas/DynamicDatas.h"
 #include "expat.h"
+#include "CSV.h"
 
 /** \class Map 
  * \brief basic class for decompiling Map files
@@ -35,6 +36,7 @@
  *  <Traces>
  *   <StaticTrace name="name" shift="axb" size="axb">
  *    <Column>
+ *     #If objectID == 1, the tileID is the id of the object (objectID is juste a boolean for saying if this tile is an object or not)
  *	   <Static fileID="fileID" tileID="tileID" objectID="objectID"/>
  *	   <Animation fileID="fileID" tileID="tileID" name="name"/> #name is in CSV format
  *    </Column>
@@ -74,15 +76,14 @@ class Map : public Updatable, GroupTransformable
 
 		/** \brief get the pointer function to create a dynamic tile from name and type. This function is aimed to be overwrited.
 		 * \param name the name of the tile contained on the xml file
-		 * \param type the type of the tile contained on the xml file
 		 * \return a pointer function to create dynamic tiles. NULL if not correct*/
-		virtual createDynamicTilePtr getDynamicTileFunction(const char* name, const char* type) const; 
+		virtual createDynamicAnimPtr getDynamicAnimFunction(const char* name) const; 
 
 		/** \brief Get a pointer to a Material for a specific dynamic tile (following its name and its type). This function is aimed to be overwrited
 		 * \param name the name of the tile contained on the xml file
 		 * \param type the type of the tile contained on the xml file
 		 * \return a pointer to a Material. NULL if not correct*/
-		virtual Material*           getDynamicTileMaterial(const char* name, const char* type) const;
+		virtual Material*           getDynamicAnimMaterial(const char* name, const char* type) const;
 
 		/** \brief set the pointer function for this ObjectDatas following its name and its type
 		 * \param name the name of the tile contained on the xml file

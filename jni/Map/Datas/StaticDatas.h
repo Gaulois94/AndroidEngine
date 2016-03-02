@@ -5,7 +5,7 @@
 #include "Graphics/Texture.h"
 #include "Updatable.h"
 
-typedef StaticTile*(*createStaticTilePtr)(Updatable*, Texture*, const Rectangle2f&);
+typedef StaticTile*(*createStaticTilePtr)(const Texture*, const Rectangle2f&);
 
 struct StaticDatas
 {
