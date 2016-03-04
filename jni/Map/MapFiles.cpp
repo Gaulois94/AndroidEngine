@@ -8,7 +8,7 @@ const Texture* MapFile::getTexture() const
 	return m_texture;
 }
 
-StaticFile::StaticFile(Texture* texture, uint32_t spacX, uint32_t spacY, uint32_t sizeX, uint32_t sizeY) : MapFile(texture), m_spacingX(spacX), m_spacingY(m_spacY), m_tileSizeX(sizeX), m_tileSizeY(sizeY)
+StaticFile::StaticFile(const Texture* texture, uint32_t spacX, uint32_t spacY, uint32_t sizeX, uint32_t sizeY) : MapFile(texture), m_spacingX(spacX), m_spacingY(spacY), m_tileSizeX(sizeX), m_tileSizeY(sizeY)
 {
 }
 
@@ -19,7 +19,7 @@ StaticFile::~StaticFile()
 			delete m_tileDatas[i];
 }
 
-void StaticFile::addTileDatas(TileDatas* tileDatas)
+void StaticFile::addStaticDatas(StaticDatas* tileDatas)
 {
 	m_tileDatas.push_back(tileDatas);
 }
@@ -34,7 +34,7 @@ Tile* StaticFile::createTile(Updatable* parent, uint32_t tileID, bool def)
     //Get how many tiles we have in a row.
     //True value : (tWidth - tileSizeX + tileSizeX + spacingX -1) / (tileSizeX + spacingX) + 1 
     //where tileSizeX + spacingX -1 is for rounded the value to the upper case if needed;
-	uint32_t numberTileX = (m_texture.getWidth() + m_spacingX - 1) / (m_spacingX + m_tileSizeX) + 1;
+	uint32_t numberTileX = (m_texture->getWidth() + m_spacingX - 1) / (m_spacingX + m_tileSizeX) + 1;
 	Rectangle2f subRect;
 
 	subRect.x      = (tileID % numberTileX) * (m_tileSizeX + m_spacingX);
@@ -43,8 +43,8 @@ Tile* StaticFile::createTile(Updatable* parent, uint32_t tileID, bool def)
 	subRect.height = m_tileSizeY;
 
     if(!def)
-        return tile->createStaticTile(parent, m_texture, &subRect);
-    return new DefaultTile(texture, &subRect);
+        return m_tileDatas[tileID]->createStaticTile(parent, m_texture, subRect);
+    return new DefaultTile(parent, NULL, m_texture, subRect);
 }
 
 DynamicFile::DynamicFile(Texture* texture) : MapFile(texture)
@@ -74,7 +74,7 @@ void DynamicFile::addStaticEntity(const std::string& key, StaticEntity* entity)
 DynamicEntity* DynamicFile::getDynamicEntity(const std::string& name)
 {
     for(std::map<std::string, DynamicEntity*>::iterator it=m_dynamicEntities.begin(); it != m_dynamicEntities.end(); it++)
-        if(*(it->first) == name)
+        if(it->first == name)
             return it->second;
 	return NULL;
 }
@@ -82,7 +82,7 @@ DynamicEntity* DynamicFile::getDynamicEntity(const std::string& name)
 StaticEntity* DynamicFile::getStaticEntity(const std::string& name)
 {
     for(std::map<std::string, StaticEntity*>::iterator it=m_staticEntities.begin(); it != m_staticEntities.end(); it++)
-        if(*(it->first) == name)
+        if(it->first == name)
             return it->second;
 	return NULL;
 }

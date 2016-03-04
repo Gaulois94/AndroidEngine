@@ -4,7 +4,8 @@
 #include "stdint.h"
 #include "stdlib.h"
 #include "stdio.h"
-#include "typedefine.h"
+#include <string>
+#include "logger.h"
 #include <vector>
 
 template <typename T>
@@ -22,7 +23,7 @@ class CSVParser
 
 		/** \brief get the value of the Parser
 		 * \return the value array of the parser. Use getLen to get the value array's length*/
-		const std::vector<T> getValues();
+		const std::vector<T>* getValues() const;
 	protected:
 		/** \brief which action have we to do with the value which has just got parsed ?
 		 * \param value the value parsed
@@ -44,12 +45,12 @@ class StrCSVParser : public CSVParser<std::string>
 };
 
 template <typename T>
-CSVParser<T>::CSVParser() : m_value(NULL), m_nbValue(0)
+CSVParser<T>::CSVParser()
 {
 }
 
 template <typename T>
-CSVParser<T>::CSVParser(const char* string) : m_value(NULL), m_nbValue(0)
+CSVParser<T>::CSVParser(const char* string)
 {
 	parse(string);
 }
@@ -76,14 +77,8 @@ bool CSVParser<T>::parse(const char* string)
 }
 
 template <typename T>
-const T* CSVParser<T>::getValues()
+const std::vector<T>* CSVParser<T>::getValues() const
 {
-	return m_values;
-}
-
-template <typename T>
-const uint32_t CSVParser<T>::getLen()
-{
-	return m_nbValue;
+	return &m_values;
 }
 #endif

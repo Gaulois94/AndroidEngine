@@ -63,7 +63,7 @@ class Drawable : public GroupTransformable, public Updatable
 		static void initShaders();
 	protected:
 		virtual void deleteVbos();
-		mATerial* m_material;
+		Material* m_material;
 		GLuint m_vboID;
 		bool m_canDraw;
 		bool m_staticToCamera;

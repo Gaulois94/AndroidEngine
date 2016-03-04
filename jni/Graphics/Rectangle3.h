@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
+#include "Graphics/Rectangle2.h"
 
 /** \brief the 3D rectangle operations.*/
 template<typename T>

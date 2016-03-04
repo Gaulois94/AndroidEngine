@@ -5,7 +5,7 @@ StaticTile::StaticTile(Updatable* parent, Material* mtl, const Texture* texture,
 	m_sprite.setSubTextureRect(subRect);
 }
 
-void StaticTile::onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f))
+void StaticTile::onDraw(Render& render, const glm::mat4& mvp)
 {
 	m_sprite.draw(render, mvp);	
 }

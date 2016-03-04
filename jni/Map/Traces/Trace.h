@@ -6,11 +6,11 @@
 
 /** \class Trace
  * \brief Basic abstract class for traces. Don't use it directly*/
-class Trace : public Updatable, GroupTransformable
+class Trace : public Drawable
 {
 	public:
 		/** \brief Basic constructor for Trace.*/
-		Trace(const std::string& name);
+		Trace(Updatable* parent, const Rectangle3f& defaultConf, const std::string& name);
 
 		/** \brief Basic destructor for Trace.*/
 		~Trace();
@@ -18,9 +18,10 @@ class Trace : public Updatable, GroupTransformable
 		/** \brief get the tile at a position
 		 * \param x the x position in pixels coords
 		 * \param y the y position in pixels coords
-		 * \return Tile the tille at the position x, y. NULL if nothing.*/
+		 * \return Tile the tile at the position x, y. NULL if nothing.*/
 		virtual Tile* getTile(uint32_t x, uint32_t y)=0;
 
+		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 		void onUpdate(Render& render);
 
 		/** \brief add the tile at the position x, y.

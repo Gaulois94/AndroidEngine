@@ -60,4 +60,5 @@ bool IntCSVParser::onValue(const char* string)
 bool StrCSVParser::onValue(const char* value)
 {
     m_values.push_back(std::string(value));
+	return true;
 }

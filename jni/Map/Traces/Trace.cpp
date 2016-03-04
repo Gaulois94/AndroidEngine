@@ -1,6 +1,6 @@
 #include "Map/Traces/Trace.h"
 
-Trace::Trace(const std::string& name) : m_name(name)
+Trace::Trace(Updatable* parent, const Rectangle3f& defaultConf, const std::string& name) : Drawable(parent, NULL, defaultConf), m_name(name)
 {}
 
 Trace::~Trace()
@@ -16,7 +16,7 @@ Trace::~Trace()
 	}
 }
 
-void onUpdate(Render& render)
+void Trace::onUpdate(Render& render)
 {
 	for(uint32_t i=0; m_tiles.size(); i++)
 	{

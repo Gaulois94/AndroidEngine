@@ -1,9 +1,9 @@
 #ifndef  MAPFILES_INC
 #define  MAPFILES_INC
 
-#include <multimap>
+#include <map>
 #include "Map/Datas/StaticDatas.h"
-#include "Map/Datas/DynamicDatas.h"
+#include "Map/Datas/AnimDatas.h"
 #include "Map/Tiles/DefaultTile.h"
 #include "Graphics/Texture.h"
 
@@ -32,9 +32,9 @@ class StaticFile : public MapFile
 		/** \brief Default destructor. Destroy each TileDatas*/
 		~StaticFile();
 
-		/** \brief Add a TileDatas on this file. Has to be allocated dynamically, and doesn't have to be destroy by the user (the object will do it itself)
-		 * \param tileDatas the TileDatas to add*/
-		void   addTileDatas(TileDatas* tileDatas);
+		/** \brief Add a StaticDatas on this file. Has to be allocated dynamically, and doesn't have to be destroy by the user (the object will do it itself)
+		 * \param tileDatas the StaticDatas to add*/
+		void   addStaticDatas(StaticDatas* tileDatas);
 
 		/** \brief Create a tile placed at the place tileID. If you want to create a default tile, use def=true
 		 * \param parent the parent of the new Tile*
@@ -43,7 +43,7 @@ class StaticFile : public MapFile
 		 * \return the Tile created. NULL if can't be created*/
 		Tile*  createTile(Updatable* parent, uint32_t tileID, bool def);
 	private:
-		std::vector<TileDatas*> m_tileDatas;
+		std::vector<StaticDatas*> m_tileDatas;
 		uint32_t m_spacingX;
 		uint32_t m_spacingY;
 		uint32_t m_tileSizeX;
@@ -51,7 +51,7 @@ class StaticFile : public MapFile
 };
 
 /** \class DynamicFile*/
-class DynamicFile
+class DynamicFile : public MapFile
 {
 	public:
 		/** \brief Constructor for DynamicFile

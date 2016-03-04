@@ -1,11 +1,18 @@
 #ifndef  MAP_INC
 #define  MAP_INC
 
-#include "Updatable.h"
+#include "Graphics/Drawable.h"
+#include "Map/Tiles/Tile.h"
+#include "Map/Tiles/StaticTile.h"
+#include "Map/Tiles/DynamicAnim.h"
+#include "Map/Tiles/DefaultTile.h"
+#include "Map/Tiles/TileObject.h"
 #include "Map/MapFiles.h"
 #include "Map/Datas/StaticDatas.h"
 #include "Map/Datas/ObjectDatas.h"
-#include "Map/Datas/DynamicDatas.h"
+#include "Map/Datas/AnimDatas.h"
+#include "Map/Traces/StaticTrace.h"
+#include "Map/Traces/DynamicTrace.h"
 #include "expat.h"
 #include "CSV.h"
 
@@ -49,7 +56,7 @@
  * </map> 
  *
  * each fileID et tileID are represented in csv format for StaticTrace. It earns us some time process and file spaces. This couple tells us which tile it is (which file and which tile in this file)*/
-class Map : public Updatable, GroupTransformable
+class Map : public Drawable
 {
 	public:
 		/** \brief Constructor of the class Map. It creates and parse a XML file. The default position of the Map is (1.0, 1.0) with the size (nbCaseX * tileSizeX, nbCaseY * tileSizeY). Remember to scale the Map after its creation
@@ -61,6 +68,13 @@ class Map : public Updatable, GroupTransformable
 		~Map();
 
 		void onUpdate(Render& render);
+
+		/** \brief reset the default configuration of the Map : the Rectangle3f will be :
+		 * x = y = z = 0
+		 * width  = nbCasesX * caseSizeX
+		 * height = nbCasesY * caseSizeY
+		 * depth  = 0*/
+		void resetDefaultConf();
 
 		/** \brief get the pointer function to create a static tile from name and type. This function is aimed to be overwrited.
 		 * \param name the name of the tile contained on the xml file
@@ -84,6 +98,17 @@ class Map : public Updatable, GroupTransformable
 		 * \param type the type of the tile contained on the xml file
 		 * \return a pointer to a Material. NULL if not correct*/
 		virtual Material*           getDynamicAnimMaterial(const char* name, const char* type) const;
+
+		/** \brief get the pointer function to create a dynamic tile from name and type. This function is aimed to be overwrited.
+		 * \param name the name of the tile contained on the xml file
+		 * \return a pointer function to create dynamic tiles. NULL if not correct*/
+		virtual createStaticAnimPtr getStaticAnimFunction(const char* name) const; 
+
+		/** \brief Get a pointer to a Material for a specific dynamic tile (following its name and its type). This function is aimed to be overwrited
+		 * \param name the name of the tile contained on the xml file
+		 * \param type the type of the tile contained on the xml file
+		 * \return a pointer to a Material. NULL if not correct*/
+		virtual Material*           getStaticAnimMaterial(const char* name, const char* type) const;
 
 		/** \brief set the pointer function for this ObjectDatas following its name and its type
 		 * \param name the name of the tile contained on the xml file
@@ -162,12 +187,23 @@ void startElementTraces(void* map, const char* name, const char** attrs);
  * \param attrs the attributes of the section*/
 void endElement(void* map, const char* name);
 
-/** \brief extract x and y from a str like xxy where the second x is a cross
+/** \brief extract x and y from a str like XxY where the second x is a cross
  * \param str the str
  * \param x pointer to store the x coordinate
  * \param y pointer to store the y coordinate
  *  */
-void getXYFromStr(const char* str, uint32_t* x, uint32_t* y);
+template<typename T, typename S>
+void getXYFromStr(const char* str, T* x, S* y)
+{
+    uint32_t i;
+    for(i=0; str[i] != 'x' && str[i] != 'X' && str[i] != '\0'; i++);
+
+    if(str[i] != '\0')
+    {
+        *x = atoi(str);
+        *y = atoi(&(str[i+1]));
+    }
+}
 
 extern uint32_t XML_depth; /** <!XML depth on the current XML file*/
 extern uint32_t XML_NthColumn; /** <!XML column number for static files on the current XML file*/

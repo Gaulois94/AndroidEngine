@@ -2,6 +2,7 @@
 #define  STATICTILE_INC
 
 #include "Map/Tiles/Tile.h"
+#include "Graphics/Sprite.h"
 
 class StaticTile : public Tile
 {
