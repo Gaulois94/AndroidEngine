@@ -26,8 +26,10 @@ void ObjMaterial::init(Render& render, const glm::mat4& mvp)
 	glm::mat4 inverseMvp    = glm::inverse(mvp);
 	glm::mat4 inverseCamera = glm::inverse(render.getCamera().getMatrix());
 
-	float ambientColor[3]   = {0.25, 0.25, 0.25};
-	glUniform3fv(ambientColorHandle, 1, ambientColor);
+	float colorArray[4];
+	aC.getFloatArray(colorArray);
+
+	glUniform3fv(ambientColorHandle, 1, colorArray);
 	glUniform3fv(diffuseColorHandle, 1, m_diffuseColor);
 	glUniform3fv(specularColorHandle, 1, m_specularColor);
 	glUniform1f(transparentHandle, transparent);

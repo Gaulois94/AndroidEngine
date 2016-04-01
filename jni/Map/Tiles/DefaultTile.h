@@ -1,6 +1,9 @@
 #ifndef  DEFAULTTILE_INC
 #define  DEFAULTTILE_INC
 
+#include "Map/Tiles/Tile.h"
+#include "Graphics/Sprite.h"
+
 class DefaultTile : public Tile
 {
 	public:

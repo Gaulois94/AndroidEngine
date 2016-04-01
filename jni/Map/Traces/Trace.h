@@ -6,6 +6,7 @@
 
 /** \class Trace
  * \brief Basic abstract class for traces. Don't use it directly*/
+
 class Trace : public Drawable
 {
 	public:
@@ -27,8 +28,8 @@ class Trace : public Drawable
 		/** \brief add the tile at the position x, y.
 		 * \param x the x position in pixels coords
 		 * \param y the y position in pixels coords*/
-		virtual void addTile(Tile* tile, uint32_t x, uint32_t y)=0;
-	private:
+		virtual void addTile(Tile* tile, uint32_t x, uint32_t y);
+	protected:
 		std::vector<std::vector<Tile*>> m_tiles;
 		std::string m_name;
 };

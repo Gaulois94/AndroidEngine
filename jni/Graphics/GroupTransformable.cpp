@@ -7,7 +7,7 @@ void GroupTransformable::addTransformable(Transformable* t)
 {
 	m_vectorTransformable.push_back(t);
 	if(m_enabled)
-		t->setApplyTransformation(&m_mvpMatrix);
+		t->setApplyTransformation(this);
 }
 
 void GroupTransformable::setEnableTransformation(bool e)
@@ -15,7 +15,7 @@ void GroupTransformable::setEnableTransformation(bool e)
 	m_enabled = e;
 	if(e)
 		for(std::vector<Transformable*>::iterator it = m_vectorTransformable.begin(); it != m_vectorTransformable.end(); it++)
-			(*it)->setApplyTransformation(&m_mvpMatrix);
+			(*it)->setApplyTransformation(this);
 	else
 		for(std::vector<Transformable*>::iterator it = m_vectorTransformable.begin(); it != m_vectorTransformable.end(); it++)
 			(*it)->setApplyTransformation(NULL);

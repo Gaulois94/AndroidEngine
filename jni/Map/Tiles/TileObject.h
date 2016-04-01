@@ -7,7 +7,7 @@ class TileObject : public Tile
 {
 	public:
 		TileObject(Updatable* parent, uint32_t nbCasesX, uint32_t nbCasesY, uint32_t tileSizeX, uint32_t tileSizeY);
-		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f))=0;
+		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		/** \brief Add the tile 'tile' at the position x, y which are case coords */
 		void addTile(Tile* tile, uint32_t x, uint32_t y);

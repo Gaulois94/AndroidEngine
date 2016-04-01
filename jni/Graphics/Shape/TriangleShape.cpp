@@ -34,6 +34,7 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 
 	if(!glIsBuffer(m_vboID))
 		return;
+
 	m_material->init(render, mvp);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
@@ -150,7 +151,6 @@ void TriangleShape::initVbos(const float* vertexCoords, const float* normalCoord
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 		glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	LOG_ERROR("SIZE VBO %d", size);
 
 	setArrayVertex(vertexCoords);
 	if(normalCoords)

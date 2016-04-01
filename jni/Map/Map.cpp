@@ -27,9 +27,26 @@ Map::Map(Updatable* parent, File& file) : Drawable(parent, NULL), m_parser(XML_P
 	XML_ParserFree(m_parser);
 }
 
+Map::~Map()
+{}
+
 void Map::resetDefaultConf()
 {
 	setDefaultConf(Rectangle3f(0, 0, 0, m_nbCasesX * m_caseSizeX, m_nbCasesY * m_caseSizeY, 0));
+}
+
+void Map::onUpdate(Render& render)
+{
+	for(uint32_t i=0; i < m_traces.size(); i++)
+		if(m_traces[i])
+			m_traces[i]->onUpdate(render);
+}
+
+void Map::onDraw(Render& render, const glm::mat4& mvp)
+{
+	for(uint32_t i=0; i < m_traces.size(); i++)
+		if(m_traces[i])
+			m_traces[i]->draw(render, mvp);
 }
 
 void startElement(void* map, const char* name, const char** attrs)
@@ -323,17 +340,21 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 			//Get the size and the padding of it
 			uint32_t sizeX, sizeY, padX, padY;
 			uint32_t i;
+			const char* traceName = NULL;
 			for(i=0; attrs[i]; i+=2)
 			{
 				if(!strcmp(attrs[i], "size"))
 					getXYFromStr(attrs[i+1], &sizeX, &sizeY);
 				else if(!strcmp(attrs[i], "shift"))
 					getXYFromStr(attrs[i+1], &padX, &padY);
+				else if(!strcmp(attrs[i], "name"))
+					traceName = attrs[i+1];
 			}
 			//Then create and store it
-			StaticTrace* st = new StaticTrace(sizeX, sizeY, map->m_nbCasesX * ((sizeX-padX)/map->m_caseSizeX), map->m_nbCasesY * ((sizeY-padY) / map->m_caseSizeY), padX, padY);
+			StaticTrace* st = new StaticTrace(map, traceName, sizeX, sizeY, sizeX/map->m_caseSizeX*map->m_nbCasesX - (padX+map->m_caseSizeX-1)/map->m_caseSizeX, map->m_nbCasesY * sizeY/map->m_caseSizeY - (padX+map->m_caseSizeY-1)/map->m_caseSizeY, padX, padY);
 			map->addTransformable(st);
 			map->m_staticTraces.push_back(st);
+			map->m_traces.push_back(st);
 
 			//New trace --> we start at the column 0
 			XML_NthColumn=0;
@@ -342,10 +363,18 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 		//Or create a dynamic trace
 		else if(!strcmp(name, "DynamicTrace"))
 		{
+			const char* traceName = NULL;
+			for(uint32_t i=0; attrs[i]; i+=2)
+			{
+				if(!strcmp(attrs[i], "name"))
+					traceName = attrs[i+1];
+			}
+
 			//Give the map caseSize and map nbCases for squaring it (useful for collision : we don't check over all the trace !)
-			DynamicTrace* dt = new DynamicTrace(map->m_nbCasesX, map->m_nbCasesY, map->m_caseSizeX, map->m_caseSizeY);
+			DynamicTrace* dt = new DynamicTrace(map, traceName, map->m_nbCasesX, map->m_nbCasesY, map->m_caseSizeX, map->m_caseSizeY);
 			map->addTransformable(dt);
 			map->m_dynamicTraces.push_back(dt);
+			map->m_traces.push_back(dt);
 		}
 	}
 
@@ -607,4 +636,25 @@ createStaticAnimPtr Map::getStaticAnimFunction(const char* name) const
 Material* Map::getStaticAnimMaterial(const char* name, const char* type) const
 {
 	return NULL;
+}
+
+createObjectPtr Map::getObjectFunction(const char* name, const char* type) const
+{
+	return NULL;
+}
+
+Tile* Map::getTile(uint32_t x, uint32_t y)
+{
+	Tile* tile=NULL;
+	for(auto trace : m_traces)
+	{
+		if((tile = trace->getTile(x, y)) != NULL)
+			return tile;
+	}
+	return NULL;
+}
+
+bool Map::isOutside(uint32_t x, uint32_t y) const
+{
+	return (x > m_caseSizeX*m_nbCasesX || y > m_caseSizeY*m_nbCasesY);
 }

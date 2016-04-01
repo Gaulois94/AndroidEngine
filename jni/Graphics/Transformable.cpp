@@ -116,9 +116,9 @@ void Transformable::setSphericCoordinate(float r, float theta, float phi)
 	setPosition(glm::vec3(x, y, z));
 }
 
-void Transformable::setApplyTransformation(const glm::mat4* transformation)
+void Transformable::setApplyTransformation(const Transformable* transformable)
 {
-	m_applyTransformation = transformation;
+	m_applyTransformation = transformable;
 }
 
 void Transformable::rotatePhi(float phi)
@@ -171,7 +171,7 @@ Rectangle3f Transformable::getDefaultConf() const
 glm::mat4 Transformable::getMatrix() const
 {
 	if(m_applyTransformation)
-		return (*m_applyTransformation) * m_mvpMatrix;
+		return (m_applyTransformation->getMatrix()) * m_mvpMatrix;
 	return m_mvpMatrix;
 }
 
@@ -190,7 +190,7 @@ float Transformable::getRadius() const
 	return getPosition().length();
 }
 
-const glm::mat4* Transformable::getApplyTransformation() const
+const Transformable* Transformable::getApplyTransformation() const
 {
 	return m_applyTransformation;
 }

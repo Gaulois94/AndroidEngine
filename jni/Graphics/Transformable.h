@@ -96,8 +96,8 @@ class Transformable : public JniMadeOf
 		virtual void setSphericCoordinate(float r, float theta, float phi);
 
 		/** \brief set the applyTransformation. This variable is used if you want to transform he object only a few times with the same type of matrix
-		 * \param transformation the new applyTransformation variable*/
-		void setApplyTransformation(const glm::mat4* transformation);
+		 * \param transformable the new Transformable variable*/
+		void setApplyTransformation(const Transformable* transformable);
 
 		/** \brief move the object from a rotation in spherical coordinate by phi value
 		 * \param phi the rotation of the object */
@@ -139,7 +139,7 @@ class Transformable : public JniMadeOf
 
 		/** \brief get the applyTransformation. This variable is used if you want to transform he object only a few times with the same type of matrix
 		 * \return the apply transformation*/
-		const glm::mat4* getApplyTransformation() const;
+		const Transformable* getApplyTransformation() const;
 
 		/** \brief get the spheric coordinates of the object position
 		 * \return the object spherical coordinates */
@@ -182,7 +182,7 @@ class Transformable : public JniMadeOf
 		glm::mat4 m_scale;
 		glm::mat4 m_position;
 		glm::mat4 m_positionOrigin;
-		glm::mat4 const* m_applyTransformation;
+		Transformable const* m_applyTransformation;
 
 		glm::vec3 m_defaultSize;
 		glm::vec3 m_defaultPos;

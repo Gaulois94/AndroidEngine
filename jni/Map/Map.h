@@ -69,6 +69,8 @@ class Map : public Drawable
 
 		void onUpdate(Render& render);
 
+		void onDraw(Render& render, const glm::mat4& mvp = glm::mat4(1.0f));
+
 		/** \brief reset the default configuration of the Map : the Rectangle3f will be :
 		 * x = y = z = 0
 		 * width  = nbCasesX * caseSizeX
@@ -148,6 +150,7 @@ class Map : public Drawable
 		std::vector<ObjectDatas*>  m_objects;
 
 		//Traces
+		std::vector<Trace*>        m_traces;
 		std::vector<StaticTrace*>  m_staticTraces;
 		std::vector<DynamicTrace*> m_dynamicTraces;
 

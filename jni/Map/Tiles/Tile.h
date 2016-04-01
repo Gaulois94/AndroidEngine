@@ -18,6 +18,7 @@ class Tile : public Drawable
 		bool canDestroy();
 	private:
 		uint32_t m_info;
+		bool m_canDestroy;
 };
 
 #endif
