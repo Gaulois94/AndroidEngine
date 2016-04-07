@@ -20,10 +20,9 @@ LOCAL_SRC_FILES += Graphics/Animation.cpp Graphics/nativeAnimation.cpp Graphics/
 
 LOCAL_SRC_FILES += Graphics/Widgets/Button.cpp Graphics/Widgets/CheckBox.cpp Graphics/Widgets/Active.cpp Graphics/Widgets/CheckCircle.cpp Graphics/Widgets/GroupActivable.cpp
 
-#LOCAL_SRC_FILES += Map/Map.cpp Map/MapFiles.cpp  Map/Traces/DynamicTrace.cpp Map/Traces/StaticTrace.cpp Map/Traces/Trace.cpp Map/Datas/AnimDatas.cpp Map/Tiles/StaticTile.cpp Map/Tiles/Tile.cpp Map/Tiles/TileObject.cpp Map/Tiles/DefaultTile.cpp
+LOCAL_SRC_FILES += Map/Map.cpp Map/MapFiles.cpp  Map/Traces/DynamicTrace.cpp Map/Traces/StaticTrace.cpp Map/Traces/Trace.cpp Map/Datas/AnimDatas.cpp Map/Tiles/StaticTile.cpp Map/Tiles/Tile.cpp Map/Tiles/TileObject.cpp Map/Tiles/DefaultTile.cpp
 
-LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv2 -ljnigraphics -latomic 
-#-lexpat
+LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv2 -ljnigraphics -latomic -lexpat
 include $(BUILD_SHARED_LIBRARY)
 
 ZPATH := $(LOCAL_PATH)
