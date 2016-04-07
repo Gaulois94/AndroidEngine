@@ -1,10 +1,8 @@
 #include "Renderer.h"
 
 Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT),
-										m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0), m_sphere(this, NULL), m_mtl(Color(0.0, 0.0, 1.0, 1.0)), m_colorMtl(Color(1.0, 1.0, 1.0, 1.0))
+										m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
-//	m_sphere.setMaterial(&m_mtl);
-//	m_sphere.setMaterial(&m_colorMtl);
 }
 
 Renderer::~Renderer()
@@ -81,9 +79,9 @@ bool Renderer::initializeContext(ANativeWindow* window)
 		return false;
 	}
 
-	Drawable::initShaders();
 	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
 	initializeSurface(window);
+	Drawable::initShaders();
 	return true;
 }
 
@@ -120,7 +118,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glViewport(0, 0, m_width, m_height);
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	m_start = true;
 }
@@ -149,14 +147,12 @@ void Renderer::updateFocus(uint32_t pID)
 
 void Renderer::update(Render& render)
 {
-//	m_sphere.draw(*this);
 	Updatable::update(render);
-	Render::updateGPU(render);
+	Updatable::updateGPU(render);
 }
 
 void Renderer::initDraw()
 {
-	LOG_ERROR("INIT DRAW");
 	if(!eglMakeCurrent(m_disp, m_surface, m_surface, m_context))
 	{
 		LOG_ERROR("Init Draw Can't make this context the current one. Error : %d", eglGetError());

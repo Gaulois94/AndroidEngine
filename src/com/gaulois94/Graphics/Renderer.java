@@ -85,6 +85,7 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 	//Need to be override if ndk is used
 	public long createPtr(long parent,  Surface surface)
 	{
+		Log.e("Engine", "createRenderer");
 		return createRenderer(parent, surface);
 	}
 

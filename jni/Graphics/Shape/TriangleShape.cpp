@@ -36,6 +36,7 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 		return;
 
 	m_material->init(render, mvp);
+	LOG_ERROR("END MATERIAL INIT");
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
 		GLint vPosition         = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
@@ -66,6 +67,7 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 			glDisableVertexAttribArray(vNormal);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	LOG_ERROR("END ON DRAW TRIANGLE SHAPE");
 }
 
 void TriangleShape::setDatas(const glm::vec3* vertexCoords, const glm::vec3* normalCoords, uint32_t nbVertex)

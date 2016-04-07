@@ -15,10 +15,8 @@
 #include "Render.h"
 #include "EventManager.h"
 #include "Rectangle2.h"
-#include "Shape/Circle.h"
 #include "Shape/Sphere.h"
 #include "Materials/ObjMaterial.h"
-#include "Materials/UniColorMaterial.h"
 
 /** \brief The renderer class. It is a representative of the screen. */
 class Renderer : public Render
@@ -94,11 +92,6 @@ class Renderer : public Render
 		int m_height;
 		bool m_start;
 		ANativeWindow *m_window;
-
-		Sphere m_sphere;
-		ObjMaterial m_mtl;
-		UniColorMaterial m_colorMtl;
-		
 };
 
 #endif

@@ -1,7 +1,7 @@
 #include "Render.h"
 #include "Drawable.h"
 
-Render::Render(Updatable* parent) : Updatable(parent), m_ambientColor(0.0, 0.0, 0.0, 1.0)
+Render::Render(Updatable* parent) : Updatable(parent), m_ambientColor(0.1, 0.1, 0.1, 1.0)
 {
 }
 
