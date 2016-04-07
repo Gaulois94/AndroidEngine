@@ -6,6 +6,6 @@
 	  android:installLocation="preferExternal"
 	  >
 
-	<uses-sdk android:minSdkVersion="15" />
+	<uses-sdk android:minSdkVersion="19" />
 	<uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
 </manifest>
