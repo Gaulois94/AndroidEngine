@@ -88,7 +88,7 @@ class Map : public Drawable
 		 * \param name the name of the tile contained on the xml file
 		 * \param type the type of the tile contained on the xml file
 		 * \return a pointer to a Material. NULL if not correct*/
-		virtual Material*           getStaticTileMaterial(const char* name, const char* type)const;
+		virtual Material*           getStaticTileMaterial(const char* name, const char* type);
 
 		/** \brief get the pointer function to create a dynamic tile from name and type. This function is aimed to be overwrited.
 		 * \param name the name of the tile contained on the xml file
@@ -99,7 +99,7 @@ class Map : public Drawable
 		 * \param name the name of the tile contained on the xml file
 		 * \param type the type of the tile contained on the xml file
 		 * \return a pointer to a Material. NULL if not correct*/
-		virtual Material*           getDynamicAnimMaterial(const char* name, const char* type) const;
+		virtual Material*           getDynamicAnimMaterial(const char* name, const char* type);
 
 		/** \brief get the pointer function to create a dynamic tile from name and type. This function is aimed to be overwrited.
 		 * \param name the name of the tile contained on the xml file
@@ -110,7 +110,7 @@ class Map : public Drawable
 		 * \param name the name of the tile contained on the xml file
 		 * \param type the type of the tile contained on the xml file
 		 * \return a pointer to a Material. NULL if not correct*/
-		virtual Material*           getStaticAnimMaterial(const char* name, const char* type) const;
+		virtual Material*           getStaticAnimMaterial(const char* name, const char* type);
 
 		/** \brief set the pointer function for this ObjectDatas following its name and its type
 		 * \param name the name of the tile contained on the xml file

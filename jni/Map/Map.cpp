@@ -17,6 +17,7 @@ Map::Map(Updatable* parent, File& file) : Drawable(parent, NULL), m_parser(XML_P
 	char* line;
 	while((line = file.readLine()) != NULL)
 	{
+		LOG_ERROR("%s", line);
 		if(line == NULL)
 			break;
 		xmlCode.append(line);
@@ -613,7 +614,7 @@ createStaticTilePtr Map::getStaticTileFunction(const char* name, const char* typ
 	return NULL;
 }
 
-Material* Map::getStaticTileMaterial(const char* name, const char* type) const
+Material* Map::getStaticTileMaterial(const char* name, const char* type)
 {
 	return NULL;
 }
@@ -623,7 +624,7 @@ createDynamicAnimPtr Map::getDynamicAnimFunction(const char* name) const
 	return NULL;
 }
 
-Material* Map::getDynamicAnimMaterial(const char* name, const char* type) const
+Material* Map::getDynamicAnimMaterial(const char* name, const char* type)
 {
 	return NULL;
 }
@@ -633,7 +634,7 @@ createStaticAnimPtr Map::getStaticAnimFunction(const char* name) const
 	return NULL;
 }
 
-Material* Map::getStaticAnimMaterial(const char* name, const char* type) const
+Material* Map::getStaticAnimMaterial(const char* name, const char* type)
 {
 	return NULL;
 }

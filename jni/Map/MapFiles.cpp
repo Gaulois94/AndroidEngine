@@ -43,7 +43,7 @@ Tile* StaticFile::createTile(Updatable* parent, uint32_t tileID, bool def)
 	subRect.height = m_tileSizeY;
 
     if(!def)
-        return m_tileDatas[tileID]->createStaticTile(parent, m_texture, subRect);
+        return m_tileDatas[tileID]->createStaticTile(parent, m_tileDatas[tileID]->material, m_texture, subRect);
     return new DefaultTile(parent, NULL, m_texture, subRect);
 }
 
