@@ -23,12 +23,14 @@ Shader* Shader::loadFromFiles(File vertexFile, File fragFile)
 	while((line = vertexFile.readLine()) != NULL)
 	{
 		vertexCode.append(line);	
+		LOG_ERROR("%s", line);
 		free(line);
 	}
 
 	while((line = fragFile.readLine()) != NULL)
 	{
 		fragCode.append(line);	
+		LOG_ERROR("%s", line);
 		free(line);
 	}
 

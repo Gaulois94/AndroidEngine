@@ -82,6 +82,7 @@ bool Renderer::initializeContext(ANativeWindow* window)
 	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
 	Drawable::initShaders();
 	initializeSurface(window);
+	Drawable::initShaders();
 	return true;
 }
 
@@ -118,7 +119,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glViewport(0, 0, m_width, m_height);
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	m_start = true;
 }
