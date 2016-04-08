@@ -68,6 +68,7 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(
 		std::string pathfString = "shaders/" + files[i] + ".frag";
 		std::string pathvString = "shaders/" + files[i] + ".vert";
 
+		LOG_ERROR("START FILE");
 		File vertexFile        = File(jenv, context, pathvString.c_str(), "r");
 		File fragFile          = File(jenv, context, pathfString.c_str(), "r");
 		LOG_ERROR("FILE LOADED");

@@ -40,8 +40,6 @@ bool Renderer::initializeContext(ANativeWindow* window)
 		EGL_GREEN_SIZE, 8,
 		EGL_RED_SIZE, 8,
 		EGL_ALPHA_SIZE, 8,
-		EGL_DEPTH_SIZE, 16,
-		EGL_STENCIL_SIZE, 0,
 		EGL_NONE
 	};
 
