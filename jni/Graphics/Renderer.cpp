@@ -35,7 +35,7 @@ bool Renderer::initializeContext(ANativeWindow* window)
 	const EGLint attribs[] = 
 	{
 		EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-		EGL_SURFACE_TYPE, EGL_WINDOW_BIT | EGL_PBUFFER_BIT,
+		EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 		EGL_BLUE_SIZE, 8,
 		EGL_GREEN_SIZE, 8,
 		EGL_RED_SIZE, 8,
@@ -148,10 +148,8 @@ void Renderer::updateFocus(uint32_t pID)
 
 void Renderer::update(Render& render)
 {
-	UniColorMaterial* mtl = new UniColorMaterial(Color(1.0, 1.0, 0.0, 1.0));
-	Circle* circle = new Circle(this, mtl);
-	Updatable::update(render);
-	Updatable::updateGPU(render);
+	Render::update(render);
+	Render::updateGPU(render);
 }
 
 void Renderer::initDraw()

@@ -17,7 +17,6 @@ Map::Map(Updatable* parent, File& file) : Drawable(parent, NULL), m_parser(XML_P
 	char* line;
 	while((line = file.readLine()) != NULL)
 	{
-		LOG_ERROR("%s", line);
 		if(line == NULL)
 			break;
 		xmlCode.append(line);
@@ -52,6 +51,7 @@ void Map::onDraw(Render& render, const glm::mat4& mvp)
 
 void startElement(void* map, const char* name, const char** attrs)
 {
+	LOG_ERROR("START ELEMENT");
 	Map* self = (Map*)map;
 	//Get Window datas
 	if(!strcmp(name, "Window"))
@@ -79,6 +79,7 @@ void startElement(void* map, const char* name, const char** attrs)
 
 void startElementFiles(void *data, const char* name, const char** attrs)
 {
+	LOG_ERROR("START FILES");
 	uint32_t i;
 	Map* map = (Map*)data;
 

@@ -5,7 +5,7 @@
 #ifndef READFILE_INCLUDE
 #define READFILE_INCLUDE
 
-#define FILE_BUFFER_SIZE 512
+#define LINE_BUFFER 512
 
 #include <iostream>
 #include <string>
