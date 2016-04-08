@@ -73,7 +73,7 @@ bool Renderer::initializeContext(ANativeWindow* window)
 		return false;
 	}
 
-	if(!(m_context = eglCreateContext(m_disp, m_conf, m_context, eglAttribs)))
+	if(!(m_context = eglCreateContext(m_disp, m_conf, EGL_NO_CONTEXT, eglAttribs)))
 	{
 		LOG_ERROR("Can't create an EGL context. Error : %d", eglGetError());
 		return false;
@@ -91,7 +91,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	if(window == NULL)
 		return;
 	deleteSurface();
-	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
 	m_window = window;
 	m_start = false;
 
@@ -119,7 +119,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glViewport(0, 0, m_width, m_height);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
 	m_start = true;
 }
@@ -148,6 +148,8 @@ void Renderer::updateFocus(uint32_t pID)
 
 void Renderer::update(Render& render)
 {
+	UniColorMaterial* mtl = new UniColorMaterial(Color(1.0, 1.0, 0.0, 1.0));
+	Circle* circle = new Circle(this, mtl);
 	Updatable::update(render);
 	Updatable::updateGPU(render);
 }

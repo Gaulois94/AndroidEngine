@@ -3,7 +3,10 @@
 float Material::maskColor[4];
 
 Material::Material(const Shader *shader) : m_shader(shader), m_texture(NULL), m_vboID(0), m_isUsingShader(false)
-{}
+{
+	if(!m_shader)
+		LOG_ERROR("ERROR LOADING SHADER");
+}
 
 Material::~Material()
 {
@@ -21,6 +24,8 @@ void Material::enableShader()
 
 void Material::init(Render& render, const glm::mat4& mvp)
 {
+	if(!m_shader)
+		return;
 	GLint uMaskColor     = glGetUniformLocation(m_shader->getProgramID(), "uMaskColor");
 	GLint uUseTexture    = glGetUniformLocation(m_shader->getProgramID(), "uUseTexture");
 	GLint uTextureHandle = glGetUniformLocation(m_shader->getProgramID(), "uTexture");
