@@ -60,7 +60,6 @@ JNIEXPORT jint JNICALL Java_com_gaulois94_Graphics_Drawable_existShaderFromKeyDr
 
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(JNIEnv *jenv, jclass jcls, jobject context)
 {
-	LOG_ERROR("LOAD SHADER");
 	std::string files[]          = {"basic", "color", "obj", "texture"};
 	int size                     = 4;
 
@@ -69,10 +68,9 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(
 		std::string pathfString = "shaders/" + files[i] + ".frag";
 		std::string pathvString = "shaders/" + files[i] + ".vert";
 
-		LOG_ERROR("%s", files[i].c_str());
-
 		File vertexFile        = File(jenv, context, pathvString.c_str(), "r");
 		File fragFile          = File(jenv, context, pathfString.c_str(), "r");
+		LOG_ERROR("FILE LOADED");
 		Shader::shaders.add(files[i], Shader::loadFromFiles(vertexFile, fragFile));
 	}
 }

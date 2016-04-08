@@ -5,6 +5,8 @@
 #ifndef READFILE_INCLUDE
 #define READFILE_INCLUDE
 
+#define LINE_BUFFER 512
+
 #include <iostream>
 #include <string>
 #include <unistd.h>

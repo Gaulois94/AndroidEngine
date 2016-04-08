@@ -35,11 +35,13 @@ bool Renderer::initializeContext(ANativeWindow* window)
 	const EGLint attribs[] = 
 	{
 		EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-		EGL_SURFACE_TYPE, EGL_WINDOW_BIT | EGL_PBUFFER_BIT,
+		EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 		EGL_BLUE_SIZE, 8,
 		EGL_GREEN_SIZE, 8,
 		EGL_RED_SIZE, 8,
 		EGL_ALPHA_SIZE, 8,
+		EGL_DEPTH_SIZE, 16,
+		EGL_STENCIL_SIZE, 0,
 		EGL_NONE
 	};
 
@@ -73,7 +75,7 @@ bool Renderer::initializeContext(ANativeWindow* window)
 		return false;
 	}
 
-	if(!(m_context = eglCreateContext(m_disp, m_conf, m_context, eglAttribs)))
+	if(!(m_context = eglCreateContext(m_disp, m_conf, EGL_NO_CONTEXT, eglAttribs)))
 	{
 		LOG_ERROR("Can't create an EGL context. Error : %d", eglGetError());
 		return false;
@@ -118,7 +120,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glViewport(0, 0, m_width, m_height);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
 	m_start = true;
 }
@@ -147,8 +149,8 @@ void Renderer::updateFocus(uint32_t pID)
 
 void Renderer::update(Render& render)
 {
-	Updatable::update(render);
-	Updatable::updateGPU(render);
+	Render::update(render);
+	Render::updateGPU(render);
 }
 
 void Renderer::initDraw()

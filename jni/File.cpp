@@ -103,11 +103,11 @@ char* File::readLine()
 	if(m_pos >= m_size)
 		return NULL;
 
-	char* line = (char*) malloc(200*sizeof(char));
+	char* line = (char*) malloc(LINE_BUFFER*sizeof(char));
 	char c = '\0';
 	int i=0;
 	
-	while(c != '\n' && m_pos < m_size)
+	while(c != '\n' && m_pos < m_size && i < LINE_BUFFER-1)
 	{
 		c = fgetc(m_file);
 		*(line + i)=c;
