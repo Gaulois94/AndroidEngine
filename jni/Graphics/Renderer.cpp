@@ -82,6 +82,7 @@ bool Renderer::initializeContext(ANativeWindow* window)
 	}
 
 	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
+	Drawable::initShaders();
 	initializeSurface(window);
 	Drawable::initShaders();
 	return true;
@@ -104,7 +105,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 
 	if(!eglMakeCurrent(m_disp, m_surface, m_surface, m_context))
 	{
-		LOG_ERROR("Can't make this context the current one. Error : %d", eglGetError());
+		LOG_ERROR("ERROR : Can't make this context the current one. Error : %d", eglGetError());
 		initializeSurface(window);
 		return;
 	}
