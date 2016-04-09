@@ -3,7 +3,11 @@
 uint32_t XML_depth     = 0;
 uint32_t XML_NthColumn = 0;
 
-Map::Map(Updatable* parent, File& file) : Drawable(parent, NULL), m_parser(XML_ParserCreate(NULL)), m_nbCasesX(0), m_nbCasesY(0), m_caseSizeX(0), m_caseSizeY(0)
+Map::Map(Updatable* parent) : Drawable(parent, NULL), m_parser(XML_ParserCreate(NULL)), m_nbCasesX(0), m_nbCasesY(0), m_caseSizeX(0), m_caseSizeY(0)
+{
+}
+
+void Map::parse(File& file)
 {
 	//Reinit global variables
 	XML_depth = XML_NthColumn = 0;
@@ -13,12 +17,10 @@ Map::Map(Updatable* parent, File& file) : Drawable(parent, NULL), m_parser(XML_P
 	XML_SetElementHandler(m_parser, &startElement, &endElement);
 
 	//Then parse the file
-	std::string xmlCode;
 	char* line;
-	while((line = file.readLine()) != NULL)
+	std::string xmlCode;
+	while(line = file.readLine())
 	{
-		if(line == NULL)
-			break;
 		xmlCode.append(line);
 		free(line);
 	}
@@ -37,21 +39,14 @@ void Map::resetDefaultConf()
 
 void Map::onUpdate(Render& render)
 {
-	for(uint32_t i=0; i < m_traces.size(); i++)
-		if(m_traces[i])
-			m_traces[i]->onUpdate(render);
 }
 
 void Map::onDraw(Render& render, const glm::mat4& mvp)
 {
-	for(uint32_t i=0; i < m_traces.size(); i++)
-		if(m_traces[i])
-			m_traces[i]->draw(render, mvp);
 }
 
 void startElement(void* map, const char* name, const char** attrs)
 {
-	LOG_ERROR("START ELEMENT");
 	Map* self = (Map*)map;
 	//Get Window datas
 	if(!strcmp(name, "Window"))
@@ -79,7 +74,6 @@ void startElement(void* map, const char* name, const char** attrs)
 
 void startElementFiles(void *data, const char* name, const char** attrs)
 {
-	LOG_ERROR("START FILES");
 	uint32_t i;
 	Map* map = (Map*)data;
 
@@ -149,6 +143,7 @@ void startElementFiles(void *data, const char* name, const char** attrs)
 	{
 		if(map->m_textures.size() == map->m_staticFiles.size()) //Because we load static files before dynamic files, if the len is equal, then the last file was static
 		{
+			LOG_ERROR("XML DEPTH 3");
 			//Get the last static file
 			StaticFile* sf = map->m_staticFiles[map->m_staticFiles.size()-1];
 
@@ -333,6 +328,7 @@ void startElementObjects(void *data, const char* name, const char** attrs)
 
 void startElementTraces(void *data, const char* name, const char** attrs)
 {
+	LOG_ERROR("START TRACE %s", name);
 	Map* map = (Map*)data;
 	if(XML_depth == 2)
 	{
@@ -452,6 +448,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 
 			if(sf)
 			{
+				LOG_ERROR("DT ADD TILE");
 				Tile* tile = sf->createTile(NULL, tileID, false);
 				dt->addTile(tile, posX, posY);
 			}
@@ -463,8 +460,14 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 		//Column is for static tile in Column tree
 		if(!strcmp(name, "Static"))
 		{
+			LOG_ERROR("IN STRCMP SATIC");
 			//Get the last static trace
 			StaticTrace* st = map->m_staticTraces[map->m_staticTraces.size()-1];
+			if(st == NULL)
+			{
+				LOG_ERROR("ST IS ,NULL");
+				return;
+			}
 
 			//Get tileID, object ID and fileID IntCSV values
 			IntCSVParser tileCSVID = IntCSVParser();
@@ -475,6 +478,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 			uint32_t i;
 			for(i=0; attrs[i]; i+=2)
 			{
+				LOG_ERROR("ATTR %s, VALUE %s", attrs[i], attrs[i+1]);
 				if(!strcmp(attrs[i], "fileID"))
 					fileCSVID.parse(attrs[i+1]);
 				else if(!strcmp(attrs[i], "tileID"))
@@ -491,7 +495,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 			//We check if we have normal tiles to parse
 			for(i=0; i < tileID->size(); i++)
 			{
-				if((*tileID)[i] != -1 && (*fileID)[i] != -1 && (*objectID)[i] == -1)
+				if((*tileID)[i] != -1 && (*fileID)[i] != -1 && (*objectID)[i] == 0)
 				{
 					//Get the file following the file ID (id 0 --> first file created)
 					StaticFile* sf  = map->m_staticFiles[(*fileID)[i]];
@@ -502,8 +506,8 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 					//If the tile is created
 					if(tile != NULL)
 					{
-						if(st != NULL)
-							st->addTile(tile, XML_NthColumn, i); //Add it
+						LOG_ERROR("ST ADD TILE");
+						st->addTile(tile, XML_NthColumn, i); //Add it
 					}
 				}
 
@@ -565,6 +569,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 			IntCSVParser tileCSVID = IntCSVParser();
 			IntCSVParser fileCSVID = IntCSVParser();
 			StrCSVParser nameCSVID = StrCSVParser();
+
 			for(uint32_t i=0; attrs[i]; i+=2)
 			{
 				if(!strcmp(attrs[i], "fileID"))
@@ -575,6 +580,8 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 					nameCSVID.parse(attrs[i+1]);
 			}
 
+			LOG_ERROR("GET VALUES");
+
 			//Get IntCSV values
 			const std::vector<int32_t>*     tileID   = tileCSVID.getValues();
 			const std::vector<int32_t>*     fileID   = fileCSVID.getValues();
@@ -582,6 +589,8 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 
 			for(uint32_t i=0; i < tileID->size(); i++)
 			{
+				if((*fileID)[i] == -1 || (*tileID)[i] == -1)
+					continue;
 				DynamicFile* df  = map->m_dynamicFiles[(*fileID)[i] - map->m_staticFiles.size()];
 				if(df)
 				{
@@ -612,6 +621,7 @@ void endElement(void *data, const char* name)
 
 createStaticTilePtr Map::getStaticTileFunction(const char* name, const char* type) const
 {
+	LOG_ERROR("WRONG CALLED");
 	return NULL;
 }
 

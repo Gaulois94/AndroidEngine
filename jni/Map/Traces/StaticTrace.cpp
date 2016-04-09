@@ -29,4 +29,5 @@ void StaticTrace::addTile(Tile* tile, uint32_t x, uint32_t y)
 	if(x >= m_nbCasesX * m_sizeX - m_padX || y >= m_nbCasesY * m_sizeY - m_padY)
 		return;
 	m_tiles[(x-m_padX)/m_sizeX][(y-m_padY)/m_sizeY] = tile;
+	Trace::addTile(tile, x, y);
 }

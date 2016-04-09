@@ -35,17 +35,19 @@ Tile* StaticFile::createTile(Updatable* parent, uint32_t tileID, bool def)
     //True value : (tWidth - tileSizeX + tileSizeX + spacingX -1) / (tileSizeX + spacingX) + 1 
     //where tileSizeX + spacingX -1 is for rounded the value to the upper case if needed;
 	uint32_t numberTileX = (m_texture->getWidth() + m_spacingX - 1) / (m_spacingX + m_tileSizeX) + 1;
-	Rectangle2f subRect;
+	Rectangle2ui subRect;
 
 	subRect.x      = (tileID % numberTileX) * (m_tileSizeX + m_spacingX);
 	subRect.y      = (tileID / numberTileX) * (m_tileSizeY + m_spacingY);
 	subRect.width  = m_tileSizeX;
 	subRect.height = m_tileSizeY;
 
+	FloatRect2 textureSubRect = m_texture->getRect(subRect);
+
     if(!def)
 	{
 		if(m_tileDatas[tileID]->createStaticTile)
-			return m_tileDatas[tileID]->createStaticTile(parent, m_tileDatas[tileID]->material, m_texture, subRect);
+			return m_tileDatas[tileID]->createStaticTile(parent, m_tileDatas[tileID]->material, m_texture, textureSubRect);
 		else
 			return NULL;
 	}

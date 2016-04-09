@@ -85,7 +85,6 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 	//Need to be override if ndk is used
 	public long createPtr(long parent,  Surface surface)
 	{
-		Log.e("Engine", "createRenderer");
 		return createRenderer(parent, surface);
 	}
 
@@ -101,12 +100,12 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 
 	public void onChanged(Rect rect)
 	{
-		GLES20.glViewport(0, 0, rect.right-rect.left, rect.bottom-rect.top);
+	//	GLES20.glViewport(0, 0, rect.right-rect.left, rect.bottom-rect.top);
 	}
 
 	public void onDestroyed()
 	{
-		destroySurfaceRenderer(m_ptr);
+	//	destroySurfaceRenderer(m_ptr);
 	}
 
 	public void run()

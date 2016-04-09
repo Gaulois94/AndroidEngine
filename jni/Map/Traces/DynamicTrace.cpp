@@ -27,4 +27,5 @@ void DynamicTrace::addTile(Tile* tile, uint32_t x, uint32_t y)
 	if(x >= m_nbCasesX * m_sizeX || y >= m_nbCasesY * m_sizeY)
 		return;
 	m_tiles[x/m_sizeX][y/m_sizeY] = tile;
+	Trace::addTile(tile, x, y);
 }

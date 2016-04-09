@@ -7,5 +7,6 @@ DefaultTile::DefaultTile(Updatable* parent, Material* mtl, const Texture* textur
 
 void DefaultTile::onDraw(Render& render, const glm::mat4& mvp)
 {
+	LOG_ERROR("DEFAULT TILE ON DRAW");
 	m_sprite.draw(render, mvp);
 }

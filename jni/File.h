@@ -5,7 +5,7 @@
 #ifndef READFILE_INCLUDE
 #define READFILE_INCLUDE
 
-#define LINE_BUFFER 512
+#define LINE_BUFFER 1024
 
 #include <iostream>
 #include <string>
@@ -69,9 +69,9 @@ class File
 		const std::string& getPath() const;
 	private:
 		FILE* m_file;
-		int   m_size;
-		int   m_offset;
-		int   m_pos;
+		uint32_t   m_size;
+		uint32_t   m_offset;
+		uint32_t   m_pos;
 		std::string m_path;
 };
 

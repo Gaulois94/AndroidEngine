@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_CONTEXT), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT),
+Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_DISPLAY), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT),
 										m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
 }
@@ -28,7 +28,6 @@ void Renderer::terminate()
 bool Renderer::initializeContext(ANativeWindow* window)
 {
 	m_start = false;
-	m_window = window;
 	terminate();
 
 	//Initialize the egl context
@@ -79,10 +78,17 @@ bool Renderer::initializeContext(ANativeWindow* window)
 		return false;
 	}
 
-	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
-	Drawable::initShaders();
 	initializeSurface(window);
 	Drawable::initShaders();
+
+	//Initialize OpenGL
+	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glViewport(0, 0, m_width, m_height);
+
 	return true;
 }
 
@@ -91,7 +97,6 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	if(window == NULL)
 		return;
 	deleteSurface();
-	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	m_window = window;
 	m_start = false;
 
@@ -103,7 +108,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 
 	if(!eglMakeCurrent(m_disp, m_surface, m_surface, m_context))
 	{
-		LOG_ERROR("ERROR : Can't make this context the current one. Error : %d", eglGetError());
+		LOG_ERROR("Can't make this context the current one. Error : %d", eglGetError());
 		initializeSurface(window);
 		return;
 	}
@@ -112,14 +117,6 @@ void Renderer::initializeSurface(ANativeWindow* window)
 
 	eglQuerySurface(m_disp, m_surface, EGL_WIDTH, &m_width);
 	eglQuerySurface(m_disp, m_surface, EGL_HEIGHT, &m_height);
-
-	//Initialize OpenGL
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	glViewport(0, 0, m_width, m_height);
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
 	m_start = true;
 }
@@ -148,8 +145,8 @@ void Renderer::updateFocus(uint32_t pID)
 
 void Renderer::update(Render& render)
 {
-	Render::update(render);
-	Render::updateGPU(render);
+	Updatable::update(render);
+	Updatable::updateGPU(render);
 }
 
 void Renderer::initDraw()

@@ -50,7 +50,7 @@ class Rectangle2
 		template<typename S>
 		Rectangle2& operator=(const Rectangle2<S>& r)
 		{
-			if(this != &r)
+			if((const Rectangle2<S>*)(this) != &r)
 			{
 				x = r.x;
 				y = r.y;

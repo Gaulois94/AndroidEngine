@@ -105,7 +105,7 @@ char* File::readLine()
 
 	char* line = (char*) malloc(LINE_BUFFER*sizeof(char));
 	char c = '\0';
-	int i=0;
+	uint32_t i=0;
 	
 	while(c != '\n' && m_pos < m_size && i < LINE_BUFFER-1)
 	{
@@ -115,14 +115,15 @@ char* File::readLine()
 		m_pos++;
 	}
 	
-	*(line + i) = '\0';
+	*(line + i)='\0';
+	LOG_ERROR("%s", line);
 	return line;
 }
 
 char File::readChar()
 {
 	if(m_pos >= m_size)
-		return '\0';
+		return EOF;
 	m_pos++;
 	return fgetc(m_file);
 }

@@ -60,12 +60,15 @@ class Map : public Drawable
 {
 	public:
 		/** \brief Constructor of the class Map. It creates and parse a XML file. The default position of the Map is (1.0, 1.0) with the size (nbCaseX * tileSizeX, nbCaseY * tileSizeY). Remember to scale the Map after its creation
-		 * \param parent the parent of the Map
-		 * \param file the XML file*/
-		Map(Updatable* parent, File& file);
+		 * \param parent the parent of the Map*/
+		Map(Updatable* parent);
 
 		/** \brief destructor of the class Map. It will destroy each traces, each texture used in this map*/
 		~Map();
+
+		/* \brief parse the file
+		 * \param file the XML file*/
+		void parse(File& file);
 
 		void onUpdate(Render& render);
 
