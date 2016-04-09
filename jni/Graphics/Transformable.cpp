@@ -5,6 +5,7 @@ Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f)
 	m_defaultPos = glm::vec3(defaultConf.x, defaultConf.y, defaultConf.z);
 	m_defaultSize = glm::vec3(defaultConf.width, defaultConf.height, defaultConf.depth);
 	m_rect = Rectangle3f(m_defaultPos, m_defaultSize);
+	setMVPMatrix();
 }
 
 void Transformable::move(const glm::vec3 &v, bool useScale)
@@ -31,10 +32,12 @@ void Transformable::setPositionOrigin(const glm::vec3 &p, bool useScale)
 
 void Transformable::setPosition(const glm::vec3 &v, bool useScale)
 {
+	m_position = glm::mat4(1.0f);
 	if(useScale == false)
-		move(v/getScale() - getPosition(useScale) + m_defaultPos, true);
+		m_position = glm::translate(m_position, v/getScale());
 	else
-		move(v - getPosition(useScale) + m_defaultPos, true);
+		m_position = glm::translate(m_position, v);
+	setMVPMatrix();
 }
 
 void Transformable::rotate(float angle, const glm::vec3 &v, const glm::vec3 &origin, bool useScale)

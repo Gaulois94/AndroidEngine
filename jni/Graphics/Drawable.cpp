@@ -40,9 +40,9 @@ void Drawable::draw(Render& render, const glm::mat4& transformation)
 	if(m_material)
 		m_material->enableShader();
 
-	glm::mat4 mvp = getMatrix();
+	glm::mat4 mvp = transformation * getMatrix();
 	if(!m_staticToCamera)
-		mvp = render.getCamera().getMatrix() * transformation * mvp;
+		mvp = render.getCamera().getMatrix() * mvp;
 	onDraw(render, mvp);
 
 	if(m_material)

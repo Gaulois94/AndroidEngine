@@ -59,7 +59,6 @@ void startElement(void* map, const char* name, const char** attrs)
 			else if(!strcmp(attrs[i], "tileSize"))
 				getXYFromStr(attrs[i+1], &self->m_caseSizeX, &self->m_caseSizeY);
 		}
-
 	}
 
 	//Set the correct start function following the section (Files for Files, etc.)
@@ -143,7 +142,6 @@ void startElementFiles(void *data, const char* name, const char** attrs)
 	{
 		if(map->m_textures.size() == map->m_staticFiles.size()) //Because we load static files before dynamic files, if the len is equal, then the last file was static
 		{
-			LOG_ERROR("XML DEPTH 3");
 			//Get the last static file
 			StaticFile* sf = map->m_staticFiles[map->m_staticFiles.size()-1];
 
@@ -159,6 +157,7 @@ void startElementFiles(void *data, const char* name, const char** attrs)
 			}
 			StaticDatas* sd = new StaticDatas();
 			sd->createStaticTile = map->getStaticTileFunction(name, type);
+			sd->material = map->getStaticTileMaterial(name, type);
 			//And bind it to the file
 			sf->addStaticDatas(sd);
 		}
@@ -332,6 +331,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 	Map* map = (Map*)data;
 	if(XML_depth == 2)
 	{
+		XML_NthColumn=0;
 		//Are we dealing with static trace ?
 		if(!strcmp(name, "StaticTrace"))
 		{
@@ -448,7 +448,6 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 
 			if(sf)
 			{
-				LOG_ERROR("DT ADD TILE");
 				Tile* tile = sf->createTile(NULL, tileID, false);
 				dt->addTile(tile, posX, posY);
 			}
@@ -460,7 +459,6 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 		//Column is for static tile in Column tree
 		if(!strcmp(name, "Static"))
 		{
-			LOG_ERROR("IN STRCMP SATIC");
 			//Get the last static trace
 			StaticTrace* st = map->m_staticTraces[map->m_staticTraces.size()-1];
 			if(st == NULL)
@@ -507,7 +505,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 					if(tile != NULL)
 					{
 						LOG_ERROR("ST ADD TILE");
-						st->addTile(tile, XML_NthColumn, i); //Add it
+						st->addTileInTraceCoord(tile, XML_NthColumn, i); //Add it
 					}
 				}
 
@@ -613,7 +611,7 @@ void endElement(void *data, const char* name)
 {
 	XML_depth--;
 	//Move to the next column of the trace
-	if(XML_depth == 2 && !strcmp(name, "Column"))
+	if(XML_depth == 3 && !strcmp(name, "Column"))
 		XML_NthColumn++;
 	if(XML_depth == 1)
 		XML_SetElementHandler(((Map*)data)->m_parser, startElement, endElement);

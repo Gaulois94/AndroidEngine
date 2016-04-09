@@ -40,7 +40,7 @@ void Trace::addTile(Tile* tile, uint32_t x, uint32_t y)
 {
 	addTransformable(tile);
 	tile->setParent(this);
-	tile->setPosition(glm::vec3(x, y, 0.0));
+	tile->setPosition(glm::vec3(x, y, 0.0), true);
 }
 
 void Trace::onDraw(Render& render, const glm::mat4& mvp)

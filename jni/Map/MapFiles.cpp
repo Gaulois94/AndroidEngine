@@ -8,7 +8,7 @@ const Texture* MapFile::getTexture() const
 	return m_texture;
 }
 
-StaticFile::StaticFile(const Texture* texture, uint32_t spacX, uint32_t spacY, uint32_t sizeX, uint32_t sizeY) : MapFile(texture), m_spacingX(spacX), m_spacingY(spacY), m_tileSizeX(sizeX), m_tileSizeY(sizeY)
+StaticFile::StaticFile(const Texture* texture, uint32_t sizeX, uint32_t sizeY, uint32_t spacX, uint32_t spacY) : MapFile(texture), m_spacingX(spacX), m_spacingY(spacY), m_tileSizeX(sizeX), m_tileSizeY(sizeY)
 {
 }
 
@@ -47,11 +47,17 @@ Tile* StaticFile::createTile(Updatable* parent, uint32_t tileID, bool def)
     if(!def)
 	{
 		if(m_tileDatas[tileID]->createStaticTile)
-			return m_tileDatas[tileID]->createStaticTile(parent, m_tileDatas[tileID]->material, m_texture, textureSubRect);
+		{
+			Tile* tile = m_tileDatas[tileID]->createStaticTile(parent, m_tileDatas[tileID]->material, m_texture, textureSubRect);
+			tile->scale(glm::vec3(m_tileSizeX, m_tileSizeY, 1.0));
+			return tile;
+		}
 		else
 			return NULL;
 	}
-    return new DefaultTile(parent, NULL, m_texture, subRect);
+    Tile* tile = new DefaultTile(parent, NULL, m_texture, subRect);
+	tile->scale(glm::vec3(m_tileSizeX, m_tileSizeY, 1.0));
+	return tile;
 }
 
 DynamicFile::DynamicFile(Texture* texture) : MapFile(texture)
