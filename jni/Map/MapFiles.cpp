@@ -48,14 +48,14 @@ Tile* StaticFile::createTile(Updatable* parent, uint32_t tileID, bool def)
 	{
 		if(m_tileDatas[tileID]->createStaticTile)
 		{
-			Tile* tile = m_tileDatas[tileID]->createStaticTile(parent, m_tileDatas[tileID]->material, m_texture, textureSubRect);
+			Tile* tile = m_tileDatas[tileID]->createStaticTile(parent, m_tileDatas[tileID]->material, m_texture, textureSubRect, m_tileDatas[tileID]->info);
 			tile->scale(glm::vec3(m_tileSizeX, m_tileSizeY, 1.0));
 			return tile;
 		}
 		else
 			return NULL;
 	}
-    Tile* tile = new DefaultTile(parent, NULL, m_texture, subRect);
+    Tile* tile = new DefaultTile(parent, NULL, m_texture, subRect, NULL);
 	tile->scale(glm::vec3(m_tileSizeX, m_tileSizeY, 1.0));
 	return tile;
 }

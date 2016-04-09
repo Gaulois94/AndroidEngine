@@ -17,10 +17,10 @@ class Trace : public Drawable
 		~Trace();
 
 		/** \brief get the tile at a position
-		 * \param x the x position in pixels coords
-		 * \param y the y position in pixels coords
+		 * \param x the x position in world coords
+		 * \param y the y position in world coords
 		 * \return Tile the tile at the position x, y. NULL if nothing.*/
-		virtual Tile* getTile(uint32_t x, uint32_t y)=0;
+		virtual Tile* getTile(double x, double y)=0;
 
 		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 		void onUpdate(Render& render);

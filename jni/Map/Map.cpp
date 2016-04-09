@@ -19,7 +19,7 @@ void Map::parse(File& file)
 	//Then parse the file
 	char* line;
 	std::string xmlCode;
-	while(line = file.readLine())
+	while((line = file.readLine()))
 	{
 		xmlCode.append(line);
 		free(line);
@@ -158,6 +158,7 @@ void startElementFiles(void *data, const char* name, const char** attrs)
 			StaticDatas* sd = new StaticDatas();
 			sd->createStaticTile = map->getStaticTileFunction(name, type);
 			sd->material = map->getStaticTileMaterial(name, type);
+			sd->info = map->getStaticTileInfo(name, type);
 			//And bind it to the file
 			sf->addStaticDatas(sd);
 		}
@@ -180,6 +181,8 @@ void startElementFiles(void *data, const char* name, const char** attrs)
 			{
 				//Creating a dynamic entity which will contain all the subrect for this animation (dynamic == animation), and the create function for this tile
 				DynamicEntity* de = new DynamicEntity(map->getDynamicAnimFunction(name));
+				de->material = map->getDynamicAnimMaterial(name);
+				de->info = map->getDynamicAnimTileInfo(name);
 				df->addDynamicEntity(name, de);
 			}
 
@@ -210,6 +213,8 @@ void startElementFiles(void *data, const char* name, const char** attrs)
 				
 				//Create the static animation entity
 				StaticEntity* se = new StaticEntity(map->getStaticAnimFunction(animName), n, nX, posX, posY, sizeX, sizeY, spacingX, spacingY);
+				se->material = map->getStaticAnimMaterial(name);
+				se->info = map->getStaticAnimTileInfo(name);
 				df->addStaticEntity(animName, se);
 			}
 		}
@@ -412,7 +417,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 				if(de)
 				{
 					//Then finally create the tile
-					Tile* tile = de->createDynamicAnim(NULL, map->getDynamicAnimMaterial((*de->getNames())[tileID].c_str(), (*de->getTypes())[tileID].c_str()), df->getTexture(), *(de->getSubRects()), tileID, 8, posX, posY);
+					Tile* tile = de->createDynamicAnim(NULL, de->material, df->getTexture(), *(de->getSubRects()), de->info, tileID, 8, posX, posY);
 					dt->addTile(tile, posX, posY);
 				}
 				else
@@ -519,7 +524,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 						continue;
 
 					//Create this object
-					TileObject* obj = objDatas->createObject(NULL, objDatas->nbCasesX, objDatas->nbCasesY, objDatas->tileSizeX, objDatas->tileSizeY);
+					TileObject* obj = objDatas->createObject(NULL, objDatas->nbCasesX, objDatas->nbCasesY, objDatas->tileSizeX, objDatas->tileSizeY, objDatas->info);
 
 					uint32_t j;
 					for(j=0; j < objDatas->CSVTileID.size(); j++)
@@ -628,12 +633,22 @@ Material* Map::getStaticTileMaterial(const char* name, const char* type)
 	return NULL;
 }
 
+void* Map::getStaticTileInfo(const char* name, const char* type)
+{
+	return NULL;
+}
+
 createDynamicAnimPtr Map::getDynamicAnimFunction(const char* name) const
 {
 	return NULL;
 }
 
-Material* Map::getDynamicAnimMaterial(const char* name, const char* type)
+Material* Map::getDynamicAnimMaterial(const char* name)
+{
+	return NULL;
+}
+
+void* Map::getDynamicAnimTileInfo(const char* name)
 {
 	return NULL;
 }
@@ -643,7 +658,12 @@ createStaticAnimPtr Map::getStaticAnimFunction(const char* name) const
 	return NULL;
 }
 
-Material* Map::getStaticAnimMaterial(const char* name, const char* type)
+Material* Map::getStaticAnimMaterial(const char* name)
+{
+	return NULL;
+}
+
+void* Map::getStaticAnimTileInfo(const char* name)
 {
 	return NULL;
 }
@@ -653,7 +673,12 @@ createObjectPtr Map::getObjectFunction(const char* name, const char* type) const
 	return NULL;
 }
 
-Tile* Map::getTile(uint32_t x, uint32_t y)
+void* Map::getObjectTileInfo(const char* name, const char* type)
+{
+	return NULL;
+}
+
+Tile* Map::getTile(double x, double y)
 {
 	Tile* tile=NULL;
 	for(auto trace : m_traces)

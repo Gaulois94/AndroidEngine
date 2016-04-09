@@ -1,6 +1,6 @@
 #include "Map/Tiles/StaticTile.h"
 
-StaticTile::StaticTile(Updatable* parent, Material* mtl, const Texture* texture, const Rectangle2f& subRect, const Rectangle2f& conf) : Tile(parent, mtl, Rectangle3f(conf, 0, 0)), m_sprite(this, mtl, texture)
+StaticTile::StaticTile(Updatable* parent, Material* mtl, const Texture* texture, const Rectangle2f& subRect, const Rectangle2f& conf, void* info) : Tile(parent, mtl, Rectangle3f(conf, 0, 0), info), m_sprite(this, mtl, texture)
 {
 	m_sprite.setSubTextureRect(subRect);
 }

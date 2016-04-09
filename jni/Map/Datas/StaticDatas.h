@@ -7,12 +7,13 @@
 #include "Map/Tiles/StaticTile.h"
 #include "Graphics/Materials/Material.h"
 
-typedef StaticTile*(*createStaticTilePtr)(Updatable* parent, Material* mtl, const Texture*, const Rectangle2f&);
+typedef StaticTile*(*createStaticTilePtr)(Updatable* parent, Material* mtl, const Texture*, const Rectangle2f&, void* info);
 
 struct StaticDatas
 {
 	createStaticTilePtr createStaticTile;
 	Material*           material;
+	void* info;
 };
 
 #endif
