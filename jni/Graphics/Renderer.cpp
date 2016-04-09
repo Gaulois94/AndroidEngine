@@ -97,6 +97,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	if(window == NULL)
 		return;
 	deleteSurface();
+	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
 	m_window = window;
 	m_start = false;
 
