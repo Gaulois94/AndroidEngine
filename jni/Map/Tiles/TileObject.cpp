@@ -1,6 +1,6 @@
 #include "Map/Tiles/TileObject.h"
 
-TileObject::TileObject(Updatable* parent, uint32_t nbCasesX, uint32_t nbCasesY, uint32_t tileSizeX, uint32_t tileSizeY) : Tile(parent, NULL, Rectangle3f(0.0, 0.0, 0.0, nbCasesX*tileSizeX, nbCasesY*tileSizeY, 0.0)), m_nbCasesX(nbCasesX), m_nbCasesY(nbCasesY), m_tileSizeX(tileSizeX), m_tileSizeY(tileSizeY)
+TileObject::TileObject(Updatable* parent, uint32_t nbCasesX, uint32_t nbCasesY, uint32_t tileSizeX, uint32_t tileSizeY, void* info) : Tile(parent, NULL, Rectangle3f(0.0, 0.0, 0.0, nbCasesX*tileSizeX, nbCasesY*tileSizeY, 0.0), info), m_nbCasesX(nbCasesX), m_nbCasesY(nbCasesY), m_tileSizeX(tileSizeX), m_tileSizeY(tileSizeY)
 {
 	for(uint32_t i=0; i < nbCasesX; i++)
 	{

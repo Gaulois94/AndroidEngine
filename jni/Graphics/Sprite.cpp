@@ -31,7 +31,6 @@ void Sprite::onDraw(Render& render, const glm::mat4& mvp)
 		float normal[] = {0.0, 0.0, 1.0};
 		glVertexAttrib3fv(vNormal, normal);
 	}
-	
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{

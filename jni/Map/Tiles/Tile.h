@@ -6,18 +6,18 @@
 class Tile : public Drawable
 {
 	public:
-		Tile(Updatable* parent, Material* mtl, const Rectangle3f& rect);		
+		Tile(Updatable* parent, Material* mtl, const Rectangle3f& rect, void* info);		
 		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f))=0;
 
-		/** \brief return the information about the tile. Use bitmask to get them
-		 * \return the information about the tile*/
-		uint32_t getInfo();
+		/** \brief return the information about the tile.
+		 * \return the information about the tile. The information is stock as a pointer on void*/
+		void* getInfo();
 
 		/** \brief tell if the tile can be destroyed or not.
 		 * return return if the tile can be destroyed*/
 		bool canDestroy();
 	private:
-		uint32_t m_info;
+		void* m_info;
 		bool m_canDestroy;
 };
 

@@ -7,7 +7,7 @@
 class DefaultTile : public Tile
 {
 	public:
-		DefaultTile(Updatable* parent, Material* mtl, const Texture* texture, const Rectangle2f& subRect);
+		DefaultTile(Updatable* parent, Material* mtl, const Texture* texture, const Rectangle2f& subRect, void* info);
 		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 	private:
 		Sprite m_sprite;

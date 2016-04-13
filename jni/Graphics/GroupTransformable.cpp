@@ -1,6 +1,6 @@
 #include "GroupTransformable.h"
 
-GroupTransformable::GroupTransformable(const Rectangle3f& defaultConf) : Transformable(defaultConf), m_enabled(false)
+GroupTransformable::GroupTransformable(const Rectangle3f& defaultConf) : Transformable(defaultConf), m_enabled(true)
 {}
 
 void GroupTransformable::addTransformable(Transformable* t)

@@ -5,18 +5,18 @@ bool IntCSVParser::onValue(const char* string)
 	int32_t  value         = 0;
 	int8_t   signe         = 1;
 	int32_t  exposant      = 1;
-	int8_t   numberSize    = -1;
+	int8_t  numberSize    = -1;
 	uint32_t stringIndice;
 
 	//Get only a number
 	for(stringIndice=0; string[stringIndice] != '\0' && string[stringIndice] != '\n'; stringIndice++)
 	{
 		//Set the signe if needed
-		if(string[stringIndice] == '-' && value == 0)
+		if(string[stringIndice] == '-' && numberSize == -1)
 			signe *= -1;
 
 		//Don't read spaces
-		else if(string[stringIndice] == ' ')
+		else if(string[stringIndice] == ' ' && numberSize == -1)
 			continue;
 
 		//If the character is a number
@@ -36,7 +36,7 @@ bool IntCSVParser::onValue(const char* string)
 
 	if(numberSize == -1)
 	{
-		LOG_ERROR("Error while parsing. Abord \n");
+		LOG_ERROR("Error while parsing. Abort \n");
 		return false;
 	}
 	

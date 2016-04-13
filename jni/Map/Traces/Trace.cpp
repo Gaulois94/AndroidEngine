@@ -18,7 +18,7 @@ Trace::~Trace()
 
 void Trace::onUpdate(Render& render)
 {
-	for(uint32_t i=0; m_tiles.size(); i++)
+	for(uint32_t i=0; i < m_tiles.size(); i++)
 	{
 		for(uint32_t j=0; j < m_tiles[i].size(); j++)
 		{
@@ -38,14 +38,11 @@ void Trace::onUpdate(Render& render)
 
 void Trace::addTile(Tile* tile, uint32_t x, uint32_t y)
 {
+	addTransformable(tile);
 	tile->setParent(this);
 	tile->setPosition(glm::vec3(x, y, 0.0));
 }
 
 void Trace::onDraw(Render& render, const glm::mat4& mvp)
 {
-	for(uint32_t i=0; i < m_tiles.size(); i++)
-		for(uint32_t j=0; j < m_tiles[i].size(); j++)
-			if(m_tiles[i][j])
-				m_tiles[i][j]->draw(render, mvp);
 }

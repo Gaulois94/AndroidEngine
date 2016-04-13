@@ -72,6 +72,8 @@ bool CSVParser<T>::parse(const char* string)
 			value += string[stringIndice];
 		if(!onValue(value.c_str()))
 			return false;
+		if(string[stringIndice] != '\0' && string[stringIndice] != '\n')
+			stringIndice++;
 	}
 	return true;
 }

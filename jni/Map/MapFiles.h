@@ -27,7 +27,7 @@ class StaticFile : public MapFile
 		 * \param spacY the spacing in Y between each tile
 		 * \param sizeX the width of tiles
 		 * \param sizeY the height of tiles*/
-		StaticFile(const Texture* texture, uint32_t spacX, uint32_t spacY, uint32_t sizeX, uint32_t sizeY);
+		StaticFile(const Texture* texture, uint32_t siZEx, uint32_t sizeY, uint32_t spacX, uint32_t spacY);
 
 		/** \brief Default destructor. Destroy each TileDatas*/
 		~StaticFile();
