@@ -27,8 +27,20 @@ Tile* DynamicTrace::getTile(double x, double y)
 
 void DynamicTrace::addTile(Tile* tile, uint32_t x, uint32_t y)
 {
-	if(x >= m_nbCasesX * m_sizeX || y >= m_nbCasesY * m_sizeY)
-		return;
-	m_tiles[x/m_sizeX][y/m_sizeY] = tile;
-	Trace::addTile(tile, x, y);
+	bool isAdded = false;
+	for(uint32_t i = 0; i < tile->getNbCasesX(); i++)
+	{
+		if(x >= (m_nbCasesX - i) * m_sizeX)
+		   break;	
+		for(uint32_t j=0; j < tile->getNbCasesY(); j++)
+		{
+			if(y >= (m_nbCasesY - i) * m_sizeY)
+				break;
+			isAdded = true;
+			m_tiles[x/m_sizeX][y/m_sizeY] = tile;
+		}
+	}
+
+	if(isAdded)
+		Trace::addTile(tile, x, y);
 }

@@ -66,7 +66,7 @@ bool CSVParser<T>::parse(const char* string)
 	uint32_t stringIndice=0;
 	while(string[stringIndice] != '\n' && string[stringIndice] != '\0')	
 	{
-		std::string value;
+		std::string value="";
 
 		for(; string[stringIndice] != ',' && string[stringIndice] != ';' && string[stringIndice] != '\0' && string[stringIndice] != '\n'; stringIndice++)
 			value += string[stringIndice];
