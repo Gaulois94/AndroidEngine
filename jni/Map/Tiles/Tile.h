@@ -13,12 +13,17 @@ class Tile : public Drawable
 		 * \return the information about the tile. The information is stock as a pointer on void*/
 		void* getInfo();
 
+		uint32_t getNbCasesX() const;
+		uint32_t getNbCasesY() const;
+
 		/** \brief tell if the tile can be destroyed or not.
 		 * return return if the tile can be destroyed*/
 		bool canDestroy();
-	private:
+	protected:
 		void* m_info;
 		bool m_canDestroy;
+		uint32_t m_nbCasesX;
+		uint32_t m_nbCasesY;
 };
 
 #endif

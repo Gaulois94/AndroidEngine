@@ -27,9 +27,12 @@ bool IntCSVParser::onValue(const char* string)
 			numberSize++;
 		}
 
+		else if(string[stringIndice] == ' ')
+			continue;
+
 		else
 		{
-			LOG_ERROR("Error while parsing. Abort \n");
+			LOG_ERROR("Error while parsing CSV %s. Abort.\n", string);
 			return false;
 		}
 	}

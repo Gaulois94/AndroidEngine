@@ -332,7 +332,6 @@ void startElementObjects(void *data, const char* name, const char** attrs)
 
 void startElementTraces(void *data, const char* name, const char** attrs)
 {
-	LOG_ERROR("START TRACE %s", name);
 	Map* map = (Map*)data;
 	if(XML_depth == 2)
 	{
@@ -467,10 +466,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 			//Get the last static trace
 			StaticTrace* st = map->m_staticTraces[map->m_staticTraces.size()-1];
 			if(st == NULL)
-			{
-				LOG_ERROR("ST IS ,NULL");
 				return;
-			}
 
 			//Get tileID, object ID and fileID IntCSV values
 			IntCSVParser tileCSVID = IntCSVParser();
@@ -481,7 +477,6 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 			uint32_t i;
 			for(i=0; attrs[i]; i+=2)
 			{
-				LOG_ERROR("ATTR %s, VALUE %s", attrs[i], attrs[i+1]);
 				if(!strcmp(attrs[i], "fileID"))
 					fileCSVID.parse(attrs[i+1]);
 				else if(!strcmp(attrs[i], "tileID"))
@@ -508,10 +503,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 
 					//If the tile is created
 					if(tile != NULL)
-					{
-						LOG_ERROR("ST ADD TILE");
 						st->addTileInTraceCoord(tile, XML_NthColumn, i); //Add it
-					}
 				}
 
 				//Then we look for objects
@@ -519,11 +511,12 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 				else if((*objectID)[i] == 1)
 				{
 					//Get the object datas for this id
-					ObjectDatas* objDatas   = map->m_objects[(*tileID)[i]-1];
+					ObjectDatas* objDatas   = map->m_objects[(*tileID)[i]];
 					if(objDatas->createObject == NULL)
 						continue;
 
 					//Create this object
+					LOG_ERROR("MAKE POINTER OBJECT");
 					TileObject* obj = objDatas->createObject(NULL, objDatas->nbCasesX, objDatas->nbCasesY, objDatas->tileSizeX, objDatas->tileSizeY, objDatas->info);
 
 					uint32_t j;
@@ -549,15 +542,18 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 								continue;
 
 							//And create the tile
-							Tile* tile = sf->createTile(NULL, (*tileID)[k], true);
+							Tile* tile = sf->createTile(NULL, (*tileID)[k], false);
+							if(tile->getMaterial())
+								LOG_ERROR("TILE HAS MATERIAL");
 							if(tile == NULL)
 								continue;
 
 							//Then add this tile
-							obj->addTile(tile, j, obj->getNbCasesY() - k - 1); //Because of OpenGL convention
+							obj->addTile(tile, j, k); //Because of OpenGL convention
 						}
 					}
-					st->addTile(obj, XML_NthColumn, i);
+					st->addTileInTraceCoord(obj, XML_NthColumn, i);
+					LOG_ERROR("OBJECT ADDED AT %d, %d", XML_NthColumn, i);
 				}
 			}
 		}
@@ -681,9 +677,9 @@ void* Map::getObjectTileInfo(const char* name, const char* type)
 Tile* Map::getTile(double x, double y)
 {
 	Tile* tile=NULL;
-	for(auto trace : m_traces)
+	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
 	{
-		if((tile = trace->getTile(x, y)) != NULL)
+		if((tile = (*it)->getTile(x, y)) != NULL)
 			return tile;
 	}
 	return NULL;
