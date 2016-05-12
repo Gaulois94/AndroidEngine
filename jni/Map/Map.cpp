@@ -674,7 +674,7 @@ void* Map::getObjectTileInfo(const char* name, const char* type)
 	return NULL;
 }
 
-Tile* Map::getTile(double x, double y)
+Tile* Map::getTile(uint32_t x, uint32_t y)
 {
 	Tile* tile=NULL;
 	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
@@ -683,6 +683,37 @@ Tile* Map::getTile(double x, double y)
 			return tile;
 	}
 	return NULL;
+}
+
+Tile* Map::getTile(uint32_t x, uint32_t y, char* traceName)
+{
+	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
+	{
+		if((*it)->getName()->c_str() == traceName)
+			return (*it)->getTile(x, y);
+	}
+	return NULL;
+
+}
+
+Tile* Map::addTile(Tile* tile, uint32_t x, uint32_t y, uint32_t traceID)
+{
+	Tile* t = m_traces[traceID]->getTile(x, y);
+	m_traces[traceID]->addTile(tile, x, y);
+	return t;
+}
+
+Tile* Map::addTile(Tile* tile, uint32_t x, uint32_t y, const char* traceName)
+{
+	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
+	{
+		if((*it)->getName()->c_str() == traceName)
+		{
+			Tile* t = m_traces[traceID]->getTile(x, y);
+			m_traces[traceID]->addTile(tile, x, y);
+			return t;
+		}
+	}
 }
 
 bool Map::isOutside(uint32_t x, uint32_t y) const

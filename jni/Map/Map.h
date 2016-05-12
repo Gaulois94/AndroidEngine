@@ -145,20 +145,34 @@ class Map : public Drawable
 		 * \param x the x component
 		 * \param y the y component
 		 * \return the Tile at this position. NULL if nothing*/
-		Tile* getTile(double x, double y);
+		Tile* getTile(uint32_t x, uint32_t y);
 
 		/** \brief get the tile on the coord x, y in world coords in a specific trace
 		 * \param x the x component
 		 * \param y the y component
 		 * \param traceName the trace name. We will check this position on this trace only.
 		 * \return the Tile at this position. NULL if nothing (trace not found or position not found)*/
-		Tile* getTile(double x, double y, const char* traceName);
+		Tile* getTile(uint32_t x, uint32_t y, const char* traceName);
 
 		/** \brief tell if the position x, y is outside the Map. The Map Rect is (0, 0, nbCaseX*tileSizeX, nbCaseY*tileSizeY)
 		 * \param x the x coords
 		 * \param y the y coords
 		 * \return tells if the coords are outsize the Map or not.*/
 		bool isOutside(uint32_t x, uint32_t y) const;
+
+		/** \brief add a tile at the position x, y on the trace represented by its name
+		 * \param tile the Tile to add
+		 * \param x the x coords
+		 * \param y the y coords
+		 * \return the previous tile in the trace*/
+		Tile* addTile(Tile* tile, uint32_t x, uint32_t y, const char* traceName);
+
+		/** \brief add a tile at the position x, y on the trace represented by its id
+		 * \param tile the Tile to add
+		 * \param x the x coords
+		 * \param y the y coords
+		 * \return the previous tile in the trace*/
+		Tile* addTile(Tile* tile, uint32_t x, uint32_t y, uint32_t traceID);
 
 	//Don't modifie these variables. They are public because of the parser functions that need to modify them directly
 	public:

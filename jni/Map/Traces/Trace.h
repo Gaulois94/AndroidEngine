@@ -29,6 +29,8 @@ class Trace : public Drawable
 		 * \param x the x position in pixels coords
 		 * \param y the y position in pixels coords*/
 		virtual void addTile(Tile* tile, uint32_t x, uint32_t y);
+
+		const std::string& getName() const;
 	protected:
 		std::vector<std::vector<Tile*>> m_tiles;
 		std::string m_name;
