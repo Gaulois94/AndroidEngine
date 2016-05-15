@@ -110,6 +110,7 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 
 	public void run()
 	{
+		//Suspend if needed (on event)
 		try
 		{
 			if(m_suspend)
@@ -121,6 +122,7 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 				}
 			}
 		}catch(InterruptedException e){}
+
 		while(m_open)
 		{
 			if(m_reInit)

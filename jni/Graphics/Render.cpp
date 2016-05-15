@@ -28,9 +28,9 @@ void Render::update(Render& render)
 
 void Render::updateGPU(Render& render)
 {
-	initDraw();
+//	initDraw();
 	Updatable::updateGPU(*this);
-	stopDraw();
+//	stopDraw();
 }
 
 Camera& Render::getCamera()

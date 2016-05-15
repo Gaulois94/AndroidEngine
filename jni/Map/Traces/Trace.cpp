@@ -46,3 +46,8 @@ void Trace::addTile(Tile* tile, uint32_t x, uint32_t y)
 void Trace::onDraw(Render& render, const glm::mat4& mvp)
 {
 }
+
+const std::string& Trace::getName() const
+{
+	return m_name;
+}

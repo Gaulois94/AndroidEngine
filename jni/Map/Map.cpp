@@ -685,11 +685,11 @@ Tile* Map::getTile(uint32_t x, uint32_t y)
 	return NULL;
 }
 
-Tile* Map::getTile(uint32_t x, uint32_t y, char* traceName)
+Tile* Map::getTile(uint32_t x, uint32_t y, const char* traceName)
 {
 	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
 	{
-		if((*it)->getName()->c_str() == traceName)
+		if(!strcmp((*it)->getName().c_str(), traceName))
 			return (*it)->getTile(x, y);
 	}
 	return NULL;
@@ -707,10 +707,10 @@ Tile* Map::addTile(Tile* tile, uint32_t x, uint32_t y, const char* traceName)
 {
 	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
 	{
-		if((*it)->getName()->c_str() == traceName)
+		if(!strcmp((*it)->getName().c_str(), traceName))
 		{
-			Tile* t = m_traces[traceID]->getTile(x, y);
-			m_traces[traceID]->addTile(tile, x, y);
+			Tile* t = (*it)->getTile(x, y);
+			(*it)->addTile(tile, x, y);
 			return t;
 		}
 	}

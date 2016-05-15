@@ -25,7 +25,7 @@ void Renderer::terminate()
 	m_disp = EGL_NO_DISPLAY;
 }
 
-bool Renderer::initializeContext(ANativeWindow* window)
+bool Renderer::initializeContext()
 {
 	m_start = false;
 	terminate();
@@ -78,8 +78,11 @@ bool Renderer::initializeContext(ANativeWindow* window)
 		return false;
 	}
 
-	initializeSurface(window);
-	Drawable::initShaders();
+	if(!eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context))
+	{
+		LOG_ERROR("Can't bind this context. Error : %d", eglGetError());
+		return false;
+	}
 
 	//Initialize OpenGL
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
@@ -87,7 +90,7 @@ bool Renderer::initializeContext(ANativeWindow* window)
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
-	glViewport(0, 0, m_width, m_height);
+	Drawable::initShaders();
 
 	return true;
 }
@@ -97,7 +100,6 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	if(window == NULL)
 		return;
 	deleteSurface();
-	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
 	m_window = window;
 	m_start = false;
 
@@ -119,6 +121,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	eglQuerySurface(m_disp, m_surface, EGL_WIDTH, &m_width);
 	eglQuerySurface(m_disp, m_surface, EGL_HEIGHT, &m_height);
 
+	glViewport(0, 0, m_width, m_height);
 	m_start = true;
 }
 
@@ -161,7 +164,7 @@ void Renderer::initDraw()
 
 void Renderer::stopDraw()
 {
-	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
 }
 
 void Renderer::onDownTouchEvent(uint32_t i, float x, float y)
@@ -195,11 +198,12 @@ void Renderer::onMoveTouchEvent(uint32_t i, float x, float y)
 
 void Renderer::deleteSurface()
 {
-	eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	if(m_surface != EGL_NO_SURFACE)
+	{
 		eglDestroySurface(m_disp, m_surface);
-
-	m_surface = EGL_NO_SURFACE;
+		eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
+		m_surface = EGL_NO_SURFACE;
+	}
 }
 
 bool Renderer::hasDisplay()

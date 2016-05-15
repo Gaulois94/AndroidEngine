@@ -27,9 +27,8 @@ class Renderer : public Render
 		virtual ~Renderer();
 
 		/** \brief initialise the renderer's context
-		 * \param window the android screen
 		 * \return tell if the initialisation is successful */
-		bool initializeContext(ANativeWindow* window);
+		bool initializeContext();
 
 		/** \brief initialise the renderer's surface
 		 * \param window the android screen*/

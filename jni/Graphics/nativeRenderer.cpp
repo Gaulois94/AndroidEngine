@@ -6,7 +6,8 @@ JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Renderer_createRenderer(JNIE
 	JniMadeOf::jenv = jenv;
 	Renderer* renderer = new Renderer((Updatable*)parent);
 	ANativeWindow* window = ANativeWindow_fromSurface(jenv, surface);
-	renderer->initializeContext(window);
+	renderer->initializeContext();
+	renderer->initializeSurface(window);
 
 	return (jlong)renderer;
 }
