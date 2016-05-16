@@ -1,13 +1,10 @@
 #include "nativeRenderer.h"
 #include "Renderer.h"
 
-JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Renderer_createRenderer(JNIEnv* jenv, jclass jcls, jlong parent, jobject surface)
+JNIEXPORT jlong JNICALL Java_com_gaulois94_Graphics_Renderer_createRenderer(JNIEnv* jenv, jclass jcls, jlong parent)
 {
 	JniMadeOf::jenv = jenv;
 	Renderer* renderer = new Renderer((Updatable*)parent);
-	ANativeWindow* window = ANativeWindow_fromSurface(jenv, surface);
-	renderer->initializeContext();
-	renderer->initializeSurface(window);
 
 	return (jlong)renderer;
 }
@@ -17,6 +14,7 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_initSurfaceRenderer(
 	if(rendererPtr == 0)
 		return;
 	Renderer* renderer = (Renderer*) rendererPtr;
+	renderer->releaseSurface();
 	ANativeWindow* window = ANativeWindow_fromSurface(jenv, surface);
 	renderer->initializeSurface(window);
 }

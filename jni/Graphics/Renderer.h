@@ -30,6 +30,8 @@ class Renderer : public Render
 		 * \return tell if the initialisation is successful */
 		bool initializeContext();
 
+		void releaseSurface();
+
 		/** \brief initialise the renderer's surface
 		 * \param window the android screen*/
 		void initializeSurface(ANativeWindow *window);

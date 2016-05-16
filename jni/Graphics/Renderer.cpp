@@ -3,6 +3,7 @@
 Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_DISPLAY), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT),
 										m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
+	initializeContext();
 }
 
 Renderer::~Renderer()
@@ -95,13 +96,26 @@ bool Renderer::initializeContext()
 	return true;
 }
 
+void Renderer::releaseSurface()
+{
+	if(m_window)
+	{
+		ANativeWindow_release(m_window);
+		m_window = NULL;
+	}
+}
+
 void Renderer::initializeSurface(ANativeWindow* window)
 {
 	if(window == NULL)
 		return;
+
 	deleteSurface();
+	releaseSurface();
 	m_window = window;
 	m_start = false;
+
+	ANativeWindow_setBuffersGeometry(window, 0, 0, m_format);
 
 	if(!(m_surface = eglCreateWindowSurface(m_disp, m_conf, window, 0)))
 	{
@@ -111,15 +125,14 @@ void Renderer::initializeSurface(ANativeWindow* window)
 
 	if(!eglMakeCurrent(m_disp, m_surface, m_surface, m_context))
 	{
-		LOG_ERROR("Can't make this context the current one. Error : %d", eglGetError());
-		initializeSurface(window);
+		LOG_ERROR("Can't make this surface current. Error : %d", eglGetError());
 		return;
 	}
 
-	ANativeWindow_setBuffersGeometry(window, 0, 0, m_format);
-
 	eglQuerySurface(m_disp, m_surface, EGL_WIDTH, &m_width);
 	eglQuerySurface(m_disp, m_surface, EGL_HEIGHT, &m_height);
+
+	LOG_ERROR("M_WIDTH %d M_HEIGHT %d", m_width, m_height);
 
 	glViewport(0, 0, m_width, m_height);
 	m_start = true;
@@ -149,17 +162,19 @@ void Renderer::updateFocus(uint32_t pID)
 
 void Renderer::update(Render& render)
 {
+	m_camera.move(glm::vec3(0.0, 0.001, 0.0));
 	Updatable::update(render);
 	Updatable::updateGPU(render);
 }
 
 void Renderer::initDraw()
 {
-	if(!eglMakeCurrent(m_disp, m_surface, m_surface, m_context))
+    if(!eglMakeCurrent(m_disp, m_surface, m_surface, m_context))
 	{
 		LOG_ERROR("Init Draw Can't make this context the current one. Error : %d", eglGetError());
 		return;
 	}
+	
 }
 
 void Renderer::stopDraw()
@@ -200,9 +215,10 @@ void Renderer::deleteSurface()
 {
 	if(m_surface != EGL_NO_SURFACE)
 	{
-		eglDestroySurface(m_disp, m_surface);
 		eglMakeCurrent(m_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context);
+		eglDestroySurface(m_disp, m_surface);
 		m_surface = EGL_NO_SURFACE;
+		m_window = NULL;
 	}
 }
 

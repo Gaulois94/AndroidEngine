@@ -31,84 +31,81 @@ import android.hardware.SensorEventListener;
 
 public class Renderer extends Render implements SurfaceHolder.Callback, Runnable, SensorEventListener
 {
-	protected SurfaceView m_surface;
-	protected Thread m_thread;
-	protected Boolean m_open;
-	protected Boolean m_isInit;
-	protected Boolean m_reInit;
-	protected Boolean m_isCreated;
-	protected boolean m_suspend;
+protected SurfaceView m_surface;
+protected Thread m_thread;
+protected Boolean m_open;
+protected Boolean m_isCreated;
+protected Boolean m_canCreate;
+protected boolean m_suspend;
 
-    public Renderer(Context context)
-    {
-		super(0);
-		JniMadeOf.setContext(context);
-		m_open        = false;
-		m_isInit      = false;
-		m_reInit      = false;
-		m_thread      = null;
-		m_isCreated   = false;
-		m_suspend     = false;
+public Renderer(Context context)
+{
+	super(0);
+	JniMadeOf.setContext(context);
+	m_canCreate   = false;
+	m_open        = false;
+	m_thread      = null;
+	m_isCreated   = false;
+	m_suspend     = false;
 
-		m_surface     = new SurfaceView(context)
-	   	{
-			@Override
-			public boolean onTouchEvent(MotionEvent e)
-			{
-				return touchEvent(e);
-			}
-		};
-		m_surface.getHolder().addCallback(this);
-    }
-
-	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
+	m_surface     = new SurfaceView(context)
 	{
-		onChanged(m_surface.getHolder().getSurfaceFrame());
-	}
-
-	public void surfaceCreated(SurfaceHolder holder)
-	{
-		synchronized(this)
+		@Override
+		public boolean onTouchEvent(MotionEvent e)
 		{
-			if(m_isCreated == false)
-			{
-				m_isCreated = true;
-				setPtr(createPtr(0, holder.getSurface()));
-				initRenderer(m_ptr);
-				onCreated();
-			}
-			m_isInit = false;
-			m_reInit = true;
+			return touchEvent(e);
 		}
-	}
+	};
+	m_surface.getHolder().addCallback(this);
+}
 
-	//Need to be override if ndk is used
-	public long createPtr(long parent,  Surface surface)
+public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
+{
+	Log.e("Main", ""+w + " " + h);
+	GLES20.glViewport(0, 0, w, h);
+	onChanged(m_surface.getHolder().getSurfaceFrame());
+}
+
+public void surfaceCreated(SurfaceHolder holder)
+{
+	if (holder.getSurface() != null && holder.getSurface().isValid())
 	{
-		return createRenderer(parent, surface);
+		if(m_isCreated == false)
+			m_canCreate = true;
 	}
+}
 
-	public void surfaceDestroyed(SurfaceHolder holder)
-	{
-		m_isInit = false;
-		onDestroyed();
-	}
+//Need to be override if ndk is used
+public long createPtr(long parent)
+{
+	return createRenderer(parent);
+}
 
-	public void onCreated()
-	{
-	}
+public void surfaceDestroyed(SurfaceHolder holder)
+{
+	m_isCreated = false;
+	onDestroyed();
+}
 
-	public void onChanged(Rect rect)
-	{
-	//	GLES20.glViewport(0, 0, rect.right-rect.left, rect.bottom-rect.top);
-	}
+public void onCreated()
+{
+}
 
-	public void onDestroyed()
-	{
-	//	destroySurfaceRenderer(m_ptr);
-	}
+public void onChanged(Rect rect)
+{
+}
 
-	public void run()
+public void onDestroyed()
+{
+	destroySurfaceRenderer(m_ptr);
+}
+
+public void run()
+{
+	setPtr(createPtr(0));
+	initRenderer(m_ptr);
+
+	while(m_open)
 	{
 		//Suspend if needed (on event)
 		try
@@ -123,65 +120,61 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 			}
 		}catch(InterruptedException e){}
 
-		while(m_open)
+		if(m_canCreate)
 		{
-			if(m_reInit)
-			{
-				m_surface.getHolder().setFormat(PixelFormat.RGBA_8888);
-				initSurfaceRenderer(m_ptr, m_surface.getHolder().getSurface());
-		
-				m_reInit = false;
-				m_isInit = true;
-			}
+			m_surface.getHolder().setFormat(PixelFormat.RGBA_8888);
+			initSurfaceRenderer(m_ptr, m_surface.getHolder().getSurface());
+			onCreated();
+			m_isCreated = true;
+			m_canCreate = false;
+		}
 
-			if(m_isInit)
-				draw();
+		if(m_isCreated)
+			draw();
 		}
 	}
 
-	public boolean touchEvent(MotionEvent e)
+	public synchronized boolean touchEvent(MotionEvent e)
 	{
 		m_suspend = true;
-		synchronized(this)
+		int width  = m_surface.getWidth();
+		int height = m_surface.getHeight();
+
+		for(int i=0; i < e.getPointerCount(); i++)
 		{
-
-			int width  = m_surface.getWidth();
-			int height = m_surface.getHeight();
-
-			for(int i=0; i < e.getPointerCount(); i++)
+			try
 			{
-				try
+				int pID = e.getPointerId(i);
+
+				float x = 2*e.getX(pID) / width - 1;
+				//Y are mirrored
+				float y = -2*e.getY(pID) / height + 1;
+
+				switch(e.getAction())
 				{
-					int pID = e.getPointerId(i);
+					case MotionEvent.ACTION_DOWN:
+						onDownTouchRenderer(m_ptr, pID, x, y);
+						break;
 
-					float x = 2*e.getX(pID) / width - 1;
-					//Y are mirrored
-					float y = -2*e.getY(pID) / height + 1;
+					case MotionEvent.ACTION_UP:
+						onUpTouchRenderer(m_ptr, pID, x, y);
+						break;
 
-					switch(e.getAction())
-					{
-						case MotionEvent.ACTION_DOWN:
-							onDownTouchRenderer(m_ptr, pID, x, y);
-							break;
-
-						case MotionEvent.ACTION_UP:
-							onUpTouchRenderer(m_ptr, pID, x, y);
-							break;
-
-						case MotionEvent.ACTION_MOVE:
-							onMoveTouchRenderer(m_ptr, pID, x, y);
-							break;
-					}
+					case MotionEvent.ACTION_MOVE:
+						onMoveTouchRenderer(m_ptr, pID, x, y);
+						break;
 				}
-				catch(IllegalArgumentException exc)
-				{}
 			}
+			catch(IllegalArgumentException exc)
+			{}
 		}
 		m_suspend=false;
+		notifyAll();
+
 		return true;
 	}
 
-	public void onSensorChanged(SensorEvent e)
+	public synchronized void onSensorChanged(SensorEvent e)
 	{
 		if(m_ptr == 0)
 			return;
@@ -193,6 +186,7 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 				break;
 		}
 		m_suspend=false;
+		notifyAll();
 	}
 
 	public void onAccuracyChanged(Sensor e, int accuracy)
@@ -243,7 +237,7 @@ public class Renderer extends Render implements SurfaceHolder.Callback, Runnable
 		return m_surface;
 	}
 
-	protected native long createRenderer(long parent, Surface surface);
+	protected native long createRenderer(long parent);
 	protected native void initSurfaceRenderer(long renderer, Surface surface);
 	protected native void initRenderer(long renderer);
 	protected native void destroySurfaceRenderer(long renderer);
