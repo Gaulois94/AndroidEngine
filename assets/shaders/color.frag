@@ -4,11 +4,18 @@ uniform vec4 uMaskColor;
 
 uniform sampler2D uTexture;
 uniform bool uUseTexture;
+uniform bool uUseUniColor;
+uniform vec4 uUniColor;
 varying vec2 varyTextureCoord;
 varying vec4 varyColor;
 
 void main()
 {
+	if(uUseUniColor)
+		gl_FragColor = uUniColor;
+	else
+		gl_FragColor = varyColor;
+
 	if(uUseTexture)
 	{
 		vec4 textColor = texture2D(uTexture, varyTextureCoord);
@@ -17,10 +24,5 @@ void main()
 			discard;
 		else if(uMaskColor == textColor)
 			discard;
-		else
-			gl_FragColor = varyColor;
 	}
-
-	else
-		gl_FragColor = varyColor;
 };

@@ -116,7 +116,6 @@ char* File::readLine()
 	}
 	
 	*(line + i)='\0';
-	LOG_ERROR("%s", line);
 	return line;
 }
 
@@ -131,4 +130,21 @@ char File::readChar()
 const std::string& File::getPath() const
 {
 	return m_path;
+}
+
+std::string File::getFilesPath(const std::string& fileName)
+{
+	//absolutePath = JniMadeOf::context->getFilesDir()->getAbsolutePath();
+	jclass contextClass   = JniMadeOf::jenv->GetObjectClass(JniMadeOf::context);
+	jmethodID getFilesDir = JniMadeOf::jenv->GetMethodID(contextClass, "getFilesDir", "()Ljava/io/File;");
+	jobject fileDir       = JniMadeOf::jenv->CallObjectMethod(JniMadeOf::context, getFilesDir);
+
+	jmethodID getAbsolutePath = JniMadeOf::jenv->GetMethodID(JniMadeOf::jenv->GetObjectClass(fileDir), "getAbsolutePath", "()Ljava/lang/String;");
+	jstring path = (jstring)JniMadeOf::jenv->CallObjectMethod(fileDir, getAbsolutePath);
+
+	const char* p = JniMadeOf::jenv->GetStringUTFChars(path, 0);
+	std::string fullPath = std::string(p) + "/" + fileName;
+	JniMadeOf::jenv->ReleaseStringUTFChars(path, p);
+
+	return fullPath;
 }

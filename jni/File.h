@@ -67,6 +67,8 @@ class File
 		 * \return The file path from the asset directory
 		 */
 		const std::string& getPath() const;
+
+		static std::string getFilesPath(const std::string& fileName);
 	private:
 		FILE* m_file;
 		uint32_t   m_size;

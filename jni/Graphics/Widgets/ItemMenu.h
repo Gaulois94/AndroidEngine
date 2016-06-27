@@ -10,7 +10,7 @@ class ItemMenu : public Drawable, Active
 	public:
 		ItemMenu(Updatable* parent, Drawable* item);
 		const glm::vec3& getDefaultSize();
-		void addUpdateConfig(FireUpdate* fu);
+		void setUpdateConfig(FireUpdate* fu);
 		void onDraw(Render& render, const glm::mat4& mvp);
 		void onFocus(uint32_t pointerEvent, Render& render);
 	private:
