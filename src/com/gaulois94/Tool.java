@@ -18,10 +18,8 @@ public class Tool
 	{
 		return Tool.copyAssetTo(context, fileName, context.getFilesDir().getAbsolutePath() + "/" + fileName);
 	}
-
 	public static String copyAssetTo(Context context, String input, String output)
 	{
-		Log.e("Engine", "File " + input + " is copying");
 		try
 		{
 			InputStream in       = context.getAssets().open(input);
