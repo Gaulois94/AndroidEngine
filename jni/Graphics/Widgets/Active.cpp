@@ -1,6 +1,6 @@
 #include "Active.h"
 
-Active::Active(bool select, bool active, bool alwaysUpdateSelection, bool alwaysUpdateActivation) : m_isSelect(select), m_isActive(active), m_alwaysUpdateSelection(alwaysUpdateSelection), m_alwaysUpdateActivation(alwaysUpdateActivation), m_permanentSelected(false), m_permanentActivated(false), m_selectOnce(true), m_activeOnce(true), m_activeFunc(0), m_activeParam(0), m_disactiveFunc(NULL), m_disactiveParam(NULL), m_changeFunc(NULL), m_changeParam(NULL)
+Active::Active(bool select, bool active, bool alwaysUpdateSelection, bool alwaysUpdateActivation) : m_isSelect(select), m_isActive(active), m_alwaysUpdateSelection(alwaysUpdateSelection), m_alwaysUpdateActivation(alwaysUpdateActivation), m_permanentSelected(false), m_permanentActivated(false), m_selectOnce(true), m_activeOnce(true)
 {}
 
 void Active::update()
@@ -64,20 +64,18 @@ void Active::deselectIt()
 
 void Active::activeIt()
 {
+	m_fireActive.fire();
+	if(m_isActive == false)
+		m_fireChange.fire();
 	m_isActive = true;
-	if(m_activeFunc)
-		m_activeFunc(m_activeParam);
-	if(m_changeFunc)
-		m_changeFunc(this, m_changeParam);
 }
 
 void Active::disactiveIt()
 {
+	m_fireDisactive.fire();
+	if(m_isActive == true)
+		m_fireChange.fire();
 	m_isActive = false;
-	if(m_disactiveFunc)
-		m_disactiveFunc(m_disactiveParam);
-	if(m_changeFunc)
-		m_changeFunc(this, m_changeParam);
 }
 
 void Active::setPermanentSelected(bool permanentSelected)
@@ -112,22 +110,22 @@ void Active::setActiveOnce(bool activeOnce)
 	m_activeOnce = activeOnce;
 }
 
-void Active::setActiveFunc(void(*f)(void*), void* param)
+void Active::setActiveListener(const ActiveListener& fireActive)
 {
-	m_activeFunc = f;
-	m_activeParam = param;
+	m_fireActive = fireActive;
+	m_fireActive.setActive(this);
 }
 
-void Active::setDisactiveFunc(void(*f)(void*), void* param)
+void Active::setDisactiveListener(const ActiveListener& fireDisactive)
 {
-	m_disactiveFunc = f;
-	m_disactiveParam = param;
+	m_fireDisactive = fireDisactive;
+	m_fireDisactive.setActive(this);
 }
 
-void Active::setOnChangeFunc(void(*f)(Active*, void*), void* param)
+void Active::setOnChangeListener(const ActiveListener& fireChange)
 {
-	m_changeFunc = f;
-	m_changeParam = param;
+	m_fireChange = fireChange;
+	m_fireDisactive.setActive(this);
 }
 
 bool Active::isPermanentSelected() const

@@ -22,12 +22,12 @@ class Menu : public GroupDrawable
 		void onFocus(uint32_t, Render&);
 	private:
 		void updateConfiguration();
-		static void fireUpdateConfiguration(void* menu);
+		static void fireUpdateConfiguration(Active* item, void* menu);
 
 		Drawable* m_title;
 		std::vector<ItemMenu*> m_itemsMenu;
 		Drawable* m_background;
-		FireUpdate m_fireUpdate;
+		ActiveListener m_activeListener;
 };
 
 #endif

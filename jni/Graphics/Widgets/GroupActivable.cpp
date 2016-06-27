@@ -1,6 +1,6 @@
 #include "GroupActivable.h"
 
-GroupActivable::GroupActivable() : m_currentActive(NULL), m_onChange(NULL)
+GroupActivable::GroupActivable() : m_currentActive(NULL)
 {}
 
 void GroupActivable::update() 
@@ -13,18 +13,13 @@ void GroupActivable::update()
 void GroupActivable::addActive(Active* active)
 {
 	m_vectorActive.push_back(active);
-	active->setOnChangeFunc(GroupActivable::changeActive, (void*)this);
+	active->setOnChangeListener(ActiveListener(GroupActivable::changeActive, (void*)this));
 	active->setActiveOnce(false);
 }
 
-changeFunc_t GroupActivable::getOnChangeFunc()
+ActiveListener GroupActivable::getOnChangeListener()
 {
 	return m_onChange;
-}
-
-void* GroupActivable::getOnChangeParam()
-{
-	return m_param;
 }
 
 void GroupActivable::setActive(uint32_t i)
@@ -37,6 +32,5 @@ void GroupActivable::setActive(uint32_t i)
 void GroupActivable::changeActive(Active* act, void* grpAct)
 {
 	GroupActivable* grp = (GroupActivable*)grpAct;
-	if(grp->getOnChangeFunc())
-		grp->getOnChangeFunc()(act, grp->getOnChangeParam());
+	grp->getOnChangeListener().fire();
 }

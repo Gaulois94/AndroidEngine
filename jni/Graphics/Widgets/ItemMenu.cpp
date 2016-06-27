@@ -12,7 +12,7 @@ const glm::vec3& ItemMenu::getDefaultSize()
 	return m_item->getDefaultSize();
 }
 
-void ItemMenu::setUpdateConfig(FireUpdate* fu)
+void ItemMenu::setUpdateConfig(const ActiveListener& fu)
 {
 	m_updateConfig = fu;
 }
@@ -25,5 +25,4 @@ void ItemMenu::onFocus(uint32_t pointerEvent, Render& render)
 		disactiveIt();
 	else
 		activeIt();
-//	LOG_ERROR("ITEM SELECTED !!!!!");
 }

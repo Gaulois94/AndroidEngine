@@ -1,7 +1,7 @@
 #include "Widgets/Menu.h"
 
 Menu::Menu(Updatable* parent, Drawable* title, const glm::vec3& defPos, Drawable* background) : GroupDrawable(parent, NULL, Rectangle3f(defPos, glm::vec3(0, 0, 0))),
-	m_title(title), m_background(background), m_fireUpdate(Menu::fireUpdateConfiguration, this)
+	m_title(title), m_background(background), m_activeListener(Menu::fireUpdateConfiguration, this)
 {
 	if(m_background)
 	{
@@ -89,7 +89,7 @@ void Menu::addItemMenu(ItemMenu* itemMenu)
 		m_background->setPosition(glm::vec3(0.0, -size.y, 0.0));
 	}
 
-	itemMenu->setUpdateConfig(&m_fireUpdate);
+	itemMenu->setUpdateConfig(m_activeListener);
 
 	setDefaultSize(glm::vec3(size.x, size.y, 0.0f));
 	setDefaultPos(glm::vec3(0, -size.y, 0.0f));
@@ -121,7 +121,7 @@ void Menu::updateConfiguration()
 
 }
 
-void Menu::fireUpdateConfiguration(void* menu)
+void Menu::fireUpdateConfiguration(Active* item, void* menu)
 {
 	((Menu*)menu)->updateConfiguration();
 }

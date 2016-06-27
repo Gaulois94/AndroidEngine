@@ -1,13 +1,18 @@
 #ifndef  FIREUPDATE_INC
 #define  FIREUPDATE_INC
 
-class FireUpdate
+#include "stdlib.h"
+
+class Callback
 {
 	public:
-		/** \brief default constructor
+		/** \brief default constructor. The function callback and the data send will both be at NULL*/
+		Callback();
+
+		/** \brief Another constructor. Init the function callback and the data send
 		 * \param func the func to be called
 		 * \param data the data passed to the func*/
-		FireUpdate(void(*func)(void*), void* data);
+		Callback(void(*func)(void*), void* data);
 
 		/** \brief call the func with the data if the func exists*/
 		void fire();
