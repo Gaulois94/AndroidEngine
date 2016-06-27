@@ -9,7 +9,7 @@ varying vec2 varyTextureCoord;
 
 void main()
 {
-	gl_Position = uMVP * vec4(vPosition, 1.0);
+	gl_Position = uMVP * vec3(vPosition, 1.0);
 	varyColor = vColor;
 	varyTextureCoord = vTextureCoord;
 };

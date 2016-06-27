@@ -1,4 +1,10 @@
 #include "Renderer.h"
+#include "Graphics/Materials/UniColorMaterial.h"
+#include "Graphics/Materials/TextureMaterial.h"
+#include "Graphics/Text.h"
+#include "Graphics/Font.h"
+#include "Graphics/Sprite.h"
+#include "Graphics/Widgets/Menu.h"
 
 Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_DISPLAY), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT),
 										m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
@@ -140,6 +146,14 @@ void Renderer::initializeSurface(ANativeWindow* window)
 
 void Renderer::init()
 {
+//	UniColorMaterial* material = new UniColorMaterial(Color::YELLOW);
+	TextureMaterial* material = new TextureMaterial();
+	Font* font = Font::fontFromAssets("DejaVuSansMono.ttf");
+	
+	Menu* m = new Menu(this, new Text(NULL, material, font, "Menu !!"));
+	m->addItemMenu(new ItemMenu(NULL, new Text(NULL, material, font, "Item 1")));
+	m->addItemMenu(new ItemMenu(NULL, new Text(NULL, material, font, "Item 2")));
+//	Sprite* sprite = new Sprite(this, material, font->getTexture());
 }
 
 void Renderer::display()
@@ -162,7 +176,6 @@ void Renderer::updateFocus(uint32_t pID)
 
 void Renderer::update(Render& render)
 {
-	m_camera.move(glm::vec3(0.0, 0.001, 0.0));
 	Updatable::update(render);
 	Updatable::updateGPU(render);
 }

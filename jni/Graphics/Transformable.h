@@ -160,6 +160,10 @@ class Transformable : public JniMadeOf
 		/** \brief get the 3D rectangle of the transformable given its default position and default size
 		 * \return the object rectangle in opengl coordinate*/
 		const Rectangle3f& getRect() const;
+
+		/** \brief set the default configuration of the object : default position and default size
+		 * \param dc the new defaultConf*/
+		virtual void setDefaultConf(const Rectangle3f& dc);
 	protected:
 		/** \brief create the new matrix result from the position, the scale and the rotation. */
 		void setMVPMatrix();
@@ -172,10 +176,6 @@ class Transformable : public JniMadeOf
 		/** \brief set the default position of the object
 		 * \param p the new default position*/
 		virtual void setDefaultPos(const glm::vec3& p);
-
-		/** \brief set the default configuration of the object : default position and default size
-		 * \param dc the new defaultConf*/
-		virtual void setDefaultConf(const Rectangle3f& dc);
 
 		glm::mat4 m_mvpMatrix;
 		glm::mat4 m_rotate;

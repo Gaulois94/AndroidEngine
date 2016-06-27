@@ -132,6 +132,7 @@ class Active
 		bool m_permanentActivated;
 		bool m_selectOnce;
 		bool m_activeOnce;
+
 		void (*m_activeFunc)(void*);
 		void* m_activeParam;
 		void (*m_disactiveFunc)(void*);

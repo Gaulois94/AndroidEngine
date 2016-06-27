@@ -49,7 +49,6 @@ void Text::setText(const char* text)
 
 	for(unsigned int i=0; m_text[i] != '\0'; i++)
 	{
-		LOG_ERROR("%c", m_text[i]);
 		//If the character is \n, we jump to the next line (posY -= m_font->getLineHeight())
 		if(text[i] == CHAR_NL)
 		{
@@ -128,7 +127,7 @@ void Text::onDraw(Render& render, const glm::mat4& mvp)
 			glVertexAttribPointer(vTextureCoord, 2, GL_FLOAT, false, 2*sizeof(float), BUFFER_OFFSET(4 * 3 * sizeof(float) * strlen(m_text)));
 		}
 
-		for(uint32_t i=0; i < strlen(m_text); i++)
+		for(uint32_t i=0; m_text[i] != '\0'; i++)
 			glDrawArrays(GL_TRIANGLE_STRIP, i*4, 4);
 
 		glDisableVertexAttribArray(vPosition);
@@ -159,7 +158,7 @@ void Text::initVbos(float* letterCoords, float* textureCoords)
 	{
 		int size = 4 * sizeof(float) * strlen(m_text);
 		//3 for letterCoord and 2 for textureCoord
-		glBufferData(GL_ARRAY_BUFFER, 5*size, NULL, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 5*size, NULL, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, 3*size, letterCoords);
 		glBufferSubData(GL_ARRAY_BUFFER, 3*size, 2*size, textureCoords);
 	}

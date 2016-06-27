@@ -43,7 +43,8 @@ void GroupDrawable::draw(Render& render, const glm::mat4& transformation)
 }
 
 void GroupDrawable::onDraw(Render& render, const glm::mat4& transformation)
-{}
+{
+}
 
 void GroupDrawable::staticToCamera(bool s)
 {
