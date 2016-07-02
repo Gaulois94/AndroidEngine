@@ -5,11 +5,10 @@
 #include "Listeners/ActiveListener.h"
 #include "Widgets/Active.h"
 
-class ItemMenu : public Drawable, Active
+class ItemMenu : public Drawable, public Active
 {
 	public:
 		ItemMenu(Updatable* parent, Drawable* item);
-		const glm::vec3& getDefaultSize();
 		void setUpdateConfig(const ActiveListener& fu);
 		void onDraw(Render& render, const glm::mat4& mvp);
 		void onFocus(uint32_t pointerEvent, Render& render);

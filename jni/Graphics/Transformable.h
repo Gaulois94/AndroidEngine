@@ -28,6 +28,13 @@ struct EulerRotation
 	float yaw;
 };
 
+/** \brief define a default origin position.*/
+enum PositionOrigin
+{
+	TOP_LEFT, TOP_CENTER, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, BOTTOM_CENTER,
+	CENTER, CENTER_LEFT, CENTER_RIGHT
+};
+
 /** \brief Transformable is the class which manage all the transformation (rotations, translations, scales) of a matrix. It is mainly used for all the drawable and the Camera.
  * Firstly we apply the rotation, then the scale and after the rotation of the object.
  * The onScale, onRotate and onMove do nothing for this class. They are used if you want to do something during a transformation (without recreate move, scale or rotate function)*/
@@ -164,6 +171,12 @@ class Transformable : public JniMadeOf
 		/** \brief set the default configuration of the object : default position and default size
 		 * \param dc the new defaultConf*/
 		virtual void setDefaultConf(const Rectangle3f& dc);
+
+		/** \brief add a position origin to the one defined by setPositionOrigin. Default : BOTTOM_LEFT 
+		 * \param p the default origin position*/
+		void setDefaultPositionOrigin(PositionOrigin p);
+
+		PositionOrigin getDefaultPositionOrigin() const;
 	protected:
 		/** \brief create the new matrix result from the position, the scale and the rotation. */
 		void setMVPMatrix();
@@ -176,6 +189,8 @@ class Transformable : public JniMadeOf
 		/** \brief set the default position of the object
 		 * \param p the new default position*/
 		virtual void setDefaultPos(const glm::vec3& p);
+
+		glm::mat4 computeDefaultPositionOrigin();
 
 		glm::mat4 m_mvpMatrix;
 		glm::mat4 m_rotate;
@@ -190,6 +205,8 @@ class Transformable : public JniMadeOf
 		float     m_theta;
 		float     m_phi;
 		Rectangle3f m_rect;
+
+		PositionOrigin m_defaultPosOrigin=BOTTOM_LEFT;
 };
 
 #endif

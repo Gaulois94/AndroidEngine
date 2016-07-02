@@ -5,11 +5,8 @@ ItemMenu::ItemMenu(Updatable* parent, Drawable* item) : Drawable(parent, NULL, i
 	item->setParent(this);
 	item->setApplyTransformation(this);
 	item->setUpdateFocus(false);
-}
-
-const glm::vec3& ItemMenu::getDefaultSize()
-{
-	return m_item->getDefaultSize();
+	setDefaultSize(m_item->getDefaultSize() * m_item->getScale());
+	LOG_ERROR("%f, %f", getDefaultSize().x, getDefaultSize().y);
 }
 
 void ItemMenu::setUpdateConfig(const ActiveListener& fu)
@@ -21,8 +18,6 @@ void ItemMenu::onDraw(Render& render, const glm::mat4& mvp){}
 
 void ItemMenu::onFocus(uint32_t pointerEvent, Render& render)
 {
-	if(m_isActive)
-		disactiveIt();
-	else
-		activeIt();
+	activeIt();
+	m_isActive = false;
 }

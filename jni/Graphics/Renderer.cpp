@@ -146,7 +146,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 
 void Renderer::init()
 {
-	UniColorMaterial* material = new UniColorMaterial(Color::YELLOW);
+/*  UniColorMaterial* material = new UniColorMaterial(Color::YELLOW);
 	UniColorMaterial* bMtl     = new UniColorMaterial(Color::BLUE);
 //	TextureMaterial* material = new TextureMaterial();
 	Font* font = Font::fontFromAssets("DejaVuSansMono.ttf");
@@ -156,6 +156,7 @@ void Renderer::init()
 	m->addItemMenu(new ItemMenu(NULL, new Text(NULL, material, font, "Item 2")));
 
 //	Sprite* sprite = new Sprite(this, material, NULL);
+//	*/
 }
 
 void Renderer::display()

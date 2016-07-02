@@ -271,8 +271,75 @@ Rectangle3f Transformable::getRect(const glm::mat4& m) const
 	return Rectangle3f(xMin, yMin, zMin, xMax - xMin, yMax - yMin, zMax - zMin);
 }
 
+PositionOrigin Transformable::getDefaultPositionOrigin() const
+{
+	return m_defaultPosOrigin;
+}
+
+void Transformable::setDefaultPositionOrigin(PositionOrigin p)
+{
+	m_defaultPosOrigin = p;
+	setMVPMatrix();
+}
+
 void Transformable::setMVPMatrix()
 {	
-    m_mvpMatrix = m_scale * (m_positionOrigin * m_position) * m_rotate;
+    m_mvpMatrix = m_scale * (computeDefaultPositionOrigin() * m_positionOrigin * m_position) * m_rotate;
 	m_rect = getRect(glm::mat4(1.0f));
+}
+
+glm::mat4 Transformable::computeDefaultPositionOrigin()
+{
+	switch(m_defaultPosOrigin)
+	{
+		case BOTTOM_LEFT:
+			return glm::mat4(1.0f);
+
+		case BOTTOM_RIGHT:
+			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+							 0.0f, 1.0f, 0.0f, 0.0f,
+							 0.0f, 0.0f, 1.0f, 0.0f,
+							 -m_defaultSize.x, 0.0f, 0.0f, 1.0f);
+		case TOP_LEFT:
+			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+							 0.0f, 1.0f, 0.0f, 0.0f,
+							 0.0f, 0.0f, 1.0f, 0.0f,
+							 0.0f, -m_defaultSize.y, 0.0f, 1.0f);
+		case TOP_RIGHT:
+			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+							 0.0f, 1.0f, 0.0f, 0.0f,
+							 0.0f, 0.0f, 1.0f, 0.0f,
+							 -m_defaultSize.x, -m_defaultSize.y, 0.0f, 1.0f);
+		case CENTER:
+			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+							 0.0f, 1.0f, 0.0f, 0.0f,
+							 0.0f, 0.0f, 1.0f, 0.0f,
+							 -m_defaultSize.x/2.0f, -m_defaultSize.y/2.0f, 0.0f, 1.0f);
+		
+		case TOP_CENTER:
+			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+							 0.0f, 1.0f, 0.0f, 0.0f,
+							 0.0f, 0.0f, 1.0f, 0.0f,
+							 -m_defaultSize.x/2.0f, -m_defaultSize.y, 0.0f, 1.0f);
+
+		case BOTTOM_CENTER:
+			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+							 0.0f, 1.0f, 0.0f, 0.0f,
+							 0.0f, 0.0f, 1.0f, 0.0f,
+							 -m_defaultSize.x/2.0f, 0.0f, 0.0f, 1.0f);
+
+		case CENTER_LEFT:
+			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+							 0.0f, 1.0f, 0.0f, 0.0f,
+							 0.0f, 0.0f, 1.0f, 0.0f,
+							 0.0f, -m_defaultSize.y/2.0f, 0.0f, 1.0f);
+
+		case CENTER_RIGHT:
+			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+							 0.0f, 1.0f, 0.0f, 0.0f,
+							 0.0f, 0.0f, 1.0f, 0.0f,
+							 -m_defaultSize.x, -m_defaultSize.y/2.0f, 0.0f, 1.0f);
+	}
+
+	return glm::mat4(1.0f);
 }
