@@ -51,7 +51,7 @@ const FontMetrics& Font::getFontMetrics() const
 
 Font* Font::fontFromAssets(const std::string path, uint32_t padX, uint32_t padY, uint32_t size)
 {
-	JNIEnv* jenv      = JniMadeOf::jenv;
+	JNIEnv* jenv      = JniMadeOf::getJEnv();
 	jclass fontClass  = jenv->FindClass("com/gaulois94/Graphics/Font");
 	jmethodID initPtr = jenv->GetStaticMethodID(fontClass, "initPtr", "(Ljava/lang/String;III)J");
 	jstring p         = jenv->NewStringUTF(path.c_str());

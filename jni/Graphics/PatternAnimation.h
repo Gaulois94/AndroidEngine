@@ -15,14 +15,14 @@ class PatternAnimation : public Animation
 		 * \param pos the start of the animation texture in pixel. It is used because a tileset animation could contain a lot of sub animation (then we need to know where to start).
 		 * \param pad the distance (x, y) between two animation sprite
 		 * \param size the size (width, height) of each sprite
-		 * \param n the number of sprite(row, column)
+		 * \param nX the number of sprite per row
 		 * \param nSprite the number of sprites
 		 * \param nbFrame the number of frames before changing the sprite*/
-		PatternAnimation(Updatable* parent, Material* material, const Texture* texture, const Vector2ui& pos, const Vector2ui& pad, const Vector2ui& size, const Vector2ui& n, uint32_t nSprite, uint32_t nbFrame);
+		PatternAnimation(Updatable* parent, Material* material, const Texture* texture, const Vector2ui& pos, const Vector2ui& pad, const Vector2ui& size, uint32_t nX, uint32_t nSprite, uint32_t nbFrame);
 
 		void setSubNSpriteCoords(uint32_t n);
 	private:
-		uint32_t m_posX, m_posY, m_padX, m_padY, m_width, m_height, m_nX, m_nY;
+		uint32_t m_posX, m_posY, m_padX, m_padY, m_width, m_height, m_nX;
 };
 
 #endif

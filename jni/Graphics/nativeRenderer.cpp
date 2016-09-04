@@ -25,6 +25,13 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_initRenderer(JNIEnv*
 	renderer->init();
 }
 
+JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_setViewportRenderer(JNIEnv* jenv, jobject jobj, jlong rendererPtr, int w, int h)
+{
+	Renderer* renderer = (Renderer*) rendererPtr;
+	if(renderer)
+		renderer->setViewport(w, h);
+}
+
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_destroyRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr)
 {
 	Renderer* renderer = (Renderer*) rendererPtr;

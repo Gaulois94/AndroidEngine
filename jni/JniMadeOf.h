@@ -2,6 +2,7 @@
 #define JNIMADEOF_INCLUDE
 
 #include <jni.h>
+#include "logger.h"
 #include <android/asset_manager_jni.h>
 #include <android/asset_manager.h>
 
@@ -28,10 +29,13 @@ class JniMadeOf
 		 * \return the java object associated with this C++ object*/
 		jobject getJobject() const;
 
+		static JNIEnv* getJEnv();
+
 		static JNIEnv* jenv; /* <the java environment. Should be constante while the application run.*/
 		static AAssetManager* assetsManager;
 		static jobject context;
 		static jobject jassetsManager;
+		static JavaVM* vm;
 	protected:
 		jobject m_obj;
 };

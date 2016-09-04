@@ -28,7 +28,10 @@ void Updatable::updateFocus(uint32_t pointerEvent, Render& render)
 }
 
 void Updatable::onFocus(uint32_t pointerEvent, Render& render)
-{}
+{
+	if(m_focusCallback)
+		m_focusCallback(this, m_focusDatas);
+}
 
 void Updatable::update(Render &render)
 {
@@ -137,6 +140,12 @@ bool Updatable::isChild(const Updatable *child)
 		}
 
 	return isChild;
+}
+
+void Updatable::setFocusCallback(void (*focusCallback)(Updatable*, void*), void* data)
+{
+	m_focusCallback = focusCallback;
+	m_focusDatas    = data;
 }
 
 bool Updatable::getCanUpdate() const

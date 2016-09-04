@@ -15,14 +15,18 @@ void DynamicTrace::onUpdate(Render& render)
 	Trace::onUpdate(render);
 }
 
-Tile* DynamicTrace::getTile(double x, double y)
+Tile* DynamicTrace::getTileWorldCoords(double x, double y)
 {
 	glm::mat4 invMvp = glm::inverse(getMatrix());
 	glm::vec4      v = invMvp * glm::vec4(x, y, 0.0, 1.0);
+	return getTileTraceCoords(x, y);
+}
 
-	if(v.x >= m_nbCasesX * m_sizeX || v.y >= m_nbCasesY * m_sizeY)
+Tile* DynamicTrace::getTileTraceCoords(int x, int y)
+{
+	if(x < 0 || y < 0 || x >= m_nbCasesX * m_sizeX || y >= m_nbCasesY * m_sizeY)
 		return NULL;
-	return m_tiles[v.x/m_sizeX][v.y/m_sizeY];
+	return m_tiles[x/m_sizeX][y/m_sizeY];
 }
 
 void DynamicTrace::addTile(Tile* tile, uint32_t x, uint32_t y)

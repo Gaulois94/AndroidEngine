@@ -91,6 +91,11 @@ class Updatable : public JniMadeOf
 		 * \return return the value of m_canUpdate*/
 		bool getCanUpdate() const;
 
+		/** \brief Set the callback when the Updatable is on focus
+		 * \param focusCallback the functon to call
+		 * \param data the data to pass */
+		void setFocusCallback(void (*focusCallback)(Updatable*, void*), void* data=NULL);
+
 		/** \brief Tell if the Updatable can be update on GPU side.
 		 * \return m_canDraw*/
 		virtual bool canDraw() const;
@@ -100,27 +105,8 @@ class Updatable : public JniMadeOf
 		bool m_updateFocus;
 		bool m_canUpdate;
 		bool m_canDraw;
-
-		/** \brief extract a list of T object from the Updatable child's list(Widget for example)
-		 * \return a list of all T objects from Updatable's children*/
-		template <typename T>
-		std::list<T*> extractFromUpdatableChild()
-		{
-			return extractFromUpdatableList<T>(m_child);
-		}
-
-		/** \brief extract a list of T object from the Updatable list.
-		 * \return a list of all T objects from Updatable list*/
-		template <typename T>
-		static std::list<T*> extractFromUpdatableList(std::list<Updatable*> fromExtract)
-		{
-			std::list<T*> list;
-			for(std::list<Updatable*>::const_iterator it = fromExtract.begin(); it != fromExtract.end(); ++it)
-				if(T* extracted = dynamic_cast<T*>(*it))
-					list.push_back(extracted);
-
-			return list;
-		}
+		void (*m_focusCallback)(Updatable*, void*)=NULL;
+		void* m_focusDatas=NULL;
 
 		static bool focusIsCheck; /** Tell if we have finish to get the focus*/
 };

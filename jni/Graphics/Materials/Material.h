@@ -41,12 +41,16 @@ class Material : public JniMadeOf
 
 		/** \brief delete the possible vbo used by this material.*/
 		void deleteVbos();
+
+		/** \brief set the opacity. Value inferior to 0 is understand as no opacity handler*/
+		void setOpacity(float opac);
 	protected:
 		const Shader* m_shader;
 		const Texture* m_texture;
 		GLuint m_vboID;
 		bool m_isUsingShader;
 		static float maskColor[4];
+		float m_opacity=-1.0f;
 };
 
 #endif

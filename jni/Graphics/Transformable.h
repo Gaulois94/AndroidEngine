@@ -67,19 +67,19 @@ class Transformable : public JniMadeOf
 		virtual void setPositionOrigin(const glm::vec3 &p, bool useScale=false);
 
 		/** \brief rotate the object
-		 * \param angle the angle of the rotation
+		 * \param angle the angle of the rotation in radian
 		 * \param v the axis of the rotation
 		 * \param origin the origin of the rotation */
 		virtual void rotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f), bool useScale=false);
 
 		/** \brief Function called during a rotation
-		 * \param angle the angle of the rotation
+		 * \param angle the angle of the rotation in radian
 		 * \param v the axis of the rotation
 		 * \param origin the origin of the rotation */
 		virtual void onRotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f));
 
 		/** \brief set the rotation of the object
-		 * \param angle the angle of the new rotation
+		 * \param angle the angle of the new rotation in radian
 		 * \param v the axis of the rotation
 		 * \param origin the origin of the rotation */
 		virtual void setRotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f), bool useScale=false);

@@ -4,6 +4,7 @@ JNIEnv* JniMadeOf::jenv = 0;
 jobject JniMadeOf::context = 0;
 jobject JniMadeOf::jassetsManager = 0;
 AAssetManager* JniMadeOf::assetsManager = NULL;
+JavaVM* JniMadeOf::vm = 0;
 
 JniMadeOf::JniMadeOf(){}
 
@@ -25,4 +26,17 @@ jobject JniMadeOf::getJobject() const
 void JniMadeOf::setJobject(jobject jobj)
 {
 	m_obj = jobj;
+}
+
+JNIEnv* JniMadeOf::getJEnv()
+{
+	JNIEnv* env;
+	if (JniMadeOf::vm->GetEnv((void**)&env, JNI_VERSION_1_4) != JNI_OK)
+		LOG_ERROR("Failed to get the environment using GetEnv()");
+
+
+	if (JniMadeOf::vm->AttachCurrentThread(&env, NULL) < 0)
+		LOG_ERROR("Failed to get the environment using AttachCurrentThread()");
+
+	return env;
 }

@@ -59,6 +59,8 @@ void startElement(void* map, const char* name, const char** attrs)
 			else if(!strcmp(attrs[i], "tileSize"))
 				getXYFromStr(attrs[i+1], &self->m_caseSizeX, &self->m_caseSizeY);
 		}
+
+		self->resetDefaultConf();
 	}
 
 	//Set the correct start function following the section (Files for Files, etc.)
@@ -504,6 +506,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 					//If the tile is created
 					if(tile != NULL)
 						st->addTileInTraceCoord(tile, XML_NthColumn, i); //Add it
+					LOG_ERROR("TILE ADDED AT %d, %d", XML_NthColumn, i);
 				}
 
 				//Then we look for objects
@@ -620,7 +623,6 @@ void endElement(void *data, const char* name)
 
 createStaticTilePtr Map::getStaticTileFunction(const char* name, const char* type) const
 {
-	LOG_ERROR("WRONG CALLED");
 	return NULL;
 }
 
@@ -674,23 +676,45 @@ void* Map::getObjectTileInfo(const char* name, const char* type)
 	return NULL;
 }
 
-Tile* Map::getTile(uint32_t x, uint32_t y)
+Tile* Map::getTileWorldCoords(double x, double y)
 {
 	Tile* tile=NULL;
 	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
 	{
-		if((tile = (*it)->getTile(x, y)) != NULL)
+		if((tile = (*it)->getTileWorldCoords(x, y)) != NULL)
 			return tile;
 	}
 	return NULL;
 }
 
-Tile* Map::getTile(uint32_t x, uint32_t y, const char* traceName)
+Tile* Map::getTileWorldCoords(double x, double y, const char* traceName)
 {
 	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
 	{
 		if(!strcmp((*it)->getName().c_str(), traceName))
-			return (*it)->getTile(x, y);
+			return (*it)->getTileWorldCoords(x, y);
+	}
+	return NULL;
+
+}
+
+Tile* Map::getTileTraceCoords(int x, int y)
+{
+	Tile* tile=NULL;
+	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
+	{
+		if((tile = (*it)->getTileTraceCoords(x, y)) != NULL)
+			return tile;
+	}
+	return NULL;
+}
+
+Tile* Map::getTileTraceCoords(int x, int y, const char* traceName)
+{
+	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
+	{
+		if(!strcmp((*it)->getName().c_str(), traceName))
+			return (*it)->getTileTraceCoords(x, y);
 	}
 	return NULL;
 
@@ -698,7 +722,7 @@ Tile* Map::getTile(uint32_t x, uint32_t y, const char* traceName)
 
 Tile* Map::addTile(Tile* tile, uint32_t x, uint32_t y, uint32_t traceID)
 {
-	Tile* t = m_traces[traceID]->getTile(x, y);
+	Tile* t = m_traces[traceID]->getTileTraceCoords(x, y);
 	m_traces[traceID]->addTile(tile, x, y);
 	return t;
 }
@@ -709,14 +733,25 @@ Tile* Map::addTile(Tile* tile, uint32_t x, uint32_t y, const char* traceName)
 	{
 		if(!strcmp((*it)->getName().c_str(), traceName))
 		{
-			Tile* t = (*it)->getTile(x, y);
+			Tile* t = (*it)->getTileTraceCoords(x, y);
 			(*it)->addTile(tile, x, y);
 			return t;
 		}
 	}
+	return NULL;
 }
 
 bool Map::isOutside(uint32_t x, uint32_t y) const
 {
 	return (x > m_caseSizeX*m_nbCasesX || y > m_caseSizeY*m_nbCasesY);
+}
+
+Vector2i Map::getNbCases() const
+{
+	return Vector2i(m_nbCasesX, m_nbCasesY);
+}
+
+Vector2i Map::getCasesSize() const
+{
+	return Vector2i(m_caseSizeX, m_caseSizeY);
 }

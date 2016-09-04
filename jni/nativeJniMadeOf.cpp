@@ -18,4 +18,5 @@ JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_initJniMadeOf(JNIEnv* jenv, 
 	JniMadeOf::assetsManager  = AAssetManager_fromJava(jenv, assetManager);
 	JniMadeOf::jassetsManager = jenv->NewGlobalRef(assetManager);
 	JniMadeOf::context        = jenv->NewGlobalRef(context);
+	jenv->GetJavaVM(&JniMadeOf::vm);
 }

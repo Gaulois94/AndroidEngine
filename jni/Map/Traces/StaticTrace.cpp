@@ -17,19 +17,21 @@ void StaticTrace::onUpdate(Render& render)
 	Trace::onUpdate(render);
 }
 
-Tile* StaticTrace::getTile(double x, double y)
+Tile* StaticTrace::getTileWorldCoords(double x, double y)
 {
 	glm::mat4 invMvp = glm::inverse(getMatrix());
 	glm::vec4      v = invMvp * glm::vec4(x, y, 0.0, 1.0);
-
 	v.y = m_nbCasesY * m_sizeY + m_padY - v.y;
-	LOG_ERROR("INDICE %d, %d", ((int)v.x - m_padX)/m_sizeX,((int)v.y - m_padY)/m_sizeY);
-	if(v.x >= m_nbCasesX * m_sizeX - m_padX || v.y >= m_nbCasesY * m_sizeY - m_padY)
+	return getTileTraceCoords(v.x, v.y);
+}
+
+Tile* StaticTrace::getTileTraceCoords(int x, int y)
+{
+	LOG_ERROR("INDICE %d, %d", (x - m_padX)/m_sizeX,(y - m_padY)/m_sizeY);
+	if(x < 0 || y < 0 || x >= m_nbCasesX * m_sizeX - m_padX || y >= m_nbCasesY * m_sizeY - m_padY)
 		return NULL;
 
-	Tile* tile = m_tiles[(v.x - m_padX)/m_sizeX][(v.y - m_padY)/m_sizeY];
-	if(tile)
-		LOG_ERROR("TILE NBCASES X %d Y %d", tile->getNbCasesX(), tile->getNbCasesY());
+	Tile* tile = m_tiles[(x - m_padX)/m_sizeX][(y - m_padY)/m_sizeY];
 	return tile;
 
 }
@@ -72,5 +74,5 @@ void StaticTrace::addTileInTraceCoord(Tile* tile, uint32_t x, uint32_t y)
 	}
 
 	if(isAdded)
-		Trace::addTile(tile, x*m_sizeX + m_padX, (m_nbCasesY - 1 - y - tile->getNbCasesY()) * m_sizeY + m_padY);
+		Trace::addTile(tile, x*m_sizeX + m_padX, (m_nbCasesY - y - tile->getNbCasesY()) * m_sizeY + m_padY);
 }

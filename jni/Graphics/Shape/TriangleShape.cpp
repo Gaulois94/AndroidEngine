@@ -272,7 +272,7 @@ float* makeNormalCoords(GLuint mode, const glm::vec3* vertexCoords, uint32_t nbV
 
 	if(mode==GL_TRIANGLES)
 	{
-		float* normalCoords = (float*)malloc(COORD_PER_TRIANGLES*nbVertex * sizeof(float));
+		normalCoords = (float*)malloc(COORD_PER_TRIANGLES*nbVertex * sizeof(float));
 		for(uint32_t i=0; i < nbVertex/3; i++)
 		{
 			glm::vec3 c = glm::normalize(glm::cross(vertexCoords[i*3+1] - vertexCoords[i*3], 
@@ -287,7 +287,7 @@ float* makeNormalCoords(GLuint mode, const glm::vec3* vertexCoords, uint32_t nbV
 
 	else if(mode==GL_TRIANGLE_FAN)
 	{
-		float* normalCoords = (float*)malloc(COORD_PER_TRIANGLES*nbVertex * sizeof(float));
+		normalCoords = (float*)malloc(COORD_PER_TRIANGLES*nbVertex * sizeof(float));
 		for(uint32_t i=0; i < nbVertex/3; i++)
 		{
 			glm::vec3 c = glm::normalize(glm::cross(vertexCoords[0] - vertexCoords[i], 
@@ -297,6 +297,44 @@ float* makeNormalCoords(GLuint mode, const glm::vec3* vertexCoords, uint32_t nbV
 			for(uint32_t j=0; j < 3; j++)
 				for(uint32_t k=0; k < 3; k++)
 					normalCoords[i*9+j*3+k] = c[k];
+		}
+	}
+
+	else if(mode == GL_LINES)
+	{
+		normalCoords = (float*)malloc(3*2*nbVertex*sizeof(float));
+		for(uint32_t i=0; i < nbVertex/6; i+=2)
+		{
+			glm::vec3 normal = vertexCoords[i+1] - vertexCoords[i]; //Calcule de la normal
+			if(normal.x != 0)
+			{
+				glm::vec3 v = glm::normalize(glm::vec3(-normal.z/normal.x, 0.0f, 1.0));
+				for(uint32_t j=0; j < 4; j++)
+					for(uint32_t k=0; k < 3; k++)
+						normal[6*i+3*j+k] = v[k];
+			}
+			
+			else if(normal.y != 0)
+			{
+				glm::vec3 v = glm::normalize(glm::vec3(0.0, -normal.z/normal.y, 1.0));
+				for(uint32_t j=0; j < 4; j++)
+					for(uint32_t k=0; k < 3; k++)
+						normal[6*i+3*j+k] = v[k];
+			}
+
+			else if(normal.z != 0)
+			{
+				glm::vec3 v = glm::normalize(glm::vec3(1.0, 0.0, -normal.x/normal.z));
+				for(uint32_t j=0; j < 4; j++)
+					for(uint32_t k=0; k < 3; k++)
+						normal[6*i+3*j+k] = v[k];
+			}
+
+			else
+			{
+				LOG_ERROR("TWO POINTS OF THE LINE IS EQUAL. ABORT");
+				return normalCoords;
+			}
 		}
 	}
 	return normalCoords;

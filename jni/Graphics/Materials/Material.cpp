@@ -30,6 +30,8 @@ void Material::init(Render& render, const glm::mat4& mvp)
 	GLint uUseTexture    = glGetUniformLocation(m_shader->getProgramID(), "uUseTexture");
 	GLint uTextureHandle = glGetUniformLocation(m_shader->getProgramID(), "uTexture");
 
+	GLint uOpacityHandle = glGetUniformLocation(m_shader->getProgramID(), "uOpacity");
+
 	if(m_texture)
 	{
 		if(uMaskColor != -1)
@@ -46,14 +48,14 @@ void Material::init(Render& render, const glm::mat4& mvp)
 	else
 	{
 		if(uMaskColor != -1)
-		{
 			glUniform4fv(uMaskColor, 1, maskColor);
-		}
 		if(uUseTexture != -1)
 			glUniform1i(uUseTexture, false);
 		if(uTextureHandle != -1)
 			glUniform1i(uTextureHandle, 0);
 	}
+	if(uOpacityHandle != -1)
+		glUniform1f(uOpacityHandle, m_opacity);
 }
 
 void Material::bindTexture(const Texture* texture)
@@ -84,4 +86,9 @@ void Material::deleteVbos()
 {
 	if(glIsBuffer(m_vboID))
 		glDeleteBuffers(1, &m_vboID);
+}
+
+void Material::setOpacity(float opac)
+{
+	m_opacity = opac;
 }

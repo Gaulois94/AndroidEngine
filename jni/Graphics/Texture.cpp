@@ -125,7 +125,7 @@ Color Texture::getMaskColor() const
 
 Texture* Texture::loadAndroidFile(const char* filePath)
 {
-	JNIEnv* jenv = JniMadeOf::jenv;
+	JNIEnv* jenv = JniMadeOf::getJEnv();
 	jstring path = jenv->NewStringUTF(filePath);
 	return (Texture*) Java_com_gaulois94_Graphics_Texture_loadFromFileTexture(jenv, 0, path);
 }

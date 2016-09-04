@@ -9,6 +9,7 @@ uniform vec4 uUniColor;
 varying vec2 varyTextureCoord;
 varying vec4 varyColor;
 
+
 void main()
 {
 	if(uUseUniColor)

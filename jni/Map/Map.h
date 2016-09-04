@@ -97,7 +97,7 @@ class Map : public Drawable
 		 * \param name the name of the tile contained on the xml file
 		 * \param type the type of the tile contained on the xml file
 		 * \return a pointer to a void*. NULL if not correct*/
-		void*                       getStaticTileInfo(const char* name, const char* type);
+		virtual void*               getStaticTileInfo(const char* name, const char* type);
 
 		/** \brief get the pointer function to create a dynamic tile from name and type. This function is aimed to be overwrited.
 		 * \param name the name of the tile contained on the xml file
@@ -112,7 +112,7 @@ class Map : public Drawable
 		/** \brief Get a pointer to the dynamic animation tile information (could be a structure, or something else)
 		 * \param name the name of the tile contained on the xml file
 		 * \return a pointer to a void*. NULL if not correct*/
-		void*                       getDynamicAnimTileInfo(const char* name);
+		virtual void*                getDynamicAnimTileInfo(const char* name);
 
 		/** \brief get the pointer function to create a dynamic tile from name and type. This function is aimed to be overwrited.
 		 * \param name the name of the tile contained on the xml file
@@ -127,7 +127,7 @@ class Map : public Drawable
 		/** \brief Get a pointer to the static animation tile information (could be a structure, or something else)
 		 * \param name the name of the tile contained on the xml file
 		 * \return a pointer to a void*. NULL if not correct*/
-		void*                       getStaticAnimTileInfo(const char* name);
+		virtual void*                getStaticAnimTileInfo(const char* name);
 
 		/** \brief set the pointer function for this ObjectDatas following its name and its type
 		 * \param name the name of the tile contained on the xml file
@@ -141,18 +141,31 @@ class Map : public Drawable
 		 * \return a pointer to a void*. NULL if not correct*/
 		void*                       getObjectTileInfo(const char* name, const char* type);
 
-		/** \brief get the tile on the coord x, y in pixels coords (and not OpenGL)
+		/** \brief get the tile on the coord x, y in pixels and world coords (and not OpenGL)
 		 * \param x the x component
 		 * \param y the y component
 		 * \return the Tile at this position. NULL if nothing*/
-		Tile* getTile(uint32_t x, uint32_t y);
+		Tile* getTileWorldCoords(double x, double y);
 
 		/** \brief get the tile on the coord x, y in world coords in a specific trace
 		 * \param x the x component
 		 * \param y the y component
 		 * \param traceName the trace name. We will check this position on this trace only.
 		 * \return the Tile at this position. NULL if nothing (trace not found or position not found)*/
-		Tile* getTile(uint32_t x, uint32_t y, const char* traceName);
+		Tile* getTileWorldCoords(double x, double y, const char* traceName);
+
+		/** \brief get the tile on the coord x, y in pixels and trace coords (and not OpenGL)
+		 * \param x the x component
+		 * \param y the y component
+		 * \return the Tile at this position. NULL if nothing*/
+		Tile* getTileTraceCoords(int x, int y);
+
+		/** \brief get the tile on the coord x, y in trace coords in a specific trace
+		 * \param x the x component
+		 * \param y the y component
+		 * \param traceName the trace name. We will check this position on this trace only.
+		 * \return the Tile at this position. NULL if nothing (trace not found or position not found)*/
+		Tile* getTileTraceCoords(int x, int y, const char* traceName);
 
 		/** \brief tell if the position x, y is outside the Map. The Map Rect is (0, 0, nbCaseX*tileSizeX, nbCaseY*tileSizeY)
 		 * \param x the x coords
@@ -173,6 +186,9 @@ class Map : public Drawable
 		 * \param y the y coords
 		 * \return the previous tile in the trace*/
 		Tile* addTile(Tile* tile, uint32_t x, uint32_t y, uint32_t traceID);
+
+		Vector2i getNbCases() const;
+		Vector2i getCasesSize() const;
 
 	//Don't modifie these variables. They are public because of the parser functions that need to modify them directly
 	public:

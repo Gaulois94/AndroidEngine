@@ -138,9 +138,7 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	eglQuerySurface(m_disp, m_surface, EGL_WIDTH, &m_width);
 	eglQuerySurface(m_disp, m_surface, EGL_HEIGHT, &m_height);
 
-	LOG_ERROR("M_WIDTH %d M_HEIGHT %d", m_width, m_height);
-
-	glViewport(0, 0, m_width, m_height);
+	setViewport(m_width, m_height);
 	m_start = true;
 }
 
@@ -236,6 +234,13 @@ void Renderer::deleteSurface()
 		m_surface = EGL_NO_SURFACE;
 		m_window = NULL;
 	}
+}
+
+void Renderer::setViewport(int w, int h)
+{
+	m_width  = w;
+	m_height = h;
+	glViewport(0, 0, m_width, m_height);
 }
 
 bool Renderer::hasDisplay()

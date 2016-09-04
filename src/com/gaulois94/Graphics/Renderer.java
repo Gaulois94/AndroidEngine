@@ -13,6 +13,7 @@ import com.gaulois94.Graphics.PatternAnimation;
 
 import android.content.Context;
 
+import android.util.DisplayMetrics;
 import android.app.Activity;
 import android.view.Surface;
 import android.view.SurfaceView;
@@ -37,11 +38,12 @@ protected Boolean m_open;
 protected Boolean m_isCreated;
 protected Boolean m_canCreate;
 protected boolean m_suspend;
+protected Context m_context;
 
 public Renderer(Context context)
 {
 	super(0);
-	JniMadeOf.setContext(context);
+	m_context     = context;
 	m_canCreate   = false;
 	m_open        = false;
 	m_thread      = null;
@@ -57,18 +59,19 @@ public Renderer(Context context)
 		}
 	};
 	m_surface.getHolder().addCallback(this);
+	m_surface.getHolder().setFormat(PixelFormat.RGBA_8888);
 }
 
 public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
 {
-	Log.e("Main", ""+w + " " + h);
 	GLES20.glViewport(0, 0, w, h);
+	setViewportRenderer(m_ptr, w, h);
 	onChanged(m_surface.getHolder().getSurfaceFrame());
 }
 
 public void surfaceCreated(SurfaceHolder holder)
 {
-	if (holder.getSurface() != null && holder.getSurface().isValid())
+	if(holder.getSurface() != null && holder.getSurface().isValid() && holder.getSurfaceFrame().bottom != 0 && holder.getSurfaceFrame().right != 0)
 	{
 		if(m_isCreated == false)
 			m_canCreate = true;
@@ -102,6 +105,7 @@ public void onDestroyed()
 
 public void run()
 {
+	JniMadeOf.setContext(m_context);
 	setPtr(createPtr(0));
 	initRenderer(m_ptr);
 
@@ -122,7 +126,6 @@ public void run()
 
 		if(m_canCreate)
 		{
-			m_surface.getHolder().setFormat(PixelFormat.RGBA_8888);
 			initSurfaceRenderer(m_ptr, m_surface.getHolder().getSurface());
 			onCreated();
 			m_isCreated = true;
@@ -250,6 +253,8 @@ public void run()
 	protected native void onMoveTouchRenderer(long ptr, int pID, float x, float y);
 	protected native void onUpTouchRenderer(long ptr, int pID, float x, float y);
 	protected native void accelerometerRenderer(long ptr, float x, float y, float z);
+
+	protected native void setViewportRenderer(long ptr, int w, int h);
 
 	static
 	{

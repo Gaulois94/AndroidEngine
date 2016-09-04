@@ -76,6 +76,8 @@ class Renderer : public Render
 		/** \brief delete the current surface of the screen*/
 		void deleteSurface();
 
+		virtual void setViewport(int width, int height);
+
 		/** \brief tell if the renderer has a display where it can draw to. 
 		 * \return return if it has a display where it can draw to.*/
 		bool hasDisplay();

@@ -69,7 +69,7 @@ void Transformable::onRotate(float angle, const glm::vec3 &v, const glm::vec3 &o
 void Transformable::setRotate(float angle, const glm::vec3 &v, const glm::vec3 &origin, bool useScale)
 {
 	m_rotate = glm::mat4(1.0f);
-	rotate(angle, v, origin);
+	rotate(angle, v, origin, useScale);
 }
 
 void Transformable::scale(const glm::vec3 &v)

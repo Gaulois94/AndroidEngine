@@ -16,7 +16,8 @@ class DynamicTrace : public Trace
 		 * \param sizeY the height for each case*/
 		DynamicTrace(Updatable* parent, const char* name, uint32_t nbCasesX, uint32_t nbCasesY, uint32_t sizeX, uint32_t sizeY);
 		void onUpdate(Render& render);
-		virtual Tile* getTile(double x, double y);
+		virtual Tile* getTileWorldCoords(double x, double y);
+		virtual Tile* getTileTraceCoords(int x, int y);
 		void addTile(Tile* tile, uint32_t x, uint32_t y);
 	private:
 		uint32_t m_sizeX;

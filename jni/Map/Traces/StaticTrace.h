@@ -21,7 +21,8 @@ class StaticTrace : public Trace
 				    uint32_t sizeX, uint32_t sizeY, uint32_t nbCasesX, uint32_t nbCasesY,
 				    uint32_t padX, uint32_t padY);
 
-		virtual Tile* getTile(double x, double y);
+		virtual Tile* getTileTraceCoords(int x, int y);
+		virtual Tile* getTileWorldCoords(double x, double y);
 		void addTile(Tile* tile, uint32_t x, uint32_t y);
 		void addTileInTraceCoord(Tile* tile, uint32_t x, uint32_t y);
 		void onUpdate(Render& render);

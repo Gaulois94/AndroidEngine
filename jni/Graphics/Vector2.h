@@ -19,7 +19,7 @@ class Vector2
 
 		Vector2& operator=(const Vector2<T>& copy)
 		{
-			if(*copy != this)
+			if(&copy != this)
 			{
 				x = copy.x;
 				y = copy.y;
@@ -48,7 +48,7 @@ bool operator!=(const Vector2<T> &a, const Vector2<T> &b)
 template<typename T>
 Vector2<T> operator+(const Vector2<T> &a, const Vector2<T> &b)
 {
-	return Vector2<T>(a.x + b.x, a.y + b.y, a.z + b.z);
+	return Vector2<T>(a.x + b.x, a.y + b.y);
 }
 
 template<typename T>
