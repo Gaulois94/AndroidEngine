@@ -144,17 +144,6 @@ void Renderer::initializeSurface(ANativeWindow* window)
 
 void Renderer::init()
 {
-/*  UniColorMaterial* material = new UniColorMaterial(Color::YELLOW);
-	UniColorMaterial* bMtl     = new UniColorMaterial(Color::BLUE);
-//	TextureMaterial* material = new TextureMaterial();
-	Font* font = Font::fontFromAssets("DejaVuSansMono.ttf");
-	
-	Menu* m = new Menu(this, new Text(NULL, material, font, "Menu !!"), glm::vec3(0.0f), new Sprite(NULL, bMtl, NULL));
-	m->addItemMenu(new ItemMenu(NULL, new Text(NULL, material, font, "Item 1")));
-	m->addItemMenu(new ItemMenu(NULL, new Text(NULL, material, font, "Item 2")));
-
-//	Sprite* sprite = new Sprite(this, material, NULL);
-//	*/
 }
 
 void Renderer::display()
@@ -211,6 +200,32 @@ void Renderer::accelerometerEvent(float x, float y, float z)
 {
 }
 
+bool Renderer::keyUpEvent(int32_t keyCode)
+{
+	LOG_ERROR("KEY UP CODE : %d", keyCode);
+	Updatable::keyUp(keyCode);
+	if(!Updatable::keyUpIsCheck)
+		return onKeyUp(keyCode);
+	else
+	{
+		Updatable::keyUpIsCheck = false;
+		return true;
+	}
+}
+
+bool Renderer::keyDownEvent(int32_t keyCode)
+{
+	LOG_ERROR("KEY DOWN CODE : %d", keyCode);
+	Updatable::keyDown(keyCode);
+	if(!Updatable::keyDownIsCheck)
+		return onKeyDown(keyCode);
+	else
+	{
+		Updatable::keyDownIsCheck = false;
+		return true;
+	}
+}
+
 void Renderer::onUpTouchEvent(uint32_t i, float x, float y)
 {
 	touchCoord[i].type = UP;
@@ -246,4 +261,26 @@ void Renderer::setViewport(int w, int h)
 bool Renderer::hasDisplay()
 {
 	return (m_disp != EGL_NO_DISPLAY);
+}
+
+void Renderer::showKeyboard(bool show)
+{
+	//Get the InputMethodManager
+	//
+	//InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+	JNIEnv* env                       = JniMadeOf::getJEnv();
+	jclass immClass                 = env->FindClass("android/view/inputmethod/InputMethodManager");
+	jclass ctxClass                 = env->FindClass("android/content/Context");
+	jmethodID getSystemService      = env->GetMethodID(ctxClass, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+	jfieldID INPUT_METHOD_SERVICEID = env->GetStaticFieldID(ctxClass, "INPUT_METHOD_SERVICE", "Ljava/lang/String;");
+	jobject INPUT_METHOD_SERVICE    = env->GetStaticObjectField(ctxClass, INPUT_METHOD_SERVICEID);
+	jobject imm                     = env->CallObjectMethod(JniMadeOf::context, getSystemService, INPUT_METHOD_SERVICE);
+
+	//Call the correct function following show value
+	//imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+	//imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+	jmethodID toggleSoftInputID     = env->GetMethodID(immClass, "toggleSoftInput", "(II)V");
+	jfieldID SHOWID                 = env->GetStaticFieldID(immClass, (show) ? "SHOW_FORCED" : "HIDE_IMPLICIT_ONLY", "I");
+	int SHOW                        = env->GetStaticIntField(immClass, SHOWID);
+	env->CallVoidMethod(imm, toggleSoftInputID, SHOW, 0);
 }

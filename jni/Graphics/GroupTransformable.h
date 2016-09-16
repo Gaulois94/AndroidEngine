@@ -9,7 +9,7 @@ class GroupTransformable : public Transformable
 {
 	public:
 		/** \brief default constructor*/
-		GroupTransformable(const Rectangle3f& defaultConf);
+		GroupTransformable(const Rectangle3f& defaultConf=Rectangle3f(0, 0, 0, 0, 0, 0));
 
 		/** \brief add a Transformable in the Group Transformable
 		 * If you add a Transformable, do not set its apply transformation after : indeed, this fonction set the transformable apply transformation of its own.

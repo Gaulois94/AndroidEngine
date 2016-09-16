@@ -7,6 +7,7 @@
 #include <EGL/egl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "jni.h"
 
 #include <android/native_window.h>
 #include "logger.h"
@@ -52,6 +53,9 @@ class Renderer : public Render
 		virtual void stopDraw();
 
 		//Events function
+
+		virtual bool keyUpEvent(int32_t keyCode);
+		virtual bool keyDownEvent(int32_t keyCode);
 		
 		/** \brief function called when the Renderer is released. Called by the View which contain the Renderer (from the Renderer java class for example, or a C++ native activity)
 		 * \param indice the indice pointer to the touch Event
@@ -81,6 +85,10 @@ class Renderer : public Render
 		/** \brief tell if the renderer has a display where it can draw to. 
 		 * \return return if it has a display where it can draw to.*/
 		bool hasDisplay();
+
+		/** \brief show the keyboard
+		 * \param show show the keyboard or hide it*/
+		void showKeyboard(bool show);
 	protected:
 		void terminate();
 		EGLDisplay m_disp;

@@ -137,6 +137,16 @@ public void run()
 		}
 	}
 
+	public synchronized boolean keyUpEvent(int keyCode)
+	{
+		return keyUpEventRenderer(m_ptr, keyCode);
+	}
+
+	public synchronized boolean keyDownEvent(int keyCode)
+	{
+		return keyDownEventRenderer(m_ptr, keyCode);
+	}
+
 	public synchronized boolean touchEvent(MotionEvent e)
 	{
 		m_suspend = true;
@@ -255,6 +265,8 @@ public void run()
 	protected native void accelerometerRenderer(long ptr, float x, float y, float z);
 
 	protected native void setViewportRenderer(long ptr, int w, int h);
+	protected native boolean keyUpEventRenderer(long ptr, int keyCode);
+	protected native boolean keyDownEventRenderer(long ptr, int keyCode);
 
 	static
 	{

@@ -22,6 +22,9 @@ extern "C"
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onUpTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jint pID, jfloat x, jfloat y);
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_onMoveTouchRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jint pID, jfloat x, jfloat y);
 	JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_accelerometerRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jfloat x, jfloat y, jfloat z);
+
+	JNIEXPORT bool JNICALL Java_com_gaulois94_Graphics_Renderer_keyDownEventRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jint keyCode);
+	JNIEXPORT bool JNICALL Java_com_gaulois94_Graphics_Renderer_keyUpEventRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jint keyCode);
 };
 
 #endif

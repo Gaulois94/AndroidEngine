@@ -92,3 +92,15 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Renderer_accelerometerRendere
 	Renderer* renderer = (Renderer*)rendererPtr;
 	renderer->accelerometerEvent(x, y, z);
 }
+
+JNIEXPORT bool JNICALL Java_com_gaulois94_Graphics_Renderer_keyDownEventRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jint keyCode)
+{
+	Renderer* renderer = (Renderer*)rendererPtr;
+	return renderer->keyDownEvent(keyCode);
+}
+
+JNIEXPORT bool JNICALL Java_com_gaulois94_Graphics_Renderer_keyUpEventRenderer(JNIEnv* jenv, jobject obj, jlong rendererPtr, jint keyCode)
+{
+	Renderer* renderer = (Renderer*)rendererPtr;
+	return renderer->keyUpEvent(keyCode);
+}

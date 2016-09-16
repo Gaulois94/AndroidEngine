@@ -2,6 +2,8 @@
 #include "Render.h"
 
 bool Updatable::focusIsCheck = false;
+bool Updatable::keyUpIsCheck = false;
+bool Updatable::keyDownIsCheck = false;
 
 Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true), m_canDraw(true)
 {
@@ -32,6 +34,41 @@ void Updatable::onFocus(uint32_t pointerEvent, Render& render)
 	if(m_focusCallback)
 		m_focusCallback(this, m_focusDatas);
 }
+
+void Updatable::keyUp(int32_t keyCode)
+{
+	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
+	{
+		if((*it)->onKeyUp(keyCode))
+		{
+			Updatable::keyUpIsCheck = true;
+			return;
+		}
+	}
+}
+
+void Updatable::keyDown(int32_t keyCode)
+{
+	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
+	{
+		if((*it)->onKeyDown(keyCode))
+		{
+			Updatable::keyDownIsCheck = true;
+			return;
+		}
+	}
+}
+
+bool Updatable::onKeyUp(int32_t keyCode)
+{
+	return false;
+}
+
+bool Updatable::onKeyDown(int32_t keyCode)
+{
+	return false;
+}
+
 
 void Updatable::update(Render &render)
 {

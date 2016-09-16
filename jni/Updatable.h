@@ -26,6 +26,24 @@ class Updatable : public JniMadeOf
 		 * \param render the Render which has catch the event.*/
 		virtual void onFocus(uint32_t pointerEvent, Render& render);
 
+		/** \brief pass the keyCode for a keyUpEvent to each child, until a child handle the event
+		 * \param keyCode the code of the key*/
+		void keyUp(int32_t keyCode);
+
+		/** \brief pass the keyCode for a keyDownEvent to each child, until a child handle the event
+		 * \param keyCode the code of the key*/
+		void keyDown(int32_t keyCode);
+
+		/** \brief handle the key up event.
+		 * \param keyCode the code of the key
+		 * \return if the key was handled or not. Should be true if override*/
+		virtual bool onKeyUp(int32_t keyCode);
+
+		/** \brief handle the key down event.
+		 * \param keyCode the code of the key
+		 * \return if the key was handled or not. Should be true if override*/
+		virtual bool onKeyDown(int32_t keyCode);
+
 		/** \brief Update the Updatable and its children.
 		 *  \param render the render from where the updatable could interact
 		 */
@@ -108,7 +126,9 @@ class Updatable : public JniMadeOf
 		void (*m_focusCallback)(Updatable*, void*)=NULL;
 		void* m_focusDatas=NULL;
 
-		static bool focusIsCheck; /** Tell if we have finish to get the focus*/
+		static bool focusIsCheck;   /** Tell if we have finish to get the focus*/
+		static bool keyUpIsCheck;   /** Tell if the key event was handled of not*/
+		static bool keyDownIsCheck; /** Tell if the key event was handled of not*/
 };
 
 #endif
