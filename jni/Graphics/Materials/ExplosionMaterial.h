@@ -7,7 +7,7 @@ class ExplosionMaterial : public EffectMaterial
 {
 	public:
 		ExplosionMaterial(const Color& baseColor = Color::WHITE);
-		void init(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+		void init(Render& render, const glm::mat4& mvp=glm::mat4(1.0f), const glm::mat4& modelMatrix=glm::mat4(1.0f));
 	private:
 		float m_color[4];
 };

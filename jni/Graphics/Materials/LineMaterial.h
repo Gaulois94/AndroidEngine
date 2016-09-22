@@ -7,7 +7,7 @@ class LineMaterial : public Material
 {
 	public:
 		LineMaterial(const Color& c = Color::WHITE, float t = 1.0f);
-		virtual void init(Render& render, const glm::mat4& mvp);
+		virtual void init(Render& render, const glm::mat4& mvp, const glm::mat4& modelMatrix);
 		void setColor(const Color& color);
 		void setThickness(float t);
 	private:

@@ -15,9 +15,9 @@ void LineMaterial::setThickness(float t)
 	m_thickness = t;
 }
 
-void LineMaterial::init(Render& render, const glm::mat4& mvp)
+void LineMaterial::init(Render& render, const glm::mat4& mvp, const glm::mat4& modelMatrix)
 {
-	Material::init(render, mvp);
+	Material::init(render, mvp, modelMatrix);
 	glLineWidth(m_thickness);
 	GLint uColor = glGetUniformLocation(m_shader->getProgramID(), "uColor");
 	glUniform3fv(uColor, 1, m_color);

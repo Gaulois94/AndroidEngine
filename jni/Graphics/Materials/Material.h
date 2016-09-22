@@ -2,10 +2,12 @@
 #define DEF_MATERIAL_INCLUDE
 
 #include <GLES2/gl2.h>
+#include <glm/gtc/type_ptr.hpp>
 #include "Shader.h"
 #include "Texture.h"
 #include "Render.h"
 #include "JniMadeOf.h"
+#include "Clipping.h"
 
 /** \brief basic material class.*/
 class Material : public JniMadeOf
@@ -26,8 +28,9 @@ class Material : public JniMadeOf
 
 		/** \brief init the material. This function is necessary for sending the good parameters at the shader
 		 * \param render the render where this material will be used on
-		 * \param mvp the transformation matrix associated with this call*/
-		virtual void init(Render& render, const glm::mat4& mvp);
+		 * \param mvp the transformation matrix associated with this call
+		 * \param mvp the transformation matrix for the object itself*/
+		virtual void init(Render& render, const glm::mat4& mvp, const glm::mat4& modelMatrix);
 
 		/** \brief unbind the possible texture with this texture.*/
 		void unbindTexture();
@@ -44,6 +47,9 @@ class Material : public JniMadeOf
 
 		/** \brief set the opacity. Value inferior to 0 is understand as no opacity handler*/
 		void setOpacity(float opac);
+
+		void enableClipping(const Clipping& clip);
+		void disableClipping();
 	protected:
 		const Shader* m_shader;
 		const Texture* m_texture;
@@ -51,6 +57,8 @@ class Material : public JniMadeOf
 		bool m_isUsingShader;
 		static float maskColor[4];
 		float m_opacity=-1.0f;
+		bool m_enableClipping = false;
+		Clipping m_clip;
 };
 
 #endif

@@ -46,7 +46,7 @@ class ObjMaterial : public Material
 		 * \return the specular color*/
 		Color getSpecularColor() const;
 
-		void init(Render& render, const glm::mat4& mvp);
+		void init(Render& render, const glm::mat4& mvp, const glm::mat4& modelMatrix);
 
 		float transparent; /** <the transparence of the material*/
 		float specularHighlight;/** <the value of the specular highlight*/

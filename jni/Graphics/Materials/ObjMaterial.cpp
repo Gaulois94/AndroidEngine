@@ -8,9 +8,9 @@ ObjMaterial::ObjMaterial(const Color& diffuseColor, const Color& specularColor, 
 	bindTexture(texture);
 }
 
-void ObjMaterial::init(Render& render, const glm::mat4& mvp)
+void ObjMaterial::init(Render& render, const glm::mat4& mvp, const glm::mat4& modelMatrix)
 {
-	Material::init(render, mvp);
+	Material::init(render, mvp, modelMatrix);
 	GLint ambientColorHandle      = glGetUniformLocation(m_shader->getProgramID(), "uAmbientColor");
 	GLint diffuseColorHandle      = glGetUniformLocation(m_shader->getProgramID(), "uDiffuseColor");
 	GLint specularColorHandle     = glGetUniformLocation(m_shader->getProgramID(), "uSpecularColor");

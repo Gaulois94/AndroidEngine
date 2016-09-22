@@ -8,9 +8,9 @@ ExplosionMaterial::ExplosionMaterial(const Color& baseColor) : EffectMaterial(Sh
 	m_color[3] = baseColor.a;
 }
 
-void ExplosionMaterial::init(Render& render, const glm::mat4& mvp)
+void ExplosionMaterial::init(Render& render, const glm::mat4& mvp, const glm::mat4& modelMatrix)
 {
-	EffectMaterial::init(render, mvp);
+	EffectMaterial::init(render, mvp, modelMatrix);
 	GLint uBaseColor = glGetUniformLocation(m_shader->getProgramID(), "uBaseColor");
 
 	glUniform4fv(uBaseColor, 1, m_color);
