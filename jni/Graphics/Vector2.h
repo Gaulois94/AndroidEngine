@@ -5,10 +5,16 @@ template<typename T>
 class Vector2
 {
 	public:
-		Vector2(T a=0, T b=0)
+		Vector2(T a, T b)
 		{
 			x=a;
 			y=b;
+		}
+
+		Vector2()
+		{
+			x=0;
+			y=0;
 		}
 
 		Vector2(const Vector2<T>& v)

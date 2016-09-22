@@ -13,7 +13,7 @@ Button::Button(Updatable *parent, Text &text, const Rectangle3f &rect) : GroupDr
 	m_updateFocus = true;
 }
 
-Button::Button(Updatable *parent, Sprite &image, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(&image), m_text(NULL)
+Button::Button(Updatable *parent, Drawable &image, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(&image), m_text(NULL)
 {
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
 		setDefaultConf(m_background->getDefaultConf());
@@ -24,7 +24,7 @@ Button::Button(Updatable *parent, Sprite &image, const Rectangle3f &rect) : Grou
 	m_updateFocus = true;
 }
 
-Button::Button(Updatable *parent, Text &text, Sprite &image, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(&image), m_text(&text)
+Button::Button(Updatable *parent, Text &text, Drawable &image, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(&image), m_text(&text)
 {
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
 		setDefaultConf(m_background->getDefaultConf());
@@ -70,10 +70,18 @@ void Button::centerText()
 	}
 }
 
-void Button::setBackground(Sprite &image)
+void Button::setBackground(Drawable &image)
 {
 	m_background = &image;
 	m_background->setUpdateFocus(false);
+
+	//Reset the parent
+	m_text->setParent(NULL);
+	m_background->setParent(this);
+	m_text->setParent(this);
+
+	//Change the background scale
+	setBackgroundScale();
 }
 
 void Button::setText(Text &string)
@@ -88,7 +96,7 @@ const Text* Button::getText() const
 	return m_text;
 }
 
-bool Button::hasSprite() const
+bool Button::hasBackground() const
 {
 	return (m_background != NULL);
 }
@@ -96,4 +104,25 @@ bool Button::hasSprite() const
 bool Button::hasText() const 
 {
 	return (m_text != NULL);
+}
+
+void Button::setResquestSize(const glm::vec3& size, bool keepPos)
+{
+	setDefaultSize(size);
+	setBackgroundScale();
+	centerText();
+}
+
+void Button::setBackgroundScale()
+{
+	if(!m_background)
+		return;
+	glm::vec3 backgroundDS = m_background->getDefaultSize();
+	if(backgroundDS.x == 0)
+		backgroundDS.x = 1.0;
+	if(backgroundDS.y == 0)
+		backgroundDS.y = 1.0;
+	if(backgroundDS.z == 0)
+		backgroundDS.z = 1.0;
+	m_background->setScale(getDefaultSize() / backgroundDS);
 }

@@ -1,42 +1,29 @@
 #include "Text.h"
 
-Text::Text(Updatable* parent, Material* material, Font* font, const char* text) : Drawable(parent, material), m_font(font), m_text(NULL)
+Text::Text(Updatable* parent, Material* material, const Font* font, const char* text) : Drawable(parent, material), TextInterface(font, text)
 {
 	setText(text);
 }
 
-Text::Text() : Drawable(NULL, NULL), m_font(0), m_text(0)
+Text::Text() : Drawable(NULL, NULL), TextInterface(NULL, NULL)
 {
 }
 
-Text::~Text()
+void Text::setFont(const Font* font)
 {
-	if(m_text)
-		free(m_text);
-}
-
-void Text::setFont(Font* font)
-{
-	m_font = font;
+	TextInterface::setFont(font);
 	setText(m_text);
 }
 
 void Text::setText(const char* text)
 {
-	if(text != m_text)
+	TextInterface::setText(text);
+	LOG_ERROR("WE ARE IN TEXT : SET TEXT %s STRLEN %d", m_text, strlen(text));
+
+	if(!m_font || !text)
 	{
-		if(m_text != NULL)
-			free(m_text);
-
-		//We copy the new text and store it
-		m_text = (char*) malloc((strlen(text)+1)*sizeof(char));
-		strcpy(m_text, text);
-
-		if(!m_font || !text)
-		{
-			setDefaultSize(glm::vec3(0.0f, 0.0f, 0.0f));//No text, no size
-			return;
-		}
+		setDefaultSize(glm::vec3(0.0f, 0.0f, 0.0f));//No text, no size
+		return;
 	}
 
 	//A text is just a number of letter drawn one by one
@@ -93,7 +80,11 @@ void Text::setText(const char* text)
 	}
 
 	initVbos(letterCoords, textureCoords);
-	setDefaultSize(glm::vec3(posX, -posY + 1, 0.0f));//We readjust the default size of the text
+
+	//Readjust the default configuration of the Text object
+	
+	setDefaultPos(glm::vec3(0.0f, -posY, 0.0f));
+	setDefaultSize(glm::vec3(posX, -posY + 1, 0.0f));
 	free(letterCoords);
 	free(textureCoords);
 }
@@ -104,7 +95,7 @@ void Text::onDraw(Render& render, const glm::mat4& mvp)
 		return;
 
 	m_material->bindTexture(m_font->getTexture());
-	m_material->init(render, mvp);
+	m_material->init(render, mvp, getMatrix());
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
 		GLint vPosition      = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
@@ -138,16 +129,6 @@ void Text::onDraw(Render& render, const glm::mat4& mvp)
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	m_material->unbindTexture();
-}
-
-const Font* Text::getFont() const
-{
-	return m_font;
-}
-
-const char* Text::getText() const
-{
-	return m_text;
 }
 
 void Text::initVbos(float* letterCoords, float* textureCoords)

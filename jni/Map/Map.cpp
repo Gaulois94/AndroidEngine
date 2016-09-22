@@ -14,7 +14,7 @@ void Map::parse(File& file)
 
 	//Init XML parser
 	XML_SetUserData(m_parser, (void*)this);
-	XML_SetElementHandler(m_parser, &startElement, &endElement);
+	XML_SetElementHandler(m_parser, &Map::startElement, &endElement);
 
 	//Then parse the file
 	char* line;
@@ -45,7 +45,7 @@ void Map::onDraw(Render& render, const glm::mat4& mvp)
 {
 }
 
-void startElement(void* map, const char* name, const char** attrs)
+void Map::startElement(void* map, const char* name, const char** attrs)
 {
 	Map* self = (Map*)map;
 	//Get Window datas
@@ -63,17 +63,17 @@ void startElement(void* map, const char* name, const char** attrs)
 		self->resetDefaultConf();
 	}
 
-	//Set the correct start function following the section (Files for Files, etc.)
+	//Set the correct Map::start function following the section (Files for Files, etc.)
 	else if(!strcmp(name, "Files"))
-		XML_SetElementHandler(self->m_parser, startElementFiles, endElement);
+		XML_SetElementHandler(self->m_parser, Map::startElementFiles, endElement);
 	else if(!strcmp(name, "Objects"))
-		XML_SetElementHandler(self->m_parser, startElementObjects, endElement);
+		XML_SetElementHandler(self->m_parser, Map::startElementObjects, endElement);
 	else if(!strcmp(name, "Traces"))
-		XML_SetElementHandler(self->m_parser, startElementTraces, endElement);
+		XML_SetElementHandler(self->m_parser, Map::startElementTraces, endElement);
 	XML_depth++;
 }
 
-void startElementFiles(void *data, const char* name, const char** attrs)
+void Map::startElementFiles(void *data, const char* name, const char** attrs)
 {
 	uint32_t i;
 	Map* map = (Map*)data;
@@ -274,7 +274,7 @@ void startElementFiles(void *data, const char* name, const char** attrs)
 	XML_depth++; //We see to the next XML depth
 }
 
-void startElementObjects(void *data, const char* name, const char** attrs)
+void Map::startElementObjects(void *data, const char* name, const char** attrs)
 {
 	Map* map = (Map*)data;
 	if(XML_depth == 2)
@@ -332,7 +332,7 @@ void startElementObjects(void *data, const char* name, const char** attrs)
 	XML_depth++;
 }
 
-void startElementTraces(void *data, const char* name, const char** attrs)
+void Map::startElementTraces(void *data, const char* name, const char** attrs)
 {
 	Map* map = (Map*)data;
 	if(XML_depth == 2)
@@ -360,7 +360,7 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 			map->m_staticTraces.push_back(st);
 			map->m_traces.push_back(st);
 
-			//New trace --> we start at the column 0
+			//New trace --> we Map::start at the column 0
 			XML_NthColumn=0;
 		}
 		
@@ -611,14 +611,14 @@ void startElementTraces(void *data, const char* name, const char** attrs)
 	XML_depth++;
 }
 
-void endElement(void *data, const char* name)
+void Map::endElement(void *data, const char* name)
 {
 	XML_depth--;
 	//Move to the next column of the trace
 	if(XML_depth == 3 && !strcmp(name, "Column"))
 		XML_NthColumn++;
 	if(XML_depth == 1)
-		XML_SetElementHandler(((Map*)data)->m_parser, startElement, endElement);
+		XML_SetElementHandler(((Map*)data)->m_parser, Map::startElement, Map::endElement);
 }
 
 createStaticTilePtr Map::getStaticTileFunction(const char* name, const char* type) const

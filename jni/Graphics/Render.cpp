@@ -50,5 +50,5 @@ Rectangle3f Render::getRectOnScreen(const Transformable& trans) const
 
 glm::vec3 Render::getPositionOnScreen(const glm::vec3& p) const
 {
-	return glm::vec3(m_camera.getMatrix() * glm::vec4(p, 0.0));
+	return glm::vec3(m_camera.getMatrix() * glm::vec4(p, 1.0));
 }

@@ -1,12 +1,14 @@
 #ifndef  GRIDLAYOUT_INC
 #define  GRIDLAYOUT_INC
 
-#include "GroupTranformable.h"
+#include "GroupTransformable.h"
 #include "Updatable.h"
+#include "Drawable.h"
+#include "Vector2.h"
 
 /** \class GridLayout
  * \brief Permit to place widgets on the GridLayout. The coordinate system is the same as opengl (0,0 is at the bottom left)*/
-class GridLayout : public Updatable, public GroupTranformable
+class GridLayout : public Updatable, public GroupTransformable
 {
 	public:
 		GridLayout(Updatable* parent);
@@ -14,8 +16,10 @@ class GridLayout : public Updatable, public GroupTranformable
 		/** \brief Add a widget to the GridLayout given a position
 		 * \param drawable The Drawable to add
 		 * \param x the x coordinate of the GridLayout
-		 * \param y the y coordinate of the GridLayout*/
-		void addWidget(Drawable* drawable, uint32_t x, uint32_t y);
+		 * \param y the y coordinate of the GridLayout
+		 * \param nbXCases the number of columns the widget takes
+		 * \param nbYCases the number of rows the widget takes*/
+		void addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t nbXCases=1, uint32_t nbYCases=1);
 
 		/** \brief Remove the widget from the GridLayout given the Widget
 		 * \param drawable The Widget to remove*/

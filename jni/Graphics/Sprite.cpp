@@ -23,7 +23,7 @@ void Sprite::onDraw(Render& render, const glm::mat4& mvp)
 		return;
 
 	m_material->bindTexture(m_texture);
-	m_material->init(render, mvp);
+	m_material->init(render, mvp, getMatrix());
  	GLint vNormal = glGetAttribLocation(m_material->getShader()->getProgramID(), "vNormal");
 	if(vNormal != -1)
 	{

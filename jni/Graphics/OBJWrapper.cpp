@@ -207,12 +207,12 @@ void OBJWrapper::onDraw(Render& render, const glm::mat4& mvp)
 				if(!m_material)
 				{
 					currentMaterial->enableShader();
-					currentMaterial->init(render, mvp);
+					currentMaterial->init(render, mvp, getMatrix());
 					shader = currentMaterial->getShader();
 				}
 				else
 				{
-					m_material->init(render, mvp);
+					m_material->init(render, mvp, getMatrix());
 					shader = m_material->getShader();
 				}
 

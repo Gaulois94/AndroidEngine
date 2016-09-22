@@ -16,6 +16,27 @@
 #include "expat.h"
 #include "CSV.h"
 
+/** \brief extract x and y from a str like XxY where the second x is a cross
+ * \param str the str
+ * \param x pointer to store the x coordinate
+ * \param y pointer to store the y coordinate
+ *  */
+template<typename T, typename S>
+void getXYFromStr(const char* str, T* x, S* y)
+{
+    uint32_t i;
+    for(i=0; str[i] != 'x' && str[i] != 'X' && str[i] != '\0'; i++);
+
+    if(str[i] != '\0')
+    {
+        *x = atoi(str);
+        *y = atoi(&(str[i+1]));
+    }
+}
+
+extern uint32_t XML_depth; /** <!XML depth on the current XML file*/
+extern uint32_t XML_NthColumn; /** <!XML column number for static files on the current XML file*/
+
 /** \class Map 
  * \brief basic class for decompiling Map files
  * The xml format file is like this :
@@ -190,8 +211,35 @@ class Map : public Drawable
 		Vector2i getNbCases() const;
 		Vector2i getCasesSize() const;
 
-	//Don't modifie these variables. They are public because of the parser functions that need to modify them directly
-	public:
+		/** \brief Default fonction called on a new element of the XML. It will set the correct startElement function following the section name (Files, Objects or Traces)
+		 * \param name the name of the section
+		 * \param attrs the attributes of the section
+		 *  */
+		static void startElement(void* map, const char* name, const char** attrs);
+
+		/** \brief Parse the section Files of the XML
+		 * \param name the name of the section
+		 * \param attrs the attributes of the section
+		 *  */
+		static void startElementFiles(void* map, const char* name, const char** attrs);
+
+		/** \brief Parse the section Objects of the XML
+		 * \param name the name of the section
+		 * \param attrs the attributes of the section
+		 *  */
+		static void startElementObjects(void* map, const char* name, const char** attrs);
+
+		/** \brief Parse the section Trace of the XML
+		 * \param name the name of the section
+		 * \param attrs the attributes of the section
+		 *  */
+		static void startElementTraces(void* map, const char* name, const char** attrs);
+
+		/** \brief Function called after that the section is readed
+		 * \param name the name of the section
+		 * \param attrs the attributes of the section*/
+		static void endElement(void* map, const char* name);
+	private:
 		//The Parser
 		XML_Parser m_parser;
 		//Files
@@ -213,55 +261,4 @@ class Map : public Drawable
 		uint32_t m_caseSizeX;
 		uint32_t m_caseSizeY;
 };
-
-/** \brief Default fonction called on a new element of the XML. It will set the correct startElement function following the section name (Files, Objects or Traces)
- * \param name the name of the section
- * \param attrs the attributes of the section
- *  */
-void startElement(void* map, const char* name, const char** attrs);
-
-/** \brief Parse the section Files of the XML
- * \param name the name of the section
- * \param attrs the attributes of the section
- *  */
-void startElementFiles(void* map, const char* name, const char** attrs);
-
-/** \brief Parse the section Objects of the XML
- * \param name the name of the section
- * \param attrs the attributes of the section
- *  */
-void startElementObjects(void* map, const char* name, const char** attrs);
-
-/** \brief Parse the section Trace of the XML
- * \param name the name of the section
- * \param attrs the attributes of the section
- *  */
-void startElementTraces(void* map, const char* name, const char** attrs);
-
-/** \brief Function called after that the section is readed
- * \param name the name of the section
- * \param attrs the attributes of the section*/
-void endElement(void* map, const char* name);
-
-/** \brief extract x and y from a str like XxY where the second x is a cross
- * \param str the str
- * \param x pointer to store the x coordinate
- * \param y pointer to store the y coordinate
- *  */
-template<typename T, typename S>
-void getXYFromStr(const char* str, T* x, S* y)
-{
-    uint32_t i;
-    for(i=0; str[i] != 'x' && str[i] != 'X' && str[i] != '\0'; i++);
-
-    if(str[i] != '\0')
-    {
-        *x = atoi(str);
-        *y = atoi(&(str[i+1]));
-    }
-}
-
-extern uint32_t XML_depth; /** <!XML depth on the current XML file*/
-extern uint32_t XML_NthColumn; /** <!XML column number for static files on the current XML file*/
-
 #endif

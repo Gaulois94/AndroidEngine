@@ -85,16 +85,18 @@ class Transformable : public JniMadeOf
 		virtual void setRotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f), bool useScale=false);
 
 		/** \brief scale the object
-		 * \param v values of the scale (x, y, z)*/
-		virtual void scale(const glm::vec3 &v);
+		 * \param v values of the scale (x, y, z)
+		 * \param keepPos Cancel the scale set position (true) or not (false)*/
+		virtual void scale(const glm::vec3 &v, bool keepPos=true);
 
 		/** \brief function called during a scaling
 		 * \param v values of the scale (x, y, z)*/
 		virtual void onScale(const glm::vec3 &v);
 
 		/** \brief set the scale the object
-		 * \param v values of the scale (x, y, z)*/
-		virtual void setScale(const glm::vec3 &v);
+		 * \param v values of the scale (x, y, z)
+		 * \param keepPos Cancel the scale set position (true) or not (false)*/
+		virtual void setScale(const glm::vec3 &v, bool keepPos=true);
 
 		/** \brief set the coordinates of the object with spheric parameters
 		 * \param r the radius from the origin to the position
@@ -177,6 +179,11 @@ class Transformable : public JniMadeOf
 		void setDefaultPositionOrigin(PositionOrigin p);
 
 		PositionOrigin getDefaultPositionOrigin() const;
+
+
+		/** \brief This function is used for setting the size of the transformable. Used for complicated Drawable that doesn't want to scale bruptely the object entirely.
+		 * \param v the new size to apply. Basically, the size will be divised by the default size of the object. Remember that the Object is generally scaled. Use keepPos for keeping the transformable on the correct position*/
+		virtual void setResquestSize(const glm::vec3& v, bool keepPos=true);
 	protected:
 		/** \brief create the new matrix result from the position, the scale and the rotation. */
 		void setMVPMatrix();

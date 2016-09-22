@@ -72,9 +72,15 @@ void Transformable::setRotate(float angle, const glm::vec3 &v, const glm::vec3 &
 	rotate(angle, v, origin, useScale);
 }
 
-void Transformable::scale(const glm::vec3 &v)
+void Transformable::scale(const glm::vec3 &v, bool keepPos)
 {
 	m_scale = glm::scale(m_scale, v);
+	if(keepPos)
+	{
+		m_position[3][0] = m_position[3][0] / m_scale[0][0];
+		m_position[3][1] = m_position[3][1] / m_scale[1][1];
+		m_position[3][1] = m_position[3][1] / m_scale[1][1];
+	}
 	setMVPMatrix();
 	onScale(v);
 }
@@ -82,26 +88,29 @@ void Transformable::scale(const glm::vec3 &v)
 void Transformable::onScale(const glm::vec3 &v)
 {}
 
-void Transformable::setScale(const glm::vec3 &v)
+void Transformable::setScale(const glm::vec3 &v, bool keepPos)
 {
 	m_scale = glm::mat4(1.0f);
-	scale(v);
+	scale(v, keepPos);
 }
 
 void Transformable::setDefaultPos(const glm::vec3 &p)
 {
 	m_defaultPos = p;
+	m_rect = getRect(glm::mat4(1.0f));
 }
 
 void Transformable::setDefaultSize(const glm::vec3 &s)
 {
 	m_defaultSize = s;
+	m_rect = getRect(glm::mat4(1.0f));
 }
 
 void Transformable::setDefaultConf(const Rectangle3f &dc)
 {
 	setDefaultPos(glm::vec3(dc.x, dc.y, dc.z));
 	setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
+	m_rect = getRect(glm::mat4(1.0f));
 }
 
 void Transformable::setSphericCoordinate(float r, float theta, float phi)
@@ -342,4 +351,13 @@ glm::mat4 Transformable::computeDefaultPositionOrigin()
 	}
 
 	return glm::mat4(1.0f);
+}
+
+void Transformable::setResquestSize(const glm::vec3& v, bool keepPos)
+{
+	const glm::vec3& ds = getDefaultSize();
+	glm::vec3 s  = glm::vec3(v.x / ((ds.x != 0) ? ds.x : 1),
+							 v.y / ((ds.y != 0) ? ds.y : 1),
+							 v.z / ((ds.z != 0) ? ds.z : 1));
+	setScale(s, keepPos);
 }

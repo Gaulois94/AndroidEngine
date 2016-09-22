@@ -35,7 +35,7 @@ void TriangleShape::onDraw(Render& render, const glm::mat4& mvp)
 	if(!glIsBuffer(m_vboID))
 		return;
 
-	m_material->init(render, mvp);
+	m_material->init(render, mvp, getMatrix());
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
 		GLint vPosition         = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");

@@ -21,6 +21,11 @@ class Updatable : public JniMadeOf
 		 * \param render the Render which has catch the event.*/
 		virtual void updateFocus(uint32_t pointerEvent, Render& render);
 
+		/** \brief The test function for telling if the Updatable can be focused following the pointerEvent and the render passed on parameters
+		 * \param pointerEvent the indice pointer of the Touch Event
+		 * \param render the Render which has catch the event.*/
+		virtual bool testFocus(uint32_t pointerEvent, Render& render);
+
 		/** \brief called when the object has the focus
 		 * \param pointerEvent the indice pointer of the Touch Event
 		 * \param render the Render which has catch the event.*/
@@ -117,6 +122,8 @@ class Updatable : public JniMadeOf
 		/** \brief Tell if the Updatable can be update on GPU side.
 		 * \return m_canDraw*/
 		virtual bool canDraw() const;
+
+		static Updatable* objectFocused;
 	protected:
 		std::list <Updatable*> m_child; /**< Child's list. */
 		Updatable *m_parent; /**< The Updatable's parent. */
@@ -126,7 +133,7 @@ class Updatable : public JniMadeOf
 		void (*m_focusCallback)(Updatable*, void*)=NULL;
 		void* m_focusDatas=NULL;
 
-		static bool focusIsCheck;   /** Tell if we have finish to get the focus*/
+		static bool focusIsCheck;   /** Tell if we have finished to get the focus*/
 		static bool keyUpIsCheck;   /** Tell if the key event was handled of not*/
 		static bool keyDownIsCheck; /** Tell if the key event was handled of not*/
 };

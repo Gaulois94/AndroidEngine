@@ -43,7 +43,7 @@ void Explosion::onDraw(Render& render, const glm::mat4& mvp)
 		return;
 
 	//initialize the material
-	m_material->init(render, mvp);
+	m_material->init(render, mvp, getMatrix());
 
 	//get locations
 	GLint vPosition  = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");

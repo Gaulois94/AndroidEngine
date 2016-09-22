@@ -13,9 +13,10 @@
 #include "Color.h"
 #include "Font.h"
 #include "Render.h"
+#include "TextInterface.h"
 
 /** \brief manage a text on the screen. */
-class Text : public Drawable
+class Text : public Drawable, public TextInterface
 {
 	public:
 		/** \brief Create a Text object from a font and a string.
@@ -23,33 +24,17 @@ class Text : public Drawable
 		 * \param material The text material
 		 * \param font the text font
 		 * \param text the text string*/
-		Text(Updatable* parent, Material* material, Font* font, const char* text);
+		Text(Updatable* parent, Material* material, const Font* font, const char* text);
 
 		/** \brief Create an empty text.*/
 		Text();
-		~Text();
+
+		virtual void setText(const char* text);
+		virtual void setFont(const Font* font);
 
 		virtual void onDraw(Render& renderer, const glm::mat4& mvp=glm::mat4(1.0f));
-
-		/** \brief set the font of the text
-		 * \param font the new font. The user should store the font somewhere (for example on a ResourcesManager) */
-		void setFont(Font* font);
-
-		/** \brief set the text string.
-		 * \param text the new string */
-		void setText(const char* text);
-
-		/** \brief get the text font.
-		 * \return the font associated with the text.*/
-		const Font* getFont() const;
-
-		/** \brief get the text string.
-		 * \return the text string.*/
-		const char* getText() const;
 	protected:
 		void initVbos(float* letterCoords, float* textureCoord);
-		Font*  m_font;
-		char*  m_text;
 };
 
 #endif

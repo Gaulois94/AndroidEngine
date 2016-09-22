@@ -4,6 +4,7 @@
 bool Updatable::focusIsCheck = false;
 bool Updatable::keyUpIsCheck = false;
 bool Updatable::keyDownIsCheck = false;
+Updatable* Updatable::objectFocused = NULL;
 
 Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true), m_canDraw(true)
 {
@@ -27,10 +28,24 @@ void Updatable::updateFocus(uint32_t pointerEvent, Render& render)
 			return;
 		(*it)->updateFocus(pointerEvent, render);
 	}
+
+	if(testFocus(pointerEvent, render))
+	{
+		onFocus(pointerEvent, render);
+		Updatable::objectFocused = this;
+		Updatable::focusIsCheck = true;
+		return;
+	}
+}
+
+bool Updatable::testFocus(uint32_t pointerEvent, Render& render)
+{
+	return false;
 }
 
 void Updatable::onFocus(uint32_t pointerEvent, Render& render)
 {
+	Updatable::objectFocused = this;
 	if(m_focusCallback)
 		m_focusCallback(this, m_focusDatas);
 }
@@ -39,24 +54,25 @@ void Updatable::keyUp(int32_t keyCode)
 {
 	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
 	{
-		if((*it)->onKeyUp(keyCode))
-		{
-			Updatable::keyUpIsCheck = true;
+		(*it)->keyUp(keyCode);
+		if(Updatable::keyUpIsCheck == true)
 			return;
-		}
 	}
+	if(onKeyUp(keyCode))
+		Updatable::keyUpIsCheck = true;
 }
 
 void Updatable::keyDown(int32_t keyCode)
 {
 	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
 	{
-		if((*it)->onKeyDown(keyCode))
-		{
-			Updatable::keyDownIsCheck = true;
+		(*it)->keyDown(keyCode);
+		if(Updatable::keyDownIsCheck == true)
 			return;
-		}
 	}
+
+	if(onKeyDown(keyCode))
+		Updatable::keyDownIsCheck = true;
 }
 
 bool Updatable::onKeyUp(int32_t keyCode)

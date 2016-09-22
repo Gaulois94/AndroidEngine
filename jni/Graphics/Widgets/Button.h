@@ -4,7 +4,7 @@
 #include "Widgets/Active.h"
 #include "Rectangle3.h"
 #include "GroupDrawable.h"
-#include "Sprite.h"
+#include "Drawable.h"
 #include "Text.h"
 
 /** \brief Button class, use to create button*/
@@ -17,17 +17,17 @@ class Button : public GroupDrawable, public Active
 		 * \param rect the button rect. By default, it is the Text dimensions.*/
 		Button(Updatable *parent, Text &text, const Rectangle3f &rect = Rectangle3f(0, 0, 0, 0, 0, 0));
 
-		/** \brief Button constructor with only a Sprite drawn
+		/** \brief Button constructor with only a Drawable drawn
 		 * \param parent its parent
-		 * \param image the Sprite drawn
+		 * \param image the background drawn
 		 * \param rect the button rect. By default, it is the image dimensions.*/
-		Button(Updatable *parent, Sprite &image, const Rectangle3f &rect = Rectangle3f(0, 0, 0, 0, 0, 0));
+		Button(Updatable *parent, Drawable &image, const Rectangle3f &rect = Rectangle3f(0, 0, 0, 0, 0, 0));
 
-		/** \brief Button constructor with a Sprite and a Text drawn
+		/** \brief Button constructor with a Drawable and a Text drawn
 		 * \param parent its parent
-		 * \param image the Sprite drawn
+		 * \param image the background drawn
 		 * \param rect the button rect. By default, it is the image dimensions.*/
-		Button(Updatable *parent, Text &text, Sprite &image, const Rectangle3f &rect = Rectangle3f(0, 0, 0, 0, 0, 0));
+		Button(Updatable *parent, Text &text, Drawable &image, const Rectangle3f &rect = Rectangle3f(0, 0, 0, 0, 0, 0));
 
 		/** \brief Button constructor, created from nothing
 		 * \param parent its parent
@@ -38,9 +38,9 @@ class Button : public GroupDrawable, public Active
 		virtual void onUpdate(Render &render);
 		virtual void onFocus(uint32_t indicePointer, Render &render);
 
-		/** \brief set the Sprite used*
+		/** \brief set the Drawable used*
 		 * \param image the new sprite*/
-		void setBackground(Sprite &image);
+		void setBackground(Drawable &image);
 
 		/** \brief set the Text used
 		 * \param string the new Text*/
@@ -50,22 +50,25 @@ class Button : public GroupDrawable, public Active
 		 * \param the Text used*/
 		const Text* getText() const;
 
-		/** \brief get the Sprite used
-		 * \param the Sprite used*/
-		const Sprite* getBackground() const;
+		/** \brief get the Drawable used
+		 * \param the Drawable used*/
+		const Drawable* getBackground() const;
 
-		/** \brief tell if the Button has a Sprite
-		 * \param Button has a Sprite*/
-		bool hasSprite() const;
+		/** \brief tell if the Button has a background
+		 * \param Button has a background*/
+		bool hasBackground() const;
 
 		/** \brief tell if the Button has a Text
 		 * \param Button has a Text*/
 		bool hasText()  const;
+
+		virtual void setResquestSize(const glm::vec3& v, bool keepPos=true);
 	protected:
 		/** \brief center the text in the Button*/
 		void centerText(); 
+		void setBackgroundScale();
 
-		Sprite* m_background;
+		Drawable* m_background;
 		Text* m_text;
 };
 
