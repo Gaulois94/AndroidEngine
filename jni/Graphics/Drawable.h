@@ -29,7 +29,7 @@ class Drawable : public GroupTransformable, public Updatable
 		 * \param transformation Transform the coord of the drawable itself transformed by the render's camera before.*/
 		virtual void draw(Render& render, const glm::mat4& transformation=glm::mat4(1.0));
 
-		virtual void updateFocus(uint32_t indicePointer, Render& render);
+		virtual bool testFocus(uint32_t indicePointer, Render& render);
 		virtual void updateGPU(Render& render);
 
 		/** \brief is called by draw.
@@ -54,7 +54,7 @@ class Drawable : public GroupTransformable, public Updatable
 
 		/** \brief Get the material associated with the drawable.
 		 * \return The material associated with the object. Can't be modified.*/
-		virtual const Material* getMaterial() const;
+		virtual Material* getMaterial();
 
 		/** \brief Tell if the Drawable is static to the Camera
 		 * \return the staticity of the Drawable*/

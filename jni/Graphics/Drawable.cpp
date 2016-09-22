@@ -19,17 +19,9 @@ void Drawable::updateGPU(Render& render)
 	Updatable::updateGPU(render);
 }
 
-void Drawable::updateFocus(uint32_t indicePointer, Render& render)
+bool Drawable::testFocus(uint32_t indicePointer, Render& render)
 {
-	Updatable::updateFocus(indicePointer, render);
-	if(!m_updateFocus || !m_canUpdate)
-		return;
-
-	if(!m_staticToCamera && touchInRect(render.getRectOnScreen(*this), indicePointer) || (m_staticToCamera && touchInRect(getRect(), indicePointer)))
-	{
-		onFocus(indicePointer, render);
-		Updatable::focusIsCheck = true;
-	}
+	return (!m_staticToCamera && touchInRect(render.getRectOnScreen(*this), indicePointer) || (m_staticToCamera && touchInRect(getRect(), indicePointer)));
 }
 
 void Drawable::draw(Render& render, const glm::mat4& transformation)
@@ -76,7 +68,7 @@ bool Drawable::isStaticToCamera() const
 	return m_staticToCamera;
 }
 
-const Material* Drawable::getMaterial() const
+Material* Drawable::getMaterial()
 {
 	return m_material;
 }
