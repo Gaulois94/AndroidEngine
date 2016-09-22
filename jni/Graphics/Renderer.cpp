@@ -5,11 +5,15 @@
 #include "Graphics/Font.h"
 #include "Graphics/Sprite.h"
 #include "Graphics/Widgets/Menu.h"
+#include "globalValues.h"
+
+Renderer* globalRenderer = NULL;
 
 Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_DISPLAY), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT),
 										m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
 {
 	initializeContext();
+	globalRenderer = this;
 }
 
 Renderer::~Renderer()
@@ -159,13 +163,49 @@ void Renderer::clear()
 void Renderer::updateFocus(uint32_t pID)
 {
 	Updatable::updateFocus(pID, *this);
-	if(focusIsCheck == false)
+	if(Updatable::focusIsCheck == false)
 		onFocus(pID, *this);
 	Updatable::focusIsCheck = false;
 }
 
 void Renderer::update(Render& render)
 {
+	Event* ev;
+	while(m_events.size() > 0)
+	{
+		ev = m_events.front();
+		LOG_ERROR("EVENT !! TYPE : %d", ev->type);
+		switch(ev->type)
+		{
+			case TOUCH_DOWN:
+				updateFocus(ev->touchEvent.pid);
+				break;
+
+			case KEYDOWN:
+				Updatable::keyDown(ev->keyEvent.keyCode);
+				if(!Updatable::keyDownIsCheck)
+					onKeyDown(ev->keyEvent.keyCode);
+				else
+					Updatable::keyDownIsCheck = false;
+
+				break;
+
+			case KEYUP:
+				Updatable::keyUp(ev->keyEvent.keyCode);
+				if(!Updatable::keyUpIsCheck)
+					onKeyUp(ev->keyEvent.keyCode);
+				else
+					Updatable::keyUpIsCheck = false;
+				break;	
+
+			default:
+				break;
+		}
+
+		m_events.pop_front();
+		delete ev;
+	}
+
 	Updatable::update(render);
 	Updatable::updateGPU(render);
 }
@@ -193,7 +233,13 @@ void Renderer::onDownTouchEvent(uint32_t i, float x, float y)
 	touchCoord[i].startY = y;
 	touchCoord[i].y      = y;
 
-	updateFocus(i);
+	Event* ev = new Event();
+	ev->type = TOUCH_DOWN;
+	ev->touchEvent.pid    = i;
+	ev->touchEvent.x      = x;
+	ev->touchEvent.y      = y;
+
+	m_events.push_back(ev);
 }
 
 void Renderer::accelerometerEvent(float x, float y, float z)
@@ -202,28 +248,23 @@ void Renderer::accelerometerEvent(float x, float y, float z)
 
 bool Renderer::keyUpEvent(int32_t keyCode)
 {
-	LOG_ERROR("KEY UP CODE : %d", keyCode);
-	Updatable::keyUp(keyCode);
-	if(!Updatable::keyUpIsCheck)
-		return onKeyUp(keyCode);
-	else
-	{
-		Updatable::keyUpIsCheck = false;
-		return true;
-	}
+	Event* ev = new Event();
+	ev->type = KEYUP;
+	ev->keyEvent.keyCode = keyCode;
+	m_events.push_back(ev);
+
+	return true;
+
 }
 
 bool Renderer::keyDownEvent(int32_t keyCode)
 {
-	LOG_ERROR("KEY DOWN CODE : %d", keyCode);
-	Updatable::keyDown(keyCode);
-	if(!Updatable::keyDownIsCheck)
-		return onKeyDown(keyCode);
-	else
-	{
-		Updatable::keyDownIsCheck = false;
-		return true;
-	}
+	Event* ev = new Event();
+	ev->type = KEYDOWN;
+	ev->keyEvent.keyCode = keyCode;
+	m_events.push_back(ev);
+
+	return true;
 }
 
 void Renderer::onUpTouchEvent(uint32_t i, float x, float y)
@@ -231,6 +272,14 @@ void Renderer::onUpTouchEvent(uint32_t i, float x, float y)
 	touchCoord[i].type = UP;
 	touchCoord[i].x    = x;
 	touchCoord[i].y    = y;
+
+	Event* ev = new Event();
+	ev->type = TOUCH_UP;
+	ev->touchEvent.pid = i;
+	ev->touchEvent.x   = x;
+	ev->touchEvent.y   = y;
+
+	m_events.push_back(ev);
 }
 
 void Renderer::onMoveTouchEvent(uint32_t i, float x, float y)
@@ -238,6 +287,14 @@ void Renderer::onMoveTouchEvent(uint32_t i, float x, float y)
 	touchCoord[i].x    = x;
 	touchCoord[i].y    = y;
 	touchCoord[i].type = MOVE;
+
+	Event* ev = new Event();
+	ev->type = TOUCH_MOVE;
+	ev->touchEvent.pid = i;
+	ev->touchEvent.x   = x;
+	ev->touchEvent.y   = y;
+
+	m_events.push_back(ev);
 }
 
 void Renderer::deleteSurface()
@@ -265,22 +322,5 @@ bool Renderer::hasDisplay()
 
 void Renderer::showKeyboard(bool show)
 {
-	//Get the InputMethodManager
-	//
-	//InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-	JNIEnv* env                       = JniMadeOf::getJEnv();
-	jclass immClass                 = env->FindClass("android/view/inputmethod/InputMethodManager");
-	jclass ctxClass                 = env->FindClass("android/content/Context");
-	jmethodID getSystemService      = env->GetMethodID(ctxClass, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
-	jfieldID INPUT_METHOD_SERVICEID = env->GetStaticFieldID(ctxClass, "INPUT_METHOD_SERVICE", "Ljava/lang/String;");
-	jobject INPUT_METHOD_SERVICE    = env->GetStaticObjectField(ctxClass, INPUT_METHOD_SERVICEID);
-	jobject imm                     = env->CallObjectMethod(JniMadeOf::context, getSystemService, INPUT_METHOD_SERVICE);
-
-	//Call the correct function following show value
-	//imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
-	//imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
-	jmethodID toggleSoftInputID     = env->GetMethodID(immClass, "toggleSoftInput", "(II)V");
-	jfieldID SHOWID                 = env->GetStaticFieldID(immClass, (show) ? "SHOW_FORCED" : "HIDE_IMPLICIT_ONLY", "I");
-	int SHOW                        = env->GetStaticIntField(immClass, SHOWID);
-	env->CallVoidMethod(imm, toggleSoftInputID, SHOW, 0);
+	Keyboard::showKeyboard(show);
 }

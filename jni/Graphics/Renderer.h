@@ -18,6 +18,8 @@
 #include "Rectangle2.h"
 #include "Shape/Circle.h"
 #include "Materials/UniColorMaterial.h"
+#include "Keyboard.h"
+#include "Event.h"
 
 /** \brief The renderer class. It is a representative of the screen. */
 class Renderer : public Render
@@ -103,6 +105,8 @@ class Renderer : public Render
 		int m_height;
 		bool m_start;
 		ANativeWindow *m_window;
+
+		std::list<Event*> m_events;
 };
 
 #endif
