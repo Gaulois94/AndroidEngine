@@ -22,7 +22,7 @@ class TextEntry : public Drawable, public TextInterface
 		TextEntry(Updatable* parent, Material* textMaterial, const Font* font, const std::string& defaultText, Material* backgroundMaterial, Material* firstTextMaterial=NULL);
 
 		void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
-		void onFocus(uint32_t pointerEvent, Render& render);
+		void onFocus(const TouchEvent& te, Render& render);
 		bool onKeyDown(int32_t key);
 
 		void setFont(const Font* font);

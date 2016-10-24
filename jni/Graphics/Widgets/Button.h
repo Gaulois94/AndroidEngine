@@ -36,7 +36,8 @@ class Button : public GroupDrawable, public Active
 
 		virtual void update(Render &render);
 		virtual void onUpdate(Render &render);
-		virtual void onFocus(uint32_t indicePointer, Render &render);
+		void onFocus(const TouchEvent& te, Render &render);
+		void onTouchUp(const TouchEvent& te);
 
 		/** \brief set the Drawable used*
 		 * \param image the new sprite*/

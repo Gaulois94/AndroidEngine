@@ -22,9 +22,9 @@ void TextEntry::onDraw(Render& render, const glm::mat4& mvp)
 	m_text.getMaterial()->disableClipping();
 }
 
-void TextEntry::onFocus(uint32_t pointerEvent, Render& render)
+void TextEntry::onFocus(const TouchEvent& te, Render& render)
 {
-	Updatable::onFocus(pointerEvent, render);
+	Updatable::onFocus(te, render);
 	if(!m_firstFocus)
 	{
 		m_firstFocus = true;

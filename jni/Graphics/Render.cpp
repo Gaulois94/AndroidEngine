@@ -16,9 +16,9 @@ void Render::draw(Drawable& drawable, const glm::mat4& transformation)
 	stopDraw();
 }
 
-void Render::updateFocus(uint32_t pID, Render& render)
+void Render::updateFocus(const TouchEvent& te, Render& render)
 {
-	Updatable::updateFocus(pID, *this);
+	Updatable::updateFocus(te, *this);
 }
 
 void Render::update(Render& render)
@@ -45,10 +45,20 @@ const Color& Render::getAmbientColor() const
 
 Rectangle3f Render::getRectOnScreen(const Transformable& trans) const
 {
-	return trans.getRect(m_camera.getMatrix());
+	Render* render = Updatable::getRenderParent();
+	glm::mat4 mvp = m_camera.getMatrix();
+	while(render != NULL)
+		mvp = render->getCamera() * mvp;
+
+	return trans.getRect(mvp);
 }
 
 glm::vec3 Render::getPositionOnScreen(const glm::vec3& p) const
 {
 	return glm::vec3(m_camera.getMatrix() * glm::vec4(p, 1.0));
+}
+
+Render* Render::getRenderParent()
+{
+	return this;
 }

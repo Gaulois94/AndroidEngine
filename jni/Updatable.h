@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "JniMadeOf.h"
+#include "Event.h"
 
 class Render;
 
@@ -17,19 +18,21 @@ class Updatable : public JniMadeOf
 		virtual ~Updatable();
 
 		/** \brief call when a TouchEvent is called. Try to get the Updatable who get the focus
-		 * \param pointerEvent the indice pointer of the Touch Event
+		 * \param te the TouchEvent bound to the event TouchDown
 		 * \param render the Render which has catch the event.*/
-		virtual void updateFocus(uint32_t pointerEvent, Render& render);
+		virtual void updateFocus(const TouchEvent& te, Render& render);
 
 		/** \brief The test function for telling if the Updatable can be focused following the pointerEvent and the render passed on parameters
-		 * \param pointerEvent the indice pointer of the Touch Event
+		 * \param te the TouchEvent bound to the event TouchDown
 		 * \param render the Render which has catch the event.*/
-		virtual bool testFocus(uint32_t pointerEvent, Render& render);
+		virtual bool testFocus(const TouchEvent& te, Render& render);
 
 		/** \brief called when the object has the focus
-		 * \param pointerEvent the indice pointer of the Touch Event
+		 * \param te the TouchEvent bound to the event TouchDown
 		 * \param render the Render which has catch the event.*/
-		virtual void onFocus(uint32_t pointerEvent, Render& render);
+		virtual void onFocus(const TouchEvent& te, Render& render);
+
+		virtual void onTouchUp(const TouchEvent& te);
 
 		/** \brief pass the keyCode for a keyUpEvent to each child, until a child handle the event
 		 * \param keyCode the code of the key*/
@@ -48,6 +51,9 @@ class Updatable : public JniMadeOf
 		 * \param keyCode the code of the key
 		 * \return if the key was handled or not. Should be true if override*/
 		virtual bool onKeyDown(int32_t keyCode);
+
+		void moveEvent(const TouchEvent& te);
+		virtual void onMoveEvent(const TouchEvent& te);
 
 		/** \brief Update the Updatable and its children.
 		 *  \param render the render from where the updatable could interact
@@ -122,6 +128,10 @@ class Updatable : public JniMadeOf
 		/** \brief Tell if the Updatable can be update on GPU side.
 		 * \return m_canDraw*/
 		virtual bool canDraw() const;
+
+		/** \brief Get the first Render parent
+		 * \return the first Render parent. NULL if doesn't exist*/
+		Render* getRenderParent();
 
 		static Updatable* objectFocused;
 	protected:

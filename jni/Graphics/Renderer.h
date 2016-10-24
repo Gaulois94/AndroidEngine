@@ -50,7 +50,7 @@ class Renderer : public Render
 
 		void update(Render& render);
 		/* *\brief update all child function with it as Render object*/
-		void updateFocus(uint32_t pointerEvent);
+		void updateFocus(const TouchEvent& te);
 		virtual void initDraw();
 		virtual void stopDraw();
 

@@ -34,7 +34,7 @@ CheckBox::~CheckBox()
 	delete m_rectangle;
 }
 
-void CheckBox::onFocus(uint32_t indicePointer, Render& render)
+void CheckBox::onFocus(const TouchEvent& te, Render& render)
 {
 	if(m_isActive)
 		disactiveIt();

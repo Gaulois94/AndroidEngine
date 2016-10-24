@@ -160,11 +160,11 @@ void Renderer::clear()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::updateFocus(uint32_t pID)
+void Renderer::updateFocus(const TouchEvent& te)
 {
-	Updatable::updateFocus(pID, *this);
+	Updatable::updateFocus(te, *this);
 	if(Updatable::focusIsCheck == false)
-		onFocus(pID, *this);
+		onFocus(te, *this);
 	Updatable::focusIsCheck = false;
 }
 
@@ -178,8 +178,12 @@ void Renderer::update(Render& render)
 		switch(ev->type)
 		{
 			case TOUCH_DOWN:
-				updateFocus(ev->touchEvent.pid);
+				updateFocus(ev->touchEvent);
 				break;
+
+			case TOUCH_UP:
+				if(Updatable::objectFocused)
+					Updatable::objectFocused->onTouchUp(ev->touchEvent);
 
 			case KEYDOWN:
 				Updatable::keyDown(ev->keyEvent.keyCode);
@@ -197,6 +201,10 @@ void Renderer::update(Render& render)
 				else
 					Updatable::keyUpIsCheck = false;
 				break;	
+
+			case TOUCH_MOVE:
+				Updatable::moveEvent(ev->touchEvent);
+				break;
 
 			default:
 				break;

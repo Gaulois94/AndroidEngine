@@ -16,7 +16,7 @@ class CheckCircle : public GroupDrawable, Active
 		 * \param radius the radius of the big Circle
 		 * \param nbEdge the edge of the circles*/
 		CheckCircle(Updatable* parent, Material* littleMtl, Material* bigMtl, float radius, uint32_t nbEdge=16);
-		void onFocus(Render& render);
+		virtual void onFocus(const TouchEvent& te, Render& render);
 
 		/** \brief set the Material of the little Circle
 		 * \param mtl the new Material*/

@@ -45,7 +45,7 @@ Button::Button(Updatable *parent, const Rectangle3f &rect) : GroupDrawable(paren
 	m_updateFocus = true;
 }
 
-void Button::onFocus(uint32_t indicePointer, Render &render)
+void Button::onFocus(const TouchEvent& te, Render &render)
 {
 	activeIt();
 }
@@ -59,6 +59,11 @@ void Button::onUpdate(Render &render)
 {
 	GroupDrawable::onUpdate(render);
 	Active::update();
+}
+
+void Button::onTouchUp(const TouchEvent& te)
+{
+	m_isActive = false;
 }
 
 void Button::centerText()

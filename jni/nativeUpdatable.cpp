@@ -9,13 +9,13 @@ JNIEXPORT jlong   JNICALL Java_com_gaulois94_Updatable_createUpdatable(JNIEnv* j
 JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_updateFocusUpdatable(JNIEnv* jenv, jobject jobj, jint pID, jlong ptr, jlong renderer)
 {
 	Updatable* u = (Updatable*)ptr;
-	u->updateFocus(pID, *(Render*)renderer);
+	//u->updateFocus(pID, *(Render*)renderer);
 }
 
 JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_onFocusUpdatable(JNIEnv* jenv, jobject jobj, jint pID, jlong ptr, jlong renderer)
 {
 	Updatable* u = (Updatable*)ptr;
-	u->onFocus(pID, *(Render*)renderer);
+	//u->onFocus(pID, *(Render*)renderer);
 }
 
 JNIEXPORT void    JNICALL Java_com_gaulois94_Updatable_updateUpdatable(JNIEnv* jenv, jobject jobj, jlong ptr, jlong render)

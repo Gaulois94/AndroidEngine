@@ -4,6 +4,8 @@
 #include "Graphics/Rectangle3.h"
 #include "Graphics/Rectangle2.h"
 
+#define NB_TOUCH 10
+
 enum TouchEventType
 {
 	UP,
@@ -21,9 +23,10 @@ struct TouchCoord
 	float y=0.0f; /** <The last y coords*/
 };
 
-extern TouchCoord touchCoord[10];
+extern TouchCoord touchCoord[NB_TOUCH];
 
 bool touchInRect(const Rectangle3f& rect, uint32_t indice);
 bool touchInRect(const Rectangle2f& rect, uint32_t indice);
+const TouchCoord* getTouchCoord(uint32_t pointerEvent);
 
 #endif
