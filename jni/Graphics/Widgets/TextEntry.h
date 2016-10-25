@@ -26,7 +26,7 @@ class TextEntry : public Drawable, public TextInterface
 
 		void onUpdate(Render& render);
 		void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
-		void onFocus(uint32_t pointerEvent, Render& render);
+		void onFocus(const TouchEvent& te, Render& render);
 		bool onKeyDown(int32_t key);
 		void updateTextPosition();
 

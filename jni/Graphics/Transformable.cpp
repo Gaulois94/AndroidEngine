@@ -222,12 +222,8 @@ const Rectangle3f& Transformable::getRect() const
 	return m_rect;
 }
 
-Rectangle3f Transformable::getRect(const glm::mat4& m) const
+Rectangle3f Transformable::mvpToRect(const glm::mat4& mvp) const
 {
-	/* Get the proper transformable matrix.*/
-	glm::mat4 tMat = getMatrix();
-	tMat = m * tMat;
-
 	//Take the object 3D rect from its default configuration
 	glm::vec4 v[8] = {
 		glm::vec4(0.0, 0.0, 0.0, 1.0), glm::vec4(0.0, m_defaultSize[1], 0.0, 1.0), 
@@ -246,7 +242,7 @@ Rectangle3f Transformable::getRect(const glm::mat4& m) const
 		//Add the default position
 		v[i] = v[i] + glm::vec4(m_defaultPos, 0.0);
 		//Then Calculate the transformation to these vec
-		v[i] = tMat * v[i];
+		v[i] = mvp * v[i];
 	}
 	
 	//Determine the maximum and minimum coord of the v[i] table
@@ -278,6 +274,13 @@ Rectangle3f Transformable::getRect(const glm::mat4& m) const
 	}
 
 	return Rectangle3f(xMin, yMin, zMin, xMax - xMin, yMax - yMin, zMax - zMin);
+
+}
+
+Rectangle3f Transformable::getRect(const glm::mat4& m) const
+{
+	/* Get the proper transformable matrix.*/
+	return mvpToRect(m*getMatrix());
 }
 
 PositionOrigin Transformable::getDefaultPositionOrigin() const

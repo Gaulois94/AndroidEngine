@@ -11,7 +11,7 @@ class ItemMenu : public Drawable, public Active
 		ItemMenu(Updatable* parent, Drawable* item);
 		void setUpdateConfig(const ActiveListener& fu);
 		void onDraw(Render& render, const glm::mat4& mvp);
-		void onFocus(uint32_t pointerEvent, Render& render);
+		void onFocus(const TouchEvent& te, Render& render);
 	private:
 		Drawable* m_item;
 		ActiveListener m_updateConfig;		

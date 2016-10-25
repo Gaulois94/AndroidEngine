@@ -17,7 +17,7 @@ Updatable::~Updatable()
 	setParent(NULL);
 }
 
-void Updatable::updateFocus(uint32_t pointerEvent, Render& render)
+void Updatable::updateFocus(const TouchEvent& te, Render& render)
 {
 	if(!m_updateFocus || !m_canUpdate)
 		return;
@@ -26,24 +26,24 @@ void Updatable::updateFocus(uint32_t pointerEvent, Render& render)
 	{
 		if(Updatable::focusIsCheck == true)
 			return;
-		(*it)->updateFocus(pointerEvent, render);
+		(*it)->updateFocus(te, render);
 	}
 
-	if(testFocus(pointerEvent, render))
+	if(testFocus(te, render))
 	{
-		onFocus(pointerEvent, render);
+		onFocus(te, render);
 		Updatable::objectFocused = this;
 		Updatable::focusIsCheck = true;
 		return;
 	}
 }
 
-bool Updatable::testFocus(uint32_t pointerEvent, Render& render)
+bool Updatable::testFocus(const TouchEvent& te, Render& render)
 {
 	return false;
 }
 
-void Updatable::onFocus(uint32_t pointerEvent, Render& render)
+void Updatable::onFocus(const TouchEvent& te, Render& render)
 {
 	Updatable::objectFocused = this;
 	if(m_focusCallback)
@@ -86,6 +86,17 @@ bool Updatable::onKeyDown(int32_t keyCode)
 }
 
 
+void Updatable::moveEvent(const TouchEvent& te)
+{
+	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
+		(*it)->moveEvent(te);
+
+	onMoveEvent(te);
+}
+
+void Updatable::onMoveEvent(const TouchEvent& te)
+{}
+
 void Updatable::update(Render &render)
 {
 	if(!m_canUpdate)
@@ -106,6 +117,9 @@ void Updatable::updateGPU(Render& render)
 }
 
 void Updatable::onUpdate(Render &render)
+{}
+
+void Updatable::onTouchUp(const TouchEvent& te)
 {}
 
 void Updatable::addChild(Updatable *child, int pos)
@@ -211,8 +225,12 @@ bool Updatable::canDraw() const
 	return m_canDraw;
 }
 
-
 const Updatable* Updatable::getParent() const
 {
 	return m_parent;
+}
+
+Render* Updatable::getRenderParent()
+{
+	return (m_parent) ? m_parent->getRenderParent() : NULL;
 }

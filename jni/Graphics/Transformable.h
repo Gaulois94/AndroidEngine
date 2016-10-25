@@ -162,6 +162,10 @@ class Transformable : public JniMadeOf
 		 * \return the euler rotation of the object */
 		virtual EulerRotation getEulerRotation() const;
 
+		/** \brief get the 3D rectangle on screen given its default configuration and the mvp applied
+		 * \param mvp The mvp matrix applied to the Transformable*/
+		Rectangle3f mvpToRect(const glm::mat4& mvp) const;
+
 		/** \brief get the 3D rectangle of the transformable given its default position and default size
 		 * \param m if you want to apply a transformation before getting the 3D rectangle coordinates*/
 		Rectangle3f getRect(const glm::mat4& m) const;

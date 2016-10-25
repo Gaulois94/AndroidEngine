@@ -6,7 +6,7 @@ CheckCircle::CheckCircle(Updatable* parent, Material* littleMtl, Material* bigMt
 	m_littleCircle.setPosition(m_bigCircle.getDefaultPos() + m_bigCircle.getDefaultSize()/2.0f);
 }
 
-void CheckCircle::onFocus(Render& render)
+void CheckCircle::onFocus(const TouchEvent& te, Render& render)
 {
 	if(!m_isActive)
 		Active::activeIt();

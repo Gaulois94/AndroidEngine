@@ -19,9 +19,9 @@ void Drawable::updateGPU(Render& render)
 	Updatable::updateGPU(render);
 }
 
-bool Drawable::testFocus(uint32_t indicePointer, Render& render)
+bool Drawable::testFocus(const TouchEvent& te, Render& render)
 {
-	return (!m_staticToCamera && touchInRect(render.getRectOnScreen(*this), indicePointer) || (m_staticToCamera && touchInRect(getRect(), indicePointer)));
+	return (!m_staticToCamera && touchInRect(render.getRectOnScreen(*this), te.pid) || (m_staticToCamera && touchInRect(getRect(), te.pid)));
 }
 
 void Drawable::draw(Render& render, const glm::mat4& transformation)
