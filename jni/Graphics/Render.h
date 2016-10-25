@@ -52,6 +52,8 @@ class Render : public Updatable
 		Rectangle3f getRectOnScreen(const Transformable& trans) const;
 
 		glm::vec3 getPositionOnScreen(const glm::vec3& p) const;
+
+		glm::vec3 getPointerWorldPosition(uint32_t pointerEvent) const;
 	protected:
 		Color m_ambientColor;
 		Camera m_camera;

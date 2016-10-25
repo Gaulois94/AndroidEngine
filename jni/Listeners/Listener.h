@@ -4,6 +4,7 @@
 class Listener
 {
 	public:
+		virtual ~Listener(){}
 		virtual void fire() = 0;
 };
 

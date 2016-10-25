@@ -52,3 +52,9 @@ glm::vec3 Render::getPositionOnScreen(const glm::vec3& p) const
 {
 	return glm::vec3(m_camera.getMatrix() * glm::vec4(p, 1.0));
 }
+
+glm::vec3 Render::getPointerWorldPosition(uint32_t pointerEvent) const
+{
+	glm::vec4 p = m_camera.getMatrix()*glm::vec4(touchCoord[pointerEvent].x, touchCoord[pointerEvent].y, 0.0, 1.0);
+	return glm::vec3(p);
+}

@@ -145,3 +145,63 @@ void Text::initVbos(float* letterCoords, float* textureCoords)
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+glm::vec2 Text::getCharPosition(uint32_t index, bool useScale) const
+{
+	if(index > strlen(m_text))
+		return glm::vec2(-1, -1);
+
+	double posX=0, posY=0;
+
+	for(unsigned int i=0; i < index; i++)
+	{
+		//If the character is \n, we jump to the next line (posY -= m_font->getLineHeight())
+		if(m_text[i] == CHAR_NL)
+		{
+			posX = 0;
+			posY -= (float) m_font->getFontMetrics().leading / m_font->getLineHeight();
+		}
+
+		glm::vec2 size = m_font->getSize(m_text[i])/m_font->getLineHeight();
+		posX += size.x;
+	}
+
+	return (useScale) ? glm::vec2(posX, posY) * glm::vec2(getScale()) : glm::vec2(posX, posY);
+}
+
+int Text::getCharAt(float x, float y)
+{
+	double posX=0, posY=0;
+
+	for(unsigned int i=0; m_text[i] != '\0'; i++)
+	{
+		glm::vec3 pos = glm::vec3(posX, posY, 0.0);
+		glm::vec2 charSize = getCharSize(i);
+
+		if(pos.x <= x && pos.x+charSize.x >= x &&
+		   pos.y <= y && pos.y+charSize.y >= y)
+			return i;
+
+		//If the character is \n, we jump to the next line (posY -= m_font->getLineHeight())
+		if(m_text[i] == CHAR_NL)
+		{
+			posX = 0;
+			posY -= (float) m_font->getFontMetrics().leading / m_font->getLineHeight();
+		}
+
+		else
+		{
+			glm::vec2 size = m_font->getSize(m_text[i])/m_font->getLineHeight();
+			posX += size.x;
+		}
+
+	}
+
+	return -1;
+
+}
+
+glm::vec2 Text::getCharSize(uint32_t index) const
+{
+	return m_font->getSize(m_text[index])/m_font->getLineHeight();
+}

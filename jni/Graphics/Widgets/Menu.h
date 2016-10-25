@@ -13,7 +13,7 @@ class Menu : public Drawable
 		 * \param parent the Updatable parent
 		 * \param title a Drawable which will be on the top of the Menu. Naturally, its parent will be set.
 		\param background the background of the Menu. It's parent and transformation will be automatically set.*/
-		Menu(Updatable* parent, Drawable* title, const glm::vec3& defPos=glm::vec3(0, 0, 0), Drawable* background = NULL);
+		Menu(Updatable* parent, Drawable* title=NULL, const glm::vec3& defPos=glm::vec3(0, 0, 0), Drawable* background = NULL);
 
 		/** \brief Add an ItemMenu.
 		 * \param itemMenu the ItemMenu to be adding. It's transformation matrix will be automatically set, with it's parent*/

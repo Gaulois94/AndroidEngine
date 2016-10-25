@@ -33,6 +33,10 @@ class Text : public Drawable, public TextInterface
 		virtual void setFont(const Font* font);
 
 		virtual void onDraw(Render& renderer, const glm::mat4& mvp=glm::mat4(1.0f));
+
+		glm::vec2 getCharPosition(uint32_t index, bool useScale=true) const;
+		glm::vec2 getCharSize(uint32_t index) const;
+		int getCharAt(float x, float y);
 	protected:
 		void initVbos(float* letterCoords, float* textureCoord);
 };
