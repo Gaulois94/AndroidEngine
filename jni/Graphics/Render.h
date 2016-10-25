@@ -49,7 +49,7 @@ class Render : public Updatable
 
 		/** \brief get the 3D rectangle of an object on the screen
 		 * \param trans the Transformable holding the information for getting the rect on the screen*/
-		Rectangle3f getRectOnScreen(const Transformable& trans) const;
+		Rectangle3f getRectOnScreen(const Transformable& trans);
 
 		glm::vec3 getPositionOnScreen(const glm::vec3& p) const;
 

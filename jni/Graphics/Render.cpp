@@ -43,12 +43,12 @@ const Color& Render::getAmbientColor() const
 	return m_ambientColor;
 }
 
-Rectangle3f Render::getRectOnScreen(const Transformable& trans) const
+Rectangle3f Render::getRectOnScreen(const Transformable& trans)
 {
 	Render* render = Updatable::getRenderParent();
 	glm::mat4 mvp = m_camera.getMatrix();
 	while(render != NULL)
-		mvp = render->getCamera() * mvp;
+		mvp = render->getCamera().getMatrix() * mvp;
 
 	return trans.getRect(mvp);
 }
