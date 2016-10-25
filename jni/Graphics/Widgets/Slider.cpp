@@ -76,7 +76,7 @@ void Slider::updateCursorPosition()
     if(m_orientation == HORIZONTAL)
         m_cursor.setPosition(glm::vec3((1.0f-getScale().x)/(m_maxValue - m_minValue), 0.0, 0.0));
     else
-        m_cursor.setPosition(glm::vec3(0.0, (1.0f-getScale().y)/(m_maxValue - m_minValue, 0.0));
+        m_cursor.setPosition(glm::vec3(0.0, (1.0f-getScale().y)/(m_maxValue - m_minValue), 0.0));
 }
 
 bool Slider::howActive()
@@ -91,10 +91,10 @@ bool Slider::howDisactive()
 
 bool Slider::howSelect()
 {
-	return m_cursor.isSelected();
+	return m_cursor.isSelect();
 }
 
 bool Slider::howDeselect()
 {
-	return !m_cursor.isSelected();
+	return !m_cursor.isSelect();
 }

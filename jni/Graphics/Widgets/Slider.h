@@ -42,6 +42,7 @@ class Slider : public Drawable, public Active
 
 		Orientation m_orientation;
 		TouchCoord  m_touchCoord;
+		TouchCoord  m_oldCoord;
 		bool m_hasStartMoving=false;
 		int m_pourcentageGlobalRectangle;
 };

@@ -11,9 +11,9 @@ Render::~Render()
 
 void Render::draw(Drawable& drawable, const glm::mat4& transformation)
 {
-	initDraw();
+//	initDraw();
 	drawable.draw(*this, transformation);
-	stopDraw();
+//	stopDraw();
 }
 
 void Render::updateFocus(const TouchEvent& te, Render& render)
@@ -58,9 +58,14 @@ glm::vec3 Render::getPositionOnScreen(const glm::vec3& p) const
 	return glm::vec3(m_camera.getMatrix() * glm::vec4(p, 1.0));
 }
 
-glm::vec3 Render::getPointerWorldPosition(uint32_t pointerEvent) const
+glm::vec3 Render::getPointerWorldPosition(const TouchEvent& te)
 {
-	glm::vec4 p = m_camera.getMatrix()*glm::vec4(touchCoord[pointerEvent].x, touchCoord[pointerEvent].y, 0.0, 1.0);
+	Render* render = Updatable::getRenderParent();
+	glm::mat4 mvp = m_camera.getMatrix();
+	while(render != NULL)
+		mvp = render->getCamera().getMatrix() * mvp;
+
+	glm::vec4 p = mvp * glm::vec4(te.x, te.y, 0.0, 1.0);
 	return glm::vec3(p);
 }
 

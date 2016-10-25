@@ -226,6 +226,7 @@ void Renderer::initDraw()
 		return;
 	}
 	
+	glViewport(0, 0, m_width, m_height);
 }
 
 void Renderer::stopDraw()
