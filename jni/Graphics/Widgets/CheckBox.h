@@ -18,7 +18,7 @@ class CheckBox : public Active, public GroupDrawable
 
 		~CheckBox();
 
-		virtual void onFocus(const TouchEvent& te, Render& render);
+		virtual void onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 		virtual void onUpdate(Render &render);
 
 		/** \brief set the cross material.

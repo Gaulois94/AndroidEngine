@@ -46,9 +46,10 @@ JNIEXPORT jobject JNICALL Java_com_gaulois_Graphics_Render_getCameraRender(JNIEn
 JNIEXPORT jfloatArray JNICALL Java_com_gaulois_Graphics_Render_getRectOnScreenRender(JNIEnv* jenv, jobject jobj, jlong ptr, jlong transformable)
 {
 	jfloatArray result = jenv->NewFloatArray(6);
-	Rectangle3f rect = ((Render*)ptr)->getRectOnScreen(*(Transformable*)transformable);
+/*  Rectangle3f rect = ((Render*)ptr)->getRectOnScreen(*(Transformable*)transformable);
 	float c[6] = {rect.x, rect.y, rect.z, rect.width, rect.height, rect.depth};
 	jenv->SetFloatArrayRegion(result, 0, 6, c);
+*/
 	return result;
 	
 }

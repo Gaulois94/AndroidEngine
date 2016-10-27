@@ -11,14 +11,14 @@ Render::~Render()
 
 void Render::draw(Drawable& drawable, const glm::mat4& transformation)
 {
-//	initDraw();
+	initDraw();
 	drawable.draw(*this, transformation);
-//	stopDraw();
+	stopDraw();
 }
 
-void Render::updateFocus(const TouchEvent& te, Render& render)
+void Render::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	Updatable::updateFocus(te, *this);
+	Updatable::updateFocus(te, *this, mvp * m_camera.getMatrix());
 }
 
 void Render::update(Render& render)
@@ -28,9 +28,13 @@ void Render::update(Render& render)
 
 void Render::updateGPU(Render& render)
 {
+	clear();
 	initDraw();
 	Updatable::updateGPU(*this);
 	stopDraw();
+	display();
+
+	render.initDraw();
 }
 
 Camera& Render::getCamera()
@@ -43,32 +47,10 @@ const Color& Render::getAmbientColor() const
 	return m_ambientColor;
 }
 
-Rectangle3f Render::getRectOnScreen(const Transformable& trans)
-{
-	Render* render = Updatable::getRenderParent();
-	glm::mat4 mvp = m_camera.getMatrix();
-	while(render != NULL)
-		mvp = render->getCamera().getMatrix() * mvp;
-
-	return trans.getRect(mvp);
-}
-
 glm::vec3 Render::getPositionOnScreen(const glm::vec3& p) const
 {
 	return glm::vec3(m_camera.getMatrix() * glm::vec4(p, 1.0));
 }
-
-glm::vec3 Render::getPointerWorldPosition(const TouchEvent& te)
-{
-	Render* render = Updatable::getRenderParent();
-	glm::mat4 mvp = m_camera.getMatrix();
-	while(render != NULL)
-		mvp = render->getCamera().getMatrix() * mvp;
-
-	glm::vec4 p = mvp * glm::vec4(te.x, te.y, 0.0, 1.0);
-	return glm::vec3(p);
-}
-
 
 Render* Render::getRenderParent()
 {

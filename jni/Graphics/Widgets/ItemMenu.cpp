@@ -16,7 +16,7 @@ void ItemMenu::setUpdateConfig(const ActiveListener& fu)
 
 void ItemMenu::onDraw(Render& render, const glm::mat4& mvp){}
 
-void ItemMenu::onFocus(const TouchEvent& te, Render& render)
+void ItemMenu::onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	activeIt();
 	m_isActive = false;

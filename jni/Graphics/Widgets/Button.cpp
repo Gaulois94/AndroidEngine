@@ -45,7 +45,7 @@ Button::Button(Updatable *parent, const Rectangle3f &rect) : GroupDrawable(paren
 	m_updateFocus = true;
 }
 
-void Button::onFocus(const TouchEvent& te, Render &render)
+void Button::onFocus(const TouchEvent& te, Render &render, const glm::mat4& mvp)
 {
 	activeIt();
 }

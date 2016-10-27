@@ -157,12 +157,13 @@ void Renderer::display()
 
 void Renderer::clear()
 {
+	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer::updateFocus(const TouchEvent& te)
 {
-	Updatable::updateFocus(te, *this);
+	Render::updateFocus(te, *this);
 	if(Updatable::focusIsCheck == false)
 		onFocus(te, *this);
 	Updatable::focusIsCheck = false;

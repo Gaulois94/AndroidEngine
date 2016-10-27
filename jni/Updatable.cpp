@@ -17,7 +17,7 @@ Updatable::~Updatable()
 	setParent(NULL);
 }
 
-void Updatable::updateFocus(const TouchEvent& te, Render& render)
+void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	if(!m_updateFocus || !m_canUpdate)
 		return;
@@ -26,24 +26,24 @@ void Updatable::updateFocus(const TouchEvent& te, Render& render)
 	{
 		if(Updatable::focusIsCheck == true)
 			return;
-		(*it)->updateFocus(te, render);
+		(*it)->updateFocus(te, render, mvp);
 	}
 
 	if(testFocus(te, render))
 	{
-		onFocus(te, render);
+		onFocus(te, render, mvp);
 		Updatable::objectFocused = this;
 		Updatable::focusIsCheck = true;
 		return;
 	}
 }
 
-bool Updatable::testFocus(const TouchEvent& te, Render& render)
+bool Updatable::testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	return false;
 }
 
-void Updatable::onFocus(const TouchEvent& te, Render& render)
+void Updatable::onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	Updatable::objectFocused = this;
 	if(m_focusCallback)

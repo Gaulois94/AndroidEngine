@@ -2,17 +2,17 @@
 
 RenderTexture::RenderTexture(Updatable* parent, const Vector2f& size) : Render(parent)
 {
-
-	GLuint m_frameBuffer;
+	//Create the framebuffer
 	glGenFramebuffers(1, &m_frameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
 	{
+
 		//Define the color texture
 		GLuint textureID;
-		glGenTextures(1, textureID);
-		glBindTexture(GL_TEXTURE_2D, &textureID);
+		glGenTextures(1, &textureID);
+		glBindTexture(GL_TEXTURE_2D, textureID);
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, size.x, size.y, 0,GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
 			// Poor filtering. Needed !
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -20,6 +20,10 @@ RenderTexture::RenderTexture(Updatable* parent, const Vector2f& size) : Render(p
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 
+		//Don't forget to bind these textures
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
+
+		/*
 		//Define the depth texture
 		GLuint depthrenderbuffer;
 		glGenRenderbuffers(1, &depthrenderbuffer);
@@ -29,14 +33,26 @@ RenderTexture::RenderTexture(Updatable* parent, const Vector2f& size) : Render(p
 		}
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-
-		//Don't forget to bind these textures
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureID, 0);
+		*/
+
+		//Create the Texture object
+		m_texture = new Texture(size.x, size.y, textureID);
+//		GLenum c = GL_COLOR_ATTACHMENT0;
+//		glDrawBuffersEXT(1, &c);
+
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		LOG_ERROR("MERDE %d", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+	else
+		LOG_ERROR("YEAH !");
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
-	m_texture = new Texture(size.x, size.y, textureID);
+RenderTexture::~RenderTexture()
+{
+	glDeleteFramebuffers(1, &m_frameBuffer);
+	delete m_texture;
 }
 
 void RenderTexture::display()
@@ -47,6 +63,7 @@ void RenderTexture::display()
 void RenderTexture::initDraw()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
+	glViewport(0, 0, m_texture->getWidth(), m_texture->getHeight());
 }
 
 void RenderTexture::stopDraw()
@@ -56,7 +73,10 @@ void RenderTexture::stopDraw()
 
 void RenderTexture::clear()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
+		glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 const Texture* RenderTexture::getTexture() const

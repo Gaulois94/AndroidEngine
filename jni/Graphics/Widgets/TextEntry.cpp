@@ -20,7 +20,7 @@ void TextEntry::onDraw(Render& render, const glm::mat4& mvp)
 {
 	m_rectangle.draw(render, mvp);
 
-	Rectangle3f rect = m_rectangle.getRect(glm::mat4(1.0f));
+	Rectangle3f rect = m_rectangle.getRect();
 
 	Clipping clip;
 	clip.x      = rect.x;
@@ -59,7 +59,7 @@ void TextEntry::onDraw(Render& render, const glm::mat4& mvp)
 		m_cursor.draw(render, mvp);
 }
 
-void TextEntry::onFocus(const TouchEvent& te, Render& render)
+void TextEntry::onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	m_isWriting = true;
 	Updatable::onFocus(te, render);

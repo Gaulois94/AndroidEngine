@@ -6,6 +6,11 @@
 #include <stdexcept>
 #include "JniMadeOf.h"
 #include "Event.h"
+#define GLM_FORCE_RADIANS
+
+#include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
+#include <glm/gtc/matrix_transform.hpp> 
 
 class Render;
 
@@ -19,18 +24,21 @@ class Updatable : public JniMadeOf
 
 		/** \brief call when a TouchEvent is called. Try to get the Updatable who get the focus
 		 * \param te the TouchEvent bound to the event TouchDown
-		 * \param render the Render which has catch the event.*/
-		virtual void updateFocus(const TouchEvent& te, Render& render);
+		 * \param render the Render which has catch the event.
+		 * \param mvp The matrix that should be applied to the TouchEvent*/
+		virtual void updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		/** \brief The test function for telling if the Updatable can be focused following the pointerEvent and the render passed on parameters
 		 * \param te the TouchEvent bound to the event TouchDown
-		 * \param render the Render which has catch the event.*/
-		virtual bool testFocus(const TouchEvent& te, Render& render);
+		 * \param render the Render which has catch the event.
+		 * \param mvp The matrix that should be applied to the TouchEvent*/
+		virtual bool testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		/** \brief called when the object has the focus
 		 * \param te the TouchEvent bound to the event TouchDown
-		 * \param render the Render which has catch the event.*/
-		virtual void onFocus(const TouchEvent& te, Render& render);
+		 * \param render the Render which has catch the event.
+		 * \param mvp The matrix that should be applied to the TouchEvent*/
+		virtual void onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		virtual void onTouchUp(const TouchEvent& te);
 

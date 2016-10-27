@@ -36,7 +36,7 @@ class Button : public GroupDrawable, public Active
 
 		virtual void update(Render &render);
 		virtual void onUpdate(Render &render);
-		void onFocus(const TouchEvent& te, Render &render);
+		void onFocus(const TouchEvent& te, Render &render, const glm::mat4& mvp=glm::mat4(1.0f));
 		void onTouchUp(const TouchEvent& te);
 
 		/** \brief set the Drawable used*

@@ -25,7 +25,7 @@ class Render : public Updatable
 		/** \brief update all child focus with it as the Render object
 		 * \param pointerEvent the indice of the Motion Event
 		 * \param render the previous render object (for exemple a Renderer which call a RendererTexture)*/
-		virtual void updateFocus(const TouchEvent& te, Render& render);
+		virtual void updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp = glm::mat4(1.0f));
 
 		virtual void update(Render& render);
 		virtual void updateGPU(Render& render);
@@ -47,13 +47,7 @@ class Render : public Updatable
 		/** \brief get the Render camera*/
 		Camera& getCamera();
 
-		/** \brief get the 3D rectangle of an object on the screen
-		 * \param trans the Transformable holding the information for getting the rect on the screen*/
-		Rectangle3f getRectOnScreen(const Transformable& trans);
-
 		glm::vec3 getPositionOnScreen(const glm::vec3& p) const;
-
-		glm::vec3 getPointerWorldPosition(const TouchEvent& te);
 		Render* getRenderParent();
 	protected:
 		Color m_ambientColor;

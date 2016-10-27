@@ -34,7 +34,7 @@ CheckBox::~CheckBox()
 	delete m_rectangle;
 }
 
-void CheckBox::onFocus(const TouchEvent& te, Render& render)
+void CheckBox::onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	if(m_isActive)
 		disactiveIt();
