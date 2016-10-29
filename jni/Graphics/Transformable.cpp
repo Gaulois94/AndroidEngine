@@ -274,7 +274,6 @@ Rectangle3f Transformable::mvpToRect(const glm::mat4& mvp) const
 	}
 
 	return Rectangle3f(xMin, yMin, zMin, xMax - xMin, yMax - yMin, zMax - zMin);
-
 }
 
 Rectangle3f Transformable::getRect(const glm::mat4& m) const

@@ -26,7 +26,7 @@ void TextInterface::setText(const char* text)
 		//We copy the new text and store it
 		m_text = (char*) malloc((strlen(text)+1)*sizeof(char));
 		strcpy(m_text, text);
-	//	m_text[strlen(text)] = '\0';
+		m_text[strlen(text)] = '\0';
 	}
 }
 
@@ -42,6 +42,7 @@ const char* TextInterface::getText() const
 
 void TextInterface::addChar(uint8_t c, int pos)
 {
+	LOG_ERROR("ADD CHAR");
 	if(pos == -1)
 		pos = strlen(m_text);
 

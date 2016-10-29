@@ -1,6 +1,6 @@
 #include "TextEntry.h"
 
-TextEntry::TextEntry(Updatable* parent, Material*textMaterial, const Font* font, const std::string& defaultText, Material* backgroundMaterial, Material* cursorMaterial, Material* firstTextMaterial) : Drawable(parent, NULL), TextInterface(font, defaultText.c_str()), m_textMaterial(textMaterial), m_rectangle(NULL, backgroundMaterial), m_textDrawable(NULL, (firstTextMaterial) ? firstTextMaterial : textMaterial, font, defaultText.c_str()), m_cursorMaterial(cursorMaterial), m_cursor(NULL, m_cursorMaterial)
+TextEntry::TextEntry(Updatable* parent, Material*textMaterial, const Font* font, const std::string& defaultText, Material* backgroundMaterial, Material* cursorMaterial, Material* firstTextMaterial) : Drawable(parent, NULL, Rectangle3f(0.0, 0.0, 0.0, 1.0, 1.0, 0.0)), TextInterface(font, defaultText.c_str()), m_textMaterial(textMaterial), m_rectangle(NULL, backgroundMaterial), m_textDrawable(NULL, (firstTextMaterial) ? firstTextMaterial : textMaterial, font, defaultText.c_str()), m_cursorMaterial(cursorMaterial), m_cursor(NULL, m_cursorMaterial)
 {
 	setDefaultConf(m_rectangle.getDefaultConf());
 	if(m_cursorMaterial == NULL)
@@ -10,6 +10,8 @@ TextEntry::TextEntry(Updatable* parent, Material*textMaterial, const Font* font,
 	}
 	m_cursor.setScale(glm::vec3(1.0f/CURSOR_SCALE, 1.0, 0.0));
 	m_cursor.setUpdateFocus(false);
+	m_textDrawable.setUpdateFocus(false);
+	m_rectangle.setUpdateFocus(false);
 }
 
 void TextEntry::onUpdate(Render& render)
@@ -61,22 +63,24 @@ void TextEntry::onDraw(Render& render, const glm::mat4& mvp)
 
 void TextEntry::onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
+	LOG_ERROR("THIS %d", this);
 	m_isWriting = true;
-	Updatable::onFocus(te, render);
 	if(!m_firstFocus)
 	{
 		m_firstFocus = true;
 		setText("");
 	}
-
 	Keyboard::showKeyboard(true);
+	Updatable::onFocus(te, render, mvp);
+	Updatable::objectFocused = this;
 }
 
 bool TextEntry::onKeyDown(int32_t key)
 {
-	LOG_ERROR("C : %d", key);
+	LOG_ERROR("OBJECT FOCUS %d, this %d", Updatable::objectFocused, this);
 	if(Updatable::objectFocused == this)
 	{
+		LOG_ERROR("C : %d", key);
 		addChar((uint8_t)key);
 
 		//Update the cursor position
@@ -117,6 +121,7 @@ void TextEntry::setFont(const Font* font)
 
 void TextEntry::setText(const char* text)
 {
+	LOG_ERROR("TEXT %s", text);
 	TextInterface::setText(text);
 	m_textDrawable.setText(text);
 }
