@@ -30,9 +30,7 @@ void Render::updateGPU(Render& render)
 {
 	clear();
 	initDraw();
-
-	Updatable::updateGPU(*this);
-
+		Updatable::updateGPU(*this);
 	stopDraw();
 	display();
 

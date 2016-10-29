@@ -9,6 +9,7 @@ TextEntry::TextEntry(Updatable* parent, Material*textMaterial, const Font* font,
 		m_cursor.setMaterial(m_cursorMaterial);
 	}
 	m_cursor.setScale(glm::vec3(1.0f/CURSOR_SCALE, 1.0, 0.0));
+
 	m_cursor.setUpdateFocus(false);
 	m_textDrawable.setUpdateFocus(false);
 	m_rectangle.setUpdateFocus(false);
@@ -36,7 +37,7 @@ void TextEntry::onDraw(Render& render, const glm::mat4& mvp)
 
 	if(m_isWriting)
 	{
-		if(Updatable::objectFocused != this)
+		if(Updatable::objectFocused != (Updatable*)this)
 		{
 			m_cursorAnim = 0;
 			m_showCursor = true;
@@ -63,7 +64,6 @@ void TextEntry::onDraw(Render& render, const glm::mat4& mvp)
 
 void TextEntry::onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	LOG_ERROR("THIS %d", this);
 	m_isWriting = true;
 	if(!m_firstFocus)
 	{
@@ -71,13 +71,11 @@ void TextEntry::onFocus(const TouchEvent& te, Render& render, const glm::mat4& m
 		setText("");
 	}
 	Keyboard::showKeyboard(true);
-	Updatable::onFocus(te, render, mvp);
-	Updatable::objectFocused = this;
+	Drawable::onFocus(te, render, mvp);
 }
 
 bool TextEntry::onKeyDown(int32_t key)
 {
-	LOG_ERROR("OBJECT FOCUS %d, this %d", Updatable::objectFocused, this);
 	if(Updatable::objectFocused == this)
 	{
 		LOG_ERROR("C : %d", key);
