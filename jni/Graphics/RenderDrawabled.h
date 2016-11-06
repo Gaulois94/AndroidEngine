@@ -17,7 +17,7 @@ class RenderDrawabled : public Updatable
 		RenderTexture& getRenderTexture();
 
 		Sprite& getSprite();
-	private:
+	protected:
 
 		class RenderSprite : public Sprite
 		{
