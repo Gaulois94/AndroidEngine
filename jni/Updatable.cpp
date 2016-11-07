@@ -14,6 +14,8 @@ Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m
 
 Updatable::~Updatable()
 {
+	if(Updatable::objectFocused == this)
+		Updatable::objectFocused = NULL;
 	setParent(NULL);
 }
 
@@ -24,12 +26,12 @@ void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat
 
 	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); ++it)
 	{
+		(*it)->updateFocus(te, render, mvp);
 		if(Updatable::focusIsCheck == true)
 			return;
-		(*it)->updateFocus(te, render, mvp);
 	}
 
-	if(testFocus(te, render))
+	if(testFocus(te, render, mvp))
 	{
 		onFocus(te, render, mvp);
 		Updatable::objectFocused = this;
@@ -46,6 +48,7 @@ bool Updatable::testFocus(const TouchEvent& te, Render& render, const glm::mat4&
 void Updatable::onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	Updatable::objectFocused = this;
+	Updatable::focusIsCheck = true;
 	if(m_focusCallback)
 		m_focusCallback(this, m_focusDatas);
 }

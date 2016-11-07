@@ -11,9 +11,9 @@ Render::~Render()
 
 void Render::draw(Drawable& drawable, const glm::mat4& transformation)
 {
-	initDraw();
+//	initDraw();
 	drawable.draw(*this, transformation);
-	stopDraw();
+//	stopDraw();
 }
 
 void Render::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
@@ -30,7 +30,7 @@ void Render::updateGPU(Render& render)
 {
 	clear();
 	initDraw();
-	Updatable::updateGPU(*this);
+		Updatable::updateGPU(*this);
 	stopDraw();
 	display();
 

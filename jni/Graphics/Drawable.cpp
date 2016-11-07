@@ -21,8 +21,6 @@ void Drawable::updateGPU(Render& render)
 
 bool Drawable::testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	Rectangle3f r = getRect(mvp);
-	LOG_ERROR("X %f, Y %f, Z %f, Width %f, Height %f, Depth %f", r.x, r.y, r.z, r.width, r.height, r.depth);
 	return (!m_staticToCamera && touchInRect(getRect(mvp), te.pid) || (m_staticToCamera && touchInRect(getRect(glm::inverse(render.getCamera().getMatrix()) * mvp), te.pid)));
 }
 

@@ -27,9 +27,9 @@ RenderDrawabled::RenderSprite::RenderSprite(Updatable* parent, Material* mtl, Re
 
 void RenderDrawabled::RenderSprite::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	LOG_ERROR("UPDATE FOCUS !!");
 	glm::mat4 m = glm::scale(mvp, glm::vec3(0.5, 0.5, 1.0));
 	m    	    = glm::translate(m, glm::vec3(1.0, 1.0, 0.0));
-	Updatable::updateFocus(te, render, m*getMatrix());
-	LOG_ERROR("UPDATE FOCUS 2 !!");
+
+	m           = m * getMatrix();
+	Updatable::updateFocus(te, render, m);
 }

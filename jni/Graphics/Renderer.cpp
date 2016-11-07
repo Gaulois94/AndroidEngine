@@ -164,8 +164,6 @@ void Renderer::clear()
 void Renderer::updateFocus(const TouchEvent& te)
 {
 	Render::updateFocus(te, *this);
-	if(Updatable::focusIsCheck == false)
-		onFocus(te, *this);
 	Updatable::focusIsCheck = false;
 }
 
@@ -175,7 +173,6 @@ void Renderer::update(Render& render)
 	while(m_events.size() > 0)
 	{
 		ev = m_events.front();
-		LOG_ERROR("EVENT !! TYPE : %d", ev->type);
 		switch(ev->type)
 		{
 			case TOUCH_DOWN:
@@ -185,27 +182,23 @@ void Renderer::update(Render& render)
 			case TOUCH_UP:
 				if(Updatable::objectFocused)
 					Updatable::objectFocused->onTouchUp(ev->touchEvent);
+				break;
+		
 
 			case KEYDOWN:
 				Updatable::keyDown(ev->keyEvent.keyCode);
-				if(!Updatable::keyDownIsCheck)
-					onKeyDown(ev->keyEvent.keyCode);
-				else
-					Updatable::keyDownIsCheck = false;
-
+				Updatable::keyDownIsCheck = false;
 				break;
 
 			case KEYUP:
 				Updatable::keyUp(ev->keyEvent.keyCode);
-				if(!Updatable::keyUpIsCheck)
-					onKeyUp(ev->keyEvent.keyCode);
-				else
-					Updatable::keyUpIsCheck = false;
+				Updatable::keyUpIsCheck = false;
 				break;	
 
 			case TOUCH_MOVE:
 				Updatable::moveEvent(ev->touchEvent);
 				break;
+				
 
 			default:
 				break;
