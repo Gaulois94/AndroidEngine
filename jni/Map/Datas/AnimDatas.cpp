@@ -38,10 +38,10 @@ StaticEntity::StaticEntity(createStaticAnimPtr create, uint32_t n, uint32_t nX, 
 
 }
 
-StaticAnim* StaticEntity::createStaticAnim(Updatable* parent, const Texture* texture, uint32_t tileID, uint32_t posX, uint32_t posY) const
+StaticAnim* StaticEntity::createStaticAnim(Updatable* parent, const Texture* texture, uint32_t posX, uint32_t posY) const
 {
 	if(m_createStaticAnim)
-		return m_createStaticAnim(parent, material, texture, info, m_n, m_nX, tileID, m_posX, m_posY, m_sizeX, m_sizeY, m_spacX, m_spacY, posX, posY);
+		return m_createStaticAnim(parent, material, texture, info, m_n, m_nX, m_posX, m_posY, m_sizeX, m_sizeY, m_spacX, m_spacY, posX, posY);
 	return NULL;
 }
 

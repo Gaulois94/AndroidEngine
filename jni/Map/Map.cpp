@@ -426,7 +426,7 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 					StaticEntity* se = df->getStaticEntity(name);
 					if(se)
 					{
-						Tile* tile = se->createStaticAnim(NULL, df->getTexture(), tileID, posX, posY);
+						Tile* tile = se->createStaticAnim(NULL, df->getTexture(), posX, posY);
 						dt->addTile(tile, posX, posY);
 					}
 				}

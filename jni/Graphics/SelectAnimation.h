@@ -18,6 +18,8 @@ class SelectAnimation : public Animation
 		~SelectAnimation();
 
 		virtual void setSubNSpriteCoords(uint32_t n);
+
+		const Rectangle2ui* getCurrentTextureRect() const;
 	private:
 		Rectangle2ui* m_rectAnimation;/** <Store the border of each animation.*/
 };

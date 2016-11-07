@@ -17,3 +17,8 @@ void SelectAnimation::setSubNSpriteCoords(uint32_t n)
 	m_currentN = n%m_maxN;
 	Sprite::setSubTextureRect(m_texture->getRect(m_rectAnimation[m_currentN]));
 }
+
+const Rectangle2ui* SelectAnimation::getCurrentTextureRect() const
+{
+	return m_rectAnimation[m_currentN];
+}
