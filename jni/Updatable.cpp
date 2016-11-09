@@ -1,5 +1,6 @@
 #include "Updatable.h"
 #include "Render.h"
+#include "Materials/Material.h"
 
 bool Updatable::focusIsCheck = false;
 bool Updatable::keyUpIsCheck = false;
@@ -88,16 +89,15 @@ bool Updatable::onKeyDown(int32_t keyCode)
 	return false;
 }
 
-
-void Updatable::moveEvent(const TouchEvent& te)
+void Updatable::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
-		(*it)->moveEvent(te);
+		(*it)->moveEvent(te, render, mvp);
 
-	onMoveEvent(te);
+	onMoveEvent(te, render, mvp);
 }
 
-void Updatable::onMoveEvent(const TouchEvent& te)
+void Updatable::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {}
 
 void Updatable::update(Render &render)
@@ -114,9 +114,44 @@ void Updatable::updateGPU(Render& render)
 {
 	if(!m_canUpdate || !m_canDraw)
 		return;
+
+	bool restoreClip = false;
+	bool mEnableClip = Material::getGlobalEnableClipping();
+	Clipping clip;
+
+	if(m_enableClipping)
+	{
+		if(Material::getGlobalEnableClipping())
+		{
+			restoreClip = true;
+			clip = Material::getGlobalClipping();
+
+			Rectangle2f r = getRectIntersect(Rectangle2f(clip.x, clip.y, clip.height, clip.width), Rectangle2f(m_clip.x, m_clip.y, m_clip.height, m_clip.width));
+
+			clip.x = r.x;
+			clip.y = r.y;
+			clip.width = r.width;
+			clip.height = r.height;
+
+			Material::setGlobalClipping(clip);
+		}
+
+		else
+		{
+			Material::enableGlobalClipping(true);
+			Material::setGlobalClipping(m_clip);
+		}
+	}
+
 	for(std::list<Updatable*>::iterator it = m_child.begin(); it!=m_child.end(); ++it)
 		if(*it)
 			(*it)->updateGPU(render);
+
+	if(restoreClip)
+	{
+		Material::enableGlobalClipping(mEnableClip);
+		Material::setGlobalClipping(clip);
+	}
 }
 
 void Updatable::onUpdate(Render &render)
@@ -236,4 +271,24 @@ const Updatable* Updatable::getParent() const
 Render* Updatable::getRenderParent()
 {
 	return (m_parent) ? m_parent->getRenderParent() : NULL;
+}
+
+void Updatable::setClipping(const Clipping& clip)
+{
+	m_clip = clip;
+}
+
+void Updatable::enableClipping(bool enable)
+{
+	m_enableClipping = enable;
+}
+
+const Clipping& Updatable::getClipping() const
+{
+	return m_clip;
+}
+
+bool Updatable::getEnableClipping() const
+{
+	return m_enableClipping;
 }

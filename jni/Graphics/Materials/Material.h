@@ -48,8 +48,13 @@ class Material : public JniMadeOf
 		/** \brief set the opacity. Value inferior to 0 is understand as no opacity handler*/
 		void setOpacity(float opac);
 
-		void enableClipping(const Clipping& clip);
-		void disableClipping();
+		void setClipping(const Clipping& clip);
+		void enableClipping(bool enable);
+
+		static void setGlobalClipping(const Clipping& clip);
+		static void enableGlobalClipping(bool enable);
+		static const Clipping& getGlobalClipping();
+		static bool getGlobalEnableClipping();
 	protected:
 		const Shader* m_shader;
 		const Texture* m_texture;
@@ -57,8 +62,12 @@ class Material : public JniMadeOf
 		bool m_isUsingShader;
 		static float maskColor[4];
 		float m_opacity=-1.0f;
+
 		bool m_enableClipping = false;
 		Clipping m_clip;
+
+		static Clipping globalClipping;
+		static bool globalEnableClipping;
 };
 
 #endif

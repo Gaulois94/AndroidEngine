@@ -196,7 +196,7 @@ void Renderer::update(Render& render)
 				break;	
 
 			case TOUCH_MOVE:
-				Updatable::moveEvent(ev->touchEvent);
+				moveEvent(ev->touchEvent, *this);
 				break;
 				
 

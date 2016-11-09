@@ -24,6 +24,7 @@ class RenderDrawabled : public Updatable
 			public:
 				RenderSprite(Updatable* parent, Material* mtl, RenderTexture& render);
 				virtual void updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+				void moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp = glm::mat4(1.0f));
 				RenderTexture& m_render;
 		};
 

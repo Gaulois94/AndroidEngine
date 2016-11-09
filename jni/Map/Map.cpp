@@ -232,7 +232,7 @@ void Map::startElementFiles(void *data, const char* name, const char** attrs)
 			DynamicEntity* de = df->getLastDynamicEntity();
 
 			//Then create the rect for this animation
-			Rectangle2f* rect = new Rectangle2f();
+			Rectangle2ui* rect = new Rectangle2ui();
 			const char* tileName=NULL;
 			const char* tileType=NULL;
 			uint32_t i;
@@ -426,7 +426,7 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 					StaticEntity* se = df->getStaticEntity(name);
 					if(se)
 					{
-						Tile* tile = se->createStaticAnim(NULL, df->getTexture(), posX, posY);
+						Tile* tile = se->createStaticAnim(NULL, df->getTexture(), tileID, posX, posY);
 						dt->addTile(tile, posX, posY);
 					}
 				}

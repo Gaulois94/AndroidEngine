@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include "JniMadeOf.h"
 #include "Event.h"
+#include "Clipping.h"
+#include "utils.h"
 #define GLM_FORCE_RADIANS
 
 #include <glm/glm.hpp>
@@ -60,8 +62,8 @@ class Updatable : public JniMadeOf
 		 * \return if the key was handled or not. Should be true if override*/
 		virtual bool onKeyDown(int32_t keyCode);
 
-		void moveEvent(const TouchEvent& te);
-		virtual void onMoveEvent(const TouchEvent& te);
+		virtual void moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+		virtual void onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		/** \brief Update the Updatable and its children.
 		 *  \param render the render from where the updatable could interact
@@ -141,6 +143,11 @@ class Updatable : public JniMadeOf
 		 * \return the first Render parent. NULL if doesn't exist*/
 		Render* getRenderParent();
 
+		void setClipping(const Clipping& clip);
+		void enableClipping(bool enable);
+		const Clipping& getClipping() const;
+		bool getEnableClipping() const;
+
 		static Updatable* objectFocused;
 	protected:
 		std::list <Updatable*> m_child; /**< Child's list. */
@@ -150,6 +157,9 @@ class Updatable : public JniMadeOf
 		bool m_canDraw;
 		void (*m_focusCallback)(Updatable*, void*)=NULL;
 		void* m_focusDatas=NULL;
+
+		bool m_enableClipping = false;
+		Clipping m_clip;
 
 		static bool focusIsCheck;   /** Tell if we have finished to get the focus*/
 		static bool keyUpIsCheck;   /** Tell if the key event was handled of not*/

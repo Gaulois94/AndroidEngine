@@ -6,18 +6,18 @@ DynamicEntity::DynamicEntity(createDynamicAnimPtr create) : createDynamicAnim(cr
 
 DynamicEntity::~DynamicEntity()
 {
-	for(std::vector<Rectangle2f*>::iterator it=m_tileRects.begin(); it != m_tileRects.end(); it++)
+	for(std::vector<Rectangle2ui*>::iterator it=m_tileRects.begin(); it != m_tileRects.end(); it++)
 		delete ((*it));
 }
 
-void DynamicEntity::addTile(Rectangle2f* subRect, const char* name, const char* type)
+void DynamicEntity::addTile(Rectangle2ui* subRect, const char* name, const char* type)
 {
 	m_tileRects.push_back(subRect);
 	m_names.push_back(name);
 	m_types.push_back(type);
 }
 
-const std::vector<Rectangle2f*>* DynamicEntity::getSubRects() const
+const std::vector<Rectangle2ui*>* DynamicEntity::getSubRects() const
 {
 	return &m_tileRects;
 }
@@ -38,10 +38,10 @@ StaticEntity::StaticEntity(createStaticAnimPtr create, uint32_t n, uint32_t nX, 
 
 }
 
-StaticAnim* StaticEntity::createStaticAnim(Updatable* parent, const Texture* texture, uint32_t posX, uint32_t posY) const
+StaticAnim* StaticEntity::createStaticAnim(Updatable* parent, const Texture* texture, uint32_t tileID, uint32_t posX, uint32_t posY) const
 {
 	if(m_createStaticAnim)
-		return m_createStaticAnim(parent, material, texture, info, m_n, m_nX, m_posX, m_posY, m_sizeX, m_sizeY, m_spacX, m_spacY, posX, posY);
+		return m_createStaticAnim(parent, material, texture, info, tileID, m_n, m_nX, m_posX, m_posY, m_sizeX, m_sizeY, m_spacX, m_spacY, posX, posY);
 	return NULL;
 }
 

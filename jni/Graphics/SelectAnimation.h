@@ -15,6 +15,9 @@ class SelectAnimation : public Animation
 		 * \param rectAnimation array of information (size + position) for each sprites part of the animation
 		 * \param nbFrame the number of frame before updating the sprite*/
 		SelectAnimation(Updatable* parent, Material* material, const Texture* texture, const std::vector<Rectangle2ui>& rectAnimation, uint32_t nbFrame);
+
+		SelectAnimation(Updatable* parent, Material* material, const Texture* texture, const std::vector<Rectangle2ui*>& rectAnimation, uint32_t nbFrame);
+
 		~SelectAnimation();
 
 		virtual void setSubNSpriteCoords(uint32_t n);

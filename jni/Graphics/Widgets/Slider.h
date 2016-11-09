@@ -1,11 +1,14 @@
+#ifndef SLIDER_INC
+#define SLIDER_INC
+
 #include "Drawable.h"
 #include "Button.h"
-#include "Orientation.h"
+#include "Graphics/Widgets/Orientation.h"
 #include "EventManager.h"
 #include "Shape/Rectangle.h"
 #include <cmath>
 
-class Slider : public Drawable, public Active
+class Slider : public Drawable
 {
 	public:
 		enum SliderStyle
@@ -18,14 +21,10 @@ class Slider : public Drawable, public Active
 
 		~Slider();
 
-		bool howActive();
-		bool howDisactive();
-		bool howSelect();
-		bool howDeselect();
-
-		void onUpdate(Render &render);
-		void onDraw(Render& render, const glm::mat4& mvp);
-		void onMove(const TouchEvent& te);
+		void onUpdate(Render& render);
+		void draw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+		void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+		void onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		void setOrientation(const Orientation &position);
 		float getValue() const;
@@ -37,12 +36,12 @@ class Slider : public Drawable, public Active
 
 		float m_minValue;
 		float m_maxValue;
-		float m_value;
-		float m_lastValue = 0;
+		float m_value = 0;
 
 		Orientation m_orientation;
-		TouchCoord  m_touchCoord;
-		TouchCoord  m_oldCoord;
+		glm::vec4 m_oldCoord;
 		bool m_hasStartMoving=false;
 		int m_pourcentageGlobalRectangle;
 };
+
+#endif

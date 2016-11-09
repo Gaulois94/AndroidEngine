@@ -9,9 +9,9 @@
 #include <vector>
 
 //parent, mtl, texture, animRect, info, currentN, nbFrames, posX, posY
-typedef DynamicAnim*(*createDynamicAnimPtr)(Updatable*, Material*, const Texture*, const std::vector<Rectangle2f*>&, void*, uint32_t, uint32_t, uint32_t posX, uint32_t posY);
+typedef DynamicAnim*(*createDynamicAnimPtr)(Updatable*, Material*, const Texture*, const std::vector<Rectangle2ui*>&, void*, uint32_t, uint32_t, uint32_t posX, uint32_t posY);
 
-//parent, mtl, texture, info, n, nX, currentN, posX, posY, sizeX, sizeY, spacX, spacY, tilePosX, tilePosY
+//parent, mtl, texture, info, tileID (currentN), n, nX, posX, posY, sizeX, sizeY, spacX, spacY, tilePosX, tilePosY
 typedef StaticAnim*(*createStaticAnimPtr)(Updatable*, Material*, const Texture*, void*, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t);
 
 struct DynamicEntity
@@ -22,15 +22,15 @@ struct DynamicEntity
 
 		const createDynamicAnimPtr createDynamicAnim;
 
-		void addTile(Rectangle2f* subRect, const char* name, const char* type);
-		const std::vector<Rectangle2f*>* getSubRects() const;
+		void addTile(Rectangle2ui* subRect, const char* name, const char* type);
+		const std::vector<Rectangle2ui*>* getSubRects() const;
 		const std::vector<std::string>*  getNames() const;
 		const std::vector<std::string>*  getTypes() const;
 
 		Material* material;
 		void *info;
 	private:
-		std::vector<Rectangle2f*> m_tileRects;
+		std::vector<Rectangle2ui*> m_tileRects;
 		std::vector<std::string> m_names;
 		std::vector<std::string> m_types;
 };

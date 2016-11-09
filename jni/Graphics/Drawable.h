@@ -32,6 +32,8 @@ class Drawable : public GroupTransformable, public Updatable
 		virtual bool testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 		virtual void updateGPU(Render& render);
 
+		virtual void moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+
 		/** \brief is called by draw.
 		 * \param render The render where the drawable will be drawn.
 		 * \param mvp The transformation matrix generate by the camera, the transformation gived in draw function and the transformation used on the drawable itself.

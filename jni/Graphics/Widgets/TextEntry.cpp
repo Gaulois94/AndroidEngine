@@ -31,9 +31,10 @@ void TextEntry::onDraw(Render& render, const glm::mat4& mvp)
 	clip.width  = rect.width;
 	clip.height = rect.height;
 
-	m_textDrawable.getMaterial()->enableClipping(clip);
-	m_textDrawable.draw(render, mvp);
-	m_textDrawable.getMaterial()->disableClipping();
+	m_textDrawable.getMaterial()->setClipping(clip);
+	m_textDrawable.getMaterial()->enableClipping(true);
+		m_textDrawable.draw(render, mvp);
+	m_textDrawable.getMaterial()->enableClipping(false);
 
 	if(m_isWriting)
 	{

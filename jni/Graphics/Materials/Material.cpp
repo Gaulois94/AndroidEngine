@@ -1,6 +1,8 @@
 #include "Materials/Material.h"
 
 float Material::maskColor[4];
+Clipping Material::globalClipping;
+bool Material::globalEnableClipping=false;
 
 Material::Material(const Shader *shader) : m_shader(shader), m_texture(NULL), m_vboID(0), m_isUsingShader(false)
 {
@@ -70,13 +72,38 @@ void Material::init(Render& render, const glm::mat4& mvp, const glm::mat4& model
 		GLint uClippingWidth  = glGetUniformLocation(m_shader->getProgramID(), "uClipping.width");
 		GLint uClippingHeight = glGetUniformLocation(m_shader->getProgramID(), "uClipping.height");
 
-		glUniform1i(uClippingClip, m_enableClipping);
+		glUniform1i(uClippingClip, m_enableClipping || Material::globalEnableClipping);
 		if(m_enableClipping)
 		{
-			glUniform1f(uClippingX, m_clip.x);
-			glUniform1f(uClippingY, m_clip.y);
-			glUniform1f(uClippingWidth, m_clip.width);
-			glUniform1f(uClippingHeight, m_clip.height);
+			if(Material::globalEnableClipping)
+			{
+				float xMin, xMax, yMin, yMax;
+				xMin = fmax(m_clip.x, Material::globalClipping.x);
+				xMax = fmin(m_clip.x + m_clip.width, Material::globalClipping.x + Material::globalClipping.width);
+				yMin = fmax(m_clip.y, Material::globalClipping.y);
+				yMax = fmin(m_clip.y + m_clip.height, Material::globalClipping.y + Material::globalClipping.height);
+
+				glUniform1f(uClippingX, yMin);
+				glUniform1f(uClippingY, yMin);
+				glUniform1f(uClippingWidth, fmax(xMax - xMin, 0.0));
+				glUniform1f(uClippingHeight, fmax(yMax - yMin, 0.0));
+			}
+
+			else
+			{
+				glUniform1f(uClippingX, m_clip.x);
+				glUniform1f(uClippingY, m_clip.y);
+				glUniform1f(uClippingWidth, m_clip.width);
+				glUniform1f(uClippingHeight, m_clip.height);
+			}
+		}
+
+		else if(Material::globalEnableClipping)
+		{
+			glUniform1f(uClippingX, Material::globalClipping.x);
+			glUniform1f(uClippingY, Material::globalClipping.y);
+			glUniform1f(uClippingWidth, Material::globalClipping.width);
+			glUniform1f(uClippingHeight, Material::globalClipping.height);
 		}
 	}
 }
@@ -116,13 +143,32 @@ void Material::setOpacity(float opac)
 	m_opacity = opac;
 }
 
-void Material::enableClipping(const Clipping& clip)
+void Material::setClipping(const Clipping& clip)
 {
 	m_clip = clip;
-	m_enableClipping = true;
 }
 
-void Material::disableClipping()
+void Material::enableClipping(bool enable)
 {
-	m_enableClipping = false;
+	m_enableClipping = enable;
+}
+
+void Material::setGlobalClipping(const Clipping& clip)
+{
+	Material::globalClipping = clip;
+}
+
+void Material::enableGlobalClipping(bool enable)
+{
+	Material::globalEnableClipping = enable;
+}
+
+const Clipping& Material::getGlobalClipping()
+{
+	return Material::globalClipping;
+}
+
+bool Material::getGlobalEnableClipping()
+{
+	return Material::globalEnableClipping;
 }
