@@ -26,6 +26,11 @@ void Render::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mv
 	Updatable::moveEvent(te, *this, m_camera.getMatrix() * mvp);
 }
 
+void Render::updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+{
+	Updatable::updateTouchUp(te, *this, m_camera.getMatrix()*mvp);
+}
+
 void Render::update(Render& render)
 {
 	Updatable::update(*this);

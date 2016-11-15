@@ -7,7 +7,6 @@
 #include "Texture.h"
 #include "Render.h"
 #include "JniMadeOf.h"
-#include "Clipping.h"
 
 /** \brief basic material class.*/
 class Material : public JniMadeOf
@@ -48,12 +47,12 @@ class Material : public JniMadeOf
 		/** \brief set the opacity. Value inferior to 0 is understand as no opacity handler*/
 		void setOpacity(float opac);
 
-		void setClipping(const Clipping& clip);
+		void setClipping(const Rectangle2f& clip);
 		void enableClipping(bool enable);
 
-		static void setGlobalClipping(const Clipping& clip);
+		static void setGlobalClipping(const Rectangle2f& clip);
 		static void enableGlobalClipping(bool enable);
-		static const Clipping& getGlobalClipping();
+		static const Rectangle2f& getGlobalClipping();
 		static bool getGlobalEnableClipping();
 	protected:
 		const Shader* m_shader;
@@ -64,9 +63,9 @@ class Material : public JniMadeOf
 		float m_opacity=-1.0f;
 
 		bool m_enableClipping = false;
-		Clipping m_clip;
+		Rectangle2f m_clip;
 
-		static Clipping globalClipping;
+		static Rectangle2f globalClipping;
 		static bool globalEnableClipping;
 };
 

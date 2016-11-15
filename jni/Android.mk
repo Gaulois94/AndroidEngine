@@ -7,7 +7,7 @@ LOCAL_MODULE := engine
 LOCAL_CFLAGS := -Wall --std=c++11
 APP_OPTIM := debug
 
-LOCAL_SRC_FILES := Graphics/RenderTexture.cpp Graphics/RenderDrawabled.cpp
+LOCAL_SRC_FILES := ChangeMvp.cpp Graphics/RenderTexture.cpp Graphics/RenderDrawabled.cpp
 
 LOCAL_SRC_FILES += Graphics/Keyboard.cpp File.cpp JniMadeOf.cpp Updatable.cpp nativeUpdatable.cpp nativeJniMadeOf.cpp utils.cpp EventManager.cpp nativeEventManager.cpp CSV.cpp TextInterface.cpp
 

@@ -1,53 +1,26 @@
 #include "RenderDrawabled.h"
 
-RenderDrawabled::RenderDrawabled(Updatable* parent, Material* mtl, const Vector2f& pixelsSize) : Updatable(parent), m_render(NULL, pixelsSize), m_sprite(this, mtl, m_render)
+RenderDrawabled::RenderDrawabled(Updatable* parent, Material* mtl, const Vector2f& pixelsSize) : Sprite(parent, mtl, NULL), m_render(this, pixelsSize), m_changeMvp(&m_render, m_trans)
 {
-}
+	m_trans.setScale(glm::vec3(0.5, 0.5, 1.0));
+	m_trans.setPosition(glm::vec3(0.5, 0.5, 1.0));
+	m_trans.setApplyTransformation(this);
 
-void RenderDrawabled::setMaterial(Material* mtl)
-{
-	m_sprite.setMaterial(mtl);
+	setTexture(m_render.getTexture());
 }
 
 RenderTexture& RenderDrawabled::getRenderTexture()
 {
-	return m_sprite.m_render;
+	return m_render;
 }
 
-Sprite& RenderDrawabled::getSprite()
+Updatable& RenderDrawabled::getRenderUpdatable()
 {
-	return m_sprite;
+	return m_changeMvp;
 }
 
-RenderDrawabled::RenderSprite::RenderSprite(Updatable* parent, Material* mtl, RenderTexture& render) :
-	Sprite(parent, mtl, render.getTexture()), m_render(render)
+void RenderDrawabled::staticToCamera(bool s)
 {
-	render.setParent(this);
-}
-
-void RenderDrawabled::RenderSprite::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
-{
-	glm::mat4 m = glm::scale(glm::mat4(1.0f), glm::vec3(0.5, 0.5, 1.0));
-	m    	    = glm::translate(m, glm::vec3(1.0, 1.0, 0.0));
-
-	m           = mvp * getMatrix() * m;
-	if(m_staticToCamera)
-		m = glm::inverse(render.getCamera().getMatrix()) * m;
-	Sprite::updateFocus(te, render, m);
-}
-
-void RenderDrawabled::RenderSprite::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
-{
-	glm::mat4 m = glm::scale(glm::mat4(1.0f), glm::vec3(0.5, 0.5, 1.0));
-	m    	    = glm::translate(m, glm::vec3(1.0, 1.0, 0.0));
-
-	m           = mvp * getMatrix() * m;
-/*  glm::mat4 m = glm::scale(mvp, glm::vec3(0.5, 0.5, 1.0));
-	m    	    = glm::translate(m, glm::vec3(1.0, 1.0, 0.0));
-
-	m           = getMatrix() * m;
-	*/
-	if(m_staticToCamera)
-		m = glm::inverse(render.getCamera().getMatrix()) * m;
-	Sprite::moveEvent(te, render, m);
+	m_changeMvp.staticToCamera(s);
+	Drawable::staticToCamera(s);
 }

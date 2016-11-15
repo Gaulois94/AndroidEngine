@@ -7,7 +7,7 @@ bool Updatable::keyUpIsCheck = false;
 bool Updatable::keyDownIsCheck = false;
 Updatable* Updatable::objectFocused = NULL;
 
-Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true), m_canDraw(true)
+Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true), m_canDraw(true), m_matrix(1.0f)
 {
 	if(parent)
 		parent->addChild(this);
@@ -157,7 +157,19 @@ void Updatable::updateGPU(Render& render)
 void Updatable::onUpdate(Render &render)
 {}
 
-void Updatable::onTouchUp(const TouchEvent& te)
+void Updatable::updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+{
+	if(Updatable::objectFocused == this)
+	{
+		onTouchUp(te, render, mvp);
+		return;
+	}
+
+	for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); it++)
+		(*it)->updateTouchUp(te, render, mvp);
+}
+
+void Updatable::onTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {}
 
 void Updatable::addChild(Updatable *child, int pos)
@@ -273,7 +285,7 @@ Render* Updatable::getRenderParent()
 	return (m_parent) ? m_parent->getRenderParent() : NULL;
 }
 
-void Updatable::setClipping(const Clipping& clip)
+void Updatable::setClipping(const Rectangle2f& clip)
 {
 	m_clip = clip;
 }
@@ -283,7 +295,7 @@ void Updatable::enableClipping(bool enable)
 	m_enableClipping = enable;
 }
 
-const Clipping& Updatable::getClipping() const
+const Rectangle2f& Updatable::getClipping() const
 {
 	return m_clip;
 }
@@ -291,4 +303,14 @@ const Clipping& Updatable::getClipping() const
 bool Updatable::getEnableClipping() const
 {
 	return m_enableClipping;
+}
+
+const glm::mat4& Updatable::getApplyMatrix() const
+{
+	return m_matrix;
+}
+
+void Updatable::setApplyMatrix(const glm::mat4& matrix) const
+{
+	m_matrix = matrix;
 }

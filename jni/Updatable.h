@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include "JniMadeOf.h"
 #include "Event.h"
-#include "Clipping.h"
 #include "utils.h"
+#include "Transformable.h"
 #define GLM_FORCE_RADIANS
 
 #include <glm/glm.hpp>
@@ -42,7 +42,7 @@ class Updatable : public JniMadeOf
 		 * \param mvp The matrix that should be applied to the TouchEvent*/
 		virtual void onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
-		virtual void onTouchUp(const TouchEvent& te);
+		virtual void onTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		/** \brief pass the keyCode for a keyUpEvent to each child, until a child handle the event
 		 * \param keyCode the code of the key*/
@@ -143,12 +143,15 @@ class Updatable : public JniMadeOf
 		 * \return the first Render parent. NULL if doesn't exist*/
 		Render* getRenderParent();
 
-		void setClipping(const Clipping& clip);
+		void setClipping(const Rectangle2f& clip);
 		void enableClipping(bool enable);
-		const Clipping& getClipping() const;
+		const Rectangle2f& getClipping() const;
 		bool getEnableClipping() const;
 
 		static Updatable* objectFocused;
+
+		const glm::mat4& getApplyMatrix() const;
+		void setApplyMatrix(const glm::mat4& matrix) const;
 	protected:
 		std::list <Updatable*> m_child; /**< Child's list. */
 		Updatable *m_parent; /**< The Updatable's parent. */
@@ -159,7 +162,9 @@ class Updatable : public JniMadeOf
 		void* m_focusDatas=NULL;
 
 		bool m_enableClipping = false;
-		Clipping m_clip;
+		Rectangle2f m_clip;
+
+		glm::mat4 m_matrix;
 
 		static bool focusIsCheck;   /** Tell if we have finished to get the focus*/
 		static bool keyUpIsCheck;   /** Tell if the key event was handled of not*/

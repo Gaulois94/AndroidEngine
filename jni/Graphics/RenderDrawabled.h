@@ -4,33 +4,26 @@
 #include "Sprite.h"
 #include "RenderTexture.h"
 #include "GroupDrawable.h"
+#include "ChangeMvp.h"
 
-class RenderDrawabled : public Updatable
+class RenderDrawabled : public Sprite
 {
 	public:
 		RenderDrawabled(Updatable* parent, Material* mtl, const Vector2f& pixelsSize);
 
-		void setMaterial(Material* mtl);
-
-		/** \brief get the render texture used for this drawable. The render texture can be modify integrally, use this function to access to the child tree and draw IN the render texture.
+		/** \brief get the render texture used for this drawable. The render texture can be modify integrally. 
 		 * \return The RenderTexture used by the RenderDrawabled*/
 		RenderTexture& getRenderTexture();
 
-		Sprite& getSprite();
-	protected:
+		/** \brief get the Updatable which set the focus value, apply algorithm to pass from the Sprite to a sub render. Use this function to access to the child tree and draw IN the render texture.
+		 * \return the Updatable useful for the child tree.*/
+		Updatable& getRenderUpdatable();
 
-		class RenderSprite : public Sprite
-		{
-			public:
-				RenderSprite(Updatable* parent, Material* mtl, RenderTexture& render);
-				virtual void updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
-				void moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp = glm::mat4(1.0f));
-				RenderTexture& m_render;
-		};
-
+		void staticToCamera(bool s);
+	private:
 		RenderTexture m_render;
-		RenderDrawabled::RenderSprite  m_sprite;
-
+		Transformable m_trans;
+		ChangeMvp m_changeMvp;
 };
 
 #endif
