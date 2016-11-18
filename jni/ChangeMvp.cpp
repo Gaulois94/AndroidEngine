@@ -7,7 +7,7 @@ ChangeMvp::ChangeMvp(Updatable* parent, const Transformable& trans, bool staticT
 
 void ChangeMvp::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	glm::mat4 m = m_trans.getMatrix();
+	glm::mat4 m = mvp*m_trans.getMatrix();
 	if(m_staticToCamera)
 		m = glm::inverse(render.getCamera().getMatrix()) * m;
 	Updatable::updateFocus(te, render, m);
@@ -15,7 +15,7 @@ void ChangeMvp::updateFocus(const TouchEvent& te, Render& render, const glm::mat
 
 void ChangeMvp::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	glm::mat4 m = m_trans.getMatrix();
+	glm::mat4 m = mvp*m_trans.getMatrix();
 	if(m_staticToCamera)
 		m = glm::inverse(render.getCamera().getMatrix()) * m;
 	Updatable::moveEvent(te, render, m);
@@ -23,7 +23,7 @@ void ChangeMvp::moveEvent(const TouchEvent& te, Render& render, const glm::mat4&
 
 void ChangeMvp::updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	glm::mat4 m = m_trans.getMatrix();
+	glm::mat4 m = mvp*m_trans.getMatrix();
 	if(m_staticToCamera)
 		m = glm::inverse(render.getCamera().getMatrix()) * m;
 	Updatable::updateTouchUp(te, render, m);

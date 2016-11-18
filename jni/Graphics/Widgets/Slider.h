@@ -17,7 +17,7 @@ class Slider : public Drawable
 			BUTTON
 		};
 
-		Slider(Updatable *parent, Material* backgroundMaterial, Material* cursorMaterial, uint32_t valueMin, uint32_t valueMax, const Orientation& position = Orientation::VERTICAL, int pourcentageGlobalRectangle=100);
+		Slider(Updatable *parent, Material* backgroundMaterial, Material* cursorMaterial, float valueMin, float valueMax, const Orientation& position = Orientation::VERTICAL, int pourcentageGlobalRectangle=100);
 
 		~Slider();
 
@@ -29,6 +29,9 @@ class Slider : public Drawable
 		void setOrientation(const Orientation &position);
 		float getValue() const;
 		void updateCursorPosition();
+
+		void setLimits(float valueMin, float valueMax);
+		void setValue(float value);
 	private:
 		Rectangle m_background;
 		Rectangle m_cursorRectangle;

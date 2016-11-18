@@ -76,3 +76,18 @@ void GridLayout::resetPosition()
 		}
 	}
 }
+
+Rectangle3f GridLayout::getGlobalRect() const
+{
+	Rectangle3f rect = getRect();
+	return getRectAddiction(rect, Updatable::getGlobalRect());
+}
+
+glm::mat4 GridLayout::getMatrix() const
+{
+	glm::mat4 m = Transformable::getMatrix();
+	for(uint32_t i=0; i < m_parentTransformables.size(); i++)
+		if(m_parentTransformables[i]->getApplyChildrenTransformable())
+			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
+	return m;
+}

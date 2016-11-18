@@ -5,11 +5,12 @@
 #include "RenderTexture.h"
 #include "GroupDrawable.h"
 #include "ChangeMvp.h"
+#include "Rectangle3.h"
 
 class RenderDrawabled : public Sprite
 {
 	public:
-		RenderDrawabled(Updatable* parent, Material* mtl, const Vector2f& pixelsSize);
+		RenderDrawabled(Updatable* parent, Material* mtl, const Vector2ui& pixelsSize);
 
 		/** \brief get the render texture used for this drawable. The render texture can be modify integrally. 
 		 * \return The RenderTexture used by the RenderDrawabled*/
@@ -20,6 +21,7 @@ class RenderDrawabled : public Sprite
 		Updatable& getRenderUpdatable();
 
 		void staticToCamera(bool s);
+		Rectangle3f getGlobalRect() const;
 	private:
 		RenderTexture m_render;
 		Transformable m_trans;

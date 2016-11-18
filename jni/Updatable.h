@@ -30,6 +30,8 @@ class Updatable : public JniMadeOf
 		 * \param mvp The matrix that should be applied to the TouchEvent*/
 		virtual void updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
+		virtual void updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+
 		/** \brief The test function for telling if the Updatable can be focused following the pointerEvent and the render passed on parameters
 		 * \param te the TouchEvent bound to the event TouchDown
 		 * \param render the Render which has catch the event.
@@ -148,11 +150,18 @@ class Updatable : public JniMadeOf
 		const Rectangle2f& getClipping() const;
 		bool getEnableClipping() const;
 
-		static Updatable* objectFocused;
+		/** \brief Get the box where the Updatable and its children should fits on, without taking in consideration camera
+		 * \return the rectangle*/
+		virtual Rectangle3f getGlobalRect() const;
 
-		const glm::mat4& getApplyMatrix() const;
-		void setApplyMatrix(const glm::mat4& matrix) const;
+		static Updatable* objectFocused;
+		const Transformable* getApplyChildrenTransformable() const;
 	protected:
+		//Functions used for Transformable trees. SHOULD BE TESTED
+		virtual void setChildrenTransformable(const Transformable* tr);
+		virtual void addParentTransformable(const Updatable* parent);
+		virtual void delParentTransformable();
+
 		std::list <Updatable*> m_child; /**< Child's list. */
 		Updatable *m_parent; /**< The Updatable's parent. */
 		bool m_updateFocus;
@@ -164,7 +173,8 @@ class Updatable : public JniMadeOf
 		bool m_enableClipping = false;
 		Rectangle2f m_clip;
 
-		glm::mat4 m_matrix;
+		const Transformable* m_applyMatrix;
+		std::vector<const Updatable*> m_parentTransformables;
 
 		static bool focusIsCheck;   /** Tell if we have finished to get the focus*/
 		static bool keyUpIsCheck;   /** Tell if the key event was handled of not*/

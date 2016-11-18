@@ -1,7 +1,7 @@
 #include "Materials/Material.h"
 
 float Material::maskColor[4];
-Clipping Material::globalClipping;
+Rectangle2f Material::globalClipping;
 bool Material::globalEnableClipping=false;
 
 Material::Material(const Shader *shader) : m_shader(shader), m_texture(NULL), m_vboID(0), m_isUsingShader(false)

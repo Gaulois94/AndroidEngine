@@ -22,6 +22,8 @@ class Camera : public Transformable
 		 * \return the camera position */
 		virtual glm::vec3 getPosition() const;
 
+		virtual void setPosition(const glm::vec3& m, bool useScale=false);
+
 		/** \brief Set the camera position
 		 * \param pos the camera position
 		 * \param useScale the camera position is multiply by the scale. You can set this parameter to false for nullify the effect of the scale*/

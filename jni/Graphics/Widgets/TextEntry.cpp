@@ -13,6 +13,8 @@ TextEntry::TextEntry(Updatable* parent, Material*textMaterial, const Font* font,
 	m_cursor.setUpdateFocus(false);
 	m_textDrawable.setUpdateFocus(false);
 	m_rectangle.setUpdateFocus(false);
+//	m_rectangle.staticToCamera(true);
+//	m_textDrawable.staticToCamera(true);
 }
 
 void TextEntry::onUpdate(Render& render)
@@ -21,19 +23,11 @@ void TextEntry::onUpdate(Render& render)
 
 void TextEntry::onDraw(Render& render, const glm::mat4& mvp)
 {
-	m_rectangle.draw(render, mvp);
-
+	m_rectangle.draw(render, getMatrix());
 	Rectangle3f rect = m_rectangle.getRect();
-
-	Clipping clip;
-	clip.x      = rect.x;
-	clip.y      = rect.y;
-	clip.width  = rect.width;
-	clip.height = rect.height;
-
-	m_textDrawable.getMaterial()->setClipping(clip);
+	m_textDrawable.getMaterial()->setClipping(Rectangle2f(rect.x, rect.y, rect.width, rect.height));
 	m_textDrawable.getMaterial()->enableClipping(true);
-		m_textDrawable.draw(render, mvp);
+		m_textDrawable.draw(render, getMatrix());
 	m_textDrawable.getMaterial()->enableClipping(false);
 
 	if(m_isWriting)
@@ -60,7 +54,7 @@ void TextEntry::onDraw(Render& render, const glm::mat4& mvp)
 		m_showCursor = false;
 
 	if(m_isWriting && m_showCursor)
-		m_cursor.draw(render, mvp);
+		m_cursor.draw(render, getMatrix());
 }
 
 void TextEntry::onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)

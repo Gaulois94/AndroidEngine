@@ -63,7 +63,13 @@ class Drawable : public GroupTransformable, public Updatable
 		virtual bool isStaticToCamera() const;
 
 		static void initShaders();
+
+		virtual Rectangle3f getGlobalRect() const;
+		virtual glm::mat4 getMatrix() const;
 	protected:
+
+		virtual void delParentTransformable();
+		virtual void addParentTransformable(const Updatable* parent);
 		virtual void deleteVbos();
 		Material* m_material;
 		GLuint m_vboID;

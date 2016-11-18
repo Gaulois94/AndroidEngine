@@ -7,7 +7,7 @@ bool Updatable::keyUpIsCheck = false;
 bool Updatable::keyDownIsCheck = false;
 Updatable* Updatable::objectFocused = NULL;
 
-Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true), m_canDraw(true), m_matrix(1.0f)
+Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true), m_canDraw(true), m_applyMatrix(NULL)
 {
 	if(parent)
 		parent->addChild(this);
@@ -17,6 +17,7 @@ Updatable::~Updatable()
 {
 	if(Updatable::objectFocused == this)
 		Updatable::objectFocused = NULL;
+
 	setParent(NULL);
 }
 
@@ -117,7 +118,7 @@ void Updatable::updateGPU(Render& render)
 
 	bool restoreClip = false;
 	bool mEnableClip = Material::getGlobalEnableClipping();
-	Clipping clip;
+	Rectangle2f clip;
 
 	if(m_enableClipping)
 	{
@@ -185,7 +186,7 @@ void Updatable::addChild(Updatable *child, int pos)
 		else
 		{
 			std::list<Updatable*>::iterator it = m_child.begin();
-			for(unsigned int i = 0; i < pos; ++i)
+			for(uint32_t i=0; i < pos; i++)
 				it++;
 			m_child.insert(it, child);
 		}
@@ -209,17 +210,26 @@ void Updatable::setCanDraw(bool d)
 
 void Updatable::setParent(Updatable *parent, int pos)
 {
+
 	if(m_parent)
+	{
+		delParentTransformable();
 		m_parent->removeChild(this);
+	}
 	
 	m_parent = parent;	
-	if(parent)
+
+	if(m_parent)
+	{
+		addParentTransformable(parent);
 		m_parent->addChild(this, pos);
+	}
 }
 
 bool Updatable::removeChild(Updatable *child)
 {
 	if(child->getParent() == this)
+	{
 		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
 		{
 			if(*it == child)
@@ -229,6 +239,7 @@ bool Updatable::removeChild(Updatable *child)
 				return true;
 			}
 		}
+	}
 	return false;
 }
 
@@ -305,12 +316,38 @@ bool Updatable::getEnableClipping() const
 	return m_enableClipping;
 }
 
-const glm::mat4& Updatable::getApplyMatrix() const
+void Updatable::setChildrenTransformable(const Transformable* tr)
 {
-	return m_matrix;
+	m_applyMatrix = tr;
 }
 
-void Updatable::setApplyMatrix(const glm::mat4& matrix) const
+void Updatable::addParentTransformable(const Updatable* parent)
 {
-	m_matrix = matrix;
+	m_parentTransformables = parent->m_parentTransformables;
+	m_parentTransformables.push_back(parent);
+
+	for(auto* it : m_child)
+		it->addParentTransformable(this);
+}
+
+void Updatable::delParentTransformable()
+{
+	m_parentTransformables.clear();
+	for(auto* it : m_child)
+		it->addParentTransformable(this);
+}
+
+Rectangle3f Updatable::getGlobalRect() const
+{
+	Rectangle3f rect;
+//	if(m_applyMatrix)
+//		rect = m_applyMatrix->getRect();
+	for(std::list<Updatable*>::const_iterator it = m_child.begin(); it != m_child.end(); ++it)
+		rect = getRectAddiction(rect, (*it)->getGlobalRect());
+	return rect;
+}
+
+const Transformable* Updatable::getApplyChildrenTransformable() const
+{
+	return m_applyMatrix;
 }

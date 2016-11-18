@@ -11,7 +11,7 @@
 class RenderTexture : public Render
 {
 	public:
-		RenderTexture(Updatable* parent, const Vector2f& size);
+		RenderTexture(Updatable* parent, const Vector2ui& size);
 		~RenderTexture();
 
 		void display();

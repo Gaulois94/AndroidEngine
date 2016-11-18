@@ -95,3 +95,30 @@ void Drawable::initShaders()
 {
 	Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(JniMadeOf::jenv, 0, JniMadeOf::context);
 }
+
+void Drawable::addParentTransformable(const Updatable* parent)
+{
+	Updatable::addParentTransformable(parent);
+	setMVPMatrix();
+}
+
+void Drawable::delParentTransformable()
+{
+	Updatable::delParentTransformable();
+	setMVPMatrix();
+}
+
+Rectangle3f Drawable::getGlobalRect() const
+{
+	Rectangle3f rect = getRect();
+	return getRectAddiction(rect, Updatable::getGlobalRect());
+}
+
+glm::mat4 Drawable::getMatrix() const
+{
+	glm::mat4 m = Transformable::getMatrix();
+	for(uint32_t i=0; i < m_parentTransformables.size(); i++)
+		if(m_parentTransformables[i]->getApplyChildrenTransformable())
+			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
+	return m;
+}
