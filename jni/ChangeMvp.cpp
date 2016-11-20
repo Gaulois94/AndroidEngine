@@ -7,26 +7,28 @@ ChangeMvp::ChangeMvp(Updatable* parent, const Transformable& trans, bool staticT
 
 void ChangeMvp::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	glm::mat4 m = mvp*m_trans.getMatrix();
+	LOG_ERROR("CHANGE MVP");
+	glm::mat4 m = m_trans.getMatrix();
 	if(m_staticToCamera)
 		m = glm::inverse(render.getCamera().getMatrix()) * m;
-	Updatable::updateFocus(te, render, m);
+	Updatable::updateFocus(te, render, mvp*m);
 }
 
 void ChangeMvp::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	glm::mat4 m = mvp*m_trans.getMatrix();
+	glm::mat4 m = m_trans.getMatrix();
 	if(m_staticToCamera)
 		m = glm::inverse(render.getCamera().getMatrix()) * m;
-	Updatable::moveEvent(te, render, m);
+	Updatable::moveEvent(te, render, mvp*m);
 }
 
 void ChangeMvp::updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	glm::mat4 m = mvp*m_trans.getMatrix();
+	LOG_ERROR("CHANGE MVP");
+	glm::mat4 m = m_trans.getMatrix();
 	if(m_staticToCamera)
 		m = glm::inverse(render.getCamera().getMatrix()) * m;
-	Updatable::updateTouchUp(te, render, m);
+	Updatable::updateTouchUp(te, render, mvp*m);
 }
 
 void ChangeMvp::staticToCamera(bool s)

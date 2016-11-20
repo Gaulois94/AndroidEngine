@@ -60,7 +60,6 @@ void Slider::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& 
 			m_value = fmax(m_value, m_minValue);
 
 			updateCursorPosition();
-			LOG_ERROR("TC X : %f, TC Y : %f, RECT X %f RECT Y %f RECT WIDTH %f RECT HEIGHT %fDEFAULTSIZE X %f", te.x, te.y, rect.x, rect.y, rect.width, rect.height, m_defaultSize.x);
 		}
 
 	}

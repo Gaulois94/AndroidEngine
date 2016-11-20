@@ -6,8 +6,8 @@
 #include "Materials/UniColorMaterial.h"
 #include "Materials/TextureMaterial.h"
 
-#define MAX_SCROLLWINDOW_COUNT     3
-#define MAX_SCROLLWINDOW_DISTANCE 10
+#define MAX_SCROLLWINDOW_COUNT     6
+#define MAX_SCROLLWINDOW_DISTANCE 20
 
 class ScrollWindow : public Active, public RenderDrawabled
 {
@@ -15,6 +15,7 @@ class ScrollWindow : public Active, public RenderDrawabled
 		ScrollWindow(Updatable* parent, const Vector2ui& pixelSize=Vector2ui(512, 512));
 		~ScrollWindow();
 
+		void updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 		void onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 		void onTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 		void onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));

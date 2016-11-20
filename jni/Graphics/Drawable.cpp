@@ -21,7 +21,7 @@ void Drawable::updateGPU(Render& render)
 
 bool Drawable::testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	return (!m_staticToCamera && touchInRect(getRect(mvp), te.pid) || (m_staticToCamera && touchInRect(getRect(glm::inverse(render.getCamera().getMatrix()) * mvp), te.pid)));
+	return (!m_staticToCamera && touchInRect(getRect(mvp), te.pid) || (m_staticToCamera && touchInRect(getRect(mvp*glm::inverse(render.getCamera().getMatrix())), te.pid)));
 }
 
 void Drawable::draw(Render& render, const glm::mat4& transformation)
@@ -110,8 +110,10 @@ void Drawable::delParentTransformable()
 
 Rectangle3f Drawable::getGlobalRect() const
 {
-	Rectangle3f rect = getRect();
-	return getRectAddiction(rect, Updatable::getGlobalRect());
+	Rectangle3f rect = mvpToRect(getMatrix());
+	if(m_child.size() > 0)
+		return getRectAddiction(rect, Updatable::getGlobalRect());
+	return rect;
 }
 
 glm::mat4 Drawable::getMatrix() const

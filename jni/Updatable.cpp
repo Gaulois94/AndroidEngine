@@ -339,12 +339,16 @@ void Updatable::delParentTransformable()
 
 Rectangle3f Updatable::getGlobalRect() const
 {
-	Rectangle3f rect;
-//	if(m_applyMatrix)
-//		rect = m_applyMatrix->getRect();
-	for(std::list<Updatable*>::const_iterator it = m_child.begin(); it != m_child.end(); ++it)
-		rect = getRectAddiction(rect, (*it)->getGlobalRect());
-	return rect;
+	if(m_child.size() > 0)
+	{
+		Rectangle3f rect = (*(m_child.begin()))->getGlobalRect();
+		std::list<Updatable*>::const_iterator it = m_child.begin();
+		it++;
+		for(;it != m_child.end(); ++it)
+			rect = getRectAddiction(rect, (*it)->getGlobalRect());
+		return rect;
+	}
+	return Rectangle3f();
 }
 
 const Transformable* Updatable::getApplyChildrenTransformable() const

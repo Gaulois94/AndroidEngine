@@ -18,14 +18,14 @@ class RenderDrawabled : public Sprite
 
 		/** \brief get the Updatable which set the focus value, apply algorithm to pass from the Sprite to a sub render. Use this function to access to the child tree and draw IN the render texture.
 		 * \return the Updatable useful for the child tree.*/
-		Updatable& getRenderUpdatable();
+		Updatable& getChangeMvp();
 
 		void staticToCamera(bool s);
 		Rectangle3f getGlobalRect() const;
 	private:
+		ChangeMvp m_changeMvp;
 		RenderTexture m_render;
 		Transformable m_trans;
-		ChangeMvp m_changeMvp;
 };
 
 #endif
