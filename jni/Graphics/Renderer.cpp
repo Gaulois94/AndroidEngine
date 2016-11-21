@@ -181,7 +181,7 @@ void Renderer::update(Render& render)
 
 			case TOUCH_UP:
 				if(Updatable::objectFocused)
-					Updatable::objectFocused->onTouchUp(ev->touchEvent);
+					updateTouchUp(ev->touchEvent, *this);
 				break;
 		
 

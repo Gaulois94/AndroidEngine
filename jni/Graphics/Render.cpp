@@ -18,12 +18,17 @@ void Render::draw(Drawable& drawable, const glm::mat4& transformation)
 
 void Render::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	Updatable::updateFocus(te, *this, m_camera.getMatrix() * mvp);
+	Updatable::updateFocus(te, *this, mvp*m_camera.getMatrix());
 }
 
 void Render::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	Updatable::moveEvent(te, *this, m_camera.getMatrix() * mvp);
+	Updatable::moveEvent(te, *this, mvp*m_camera.getMatrix());
+}
+
+void Render::updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+{
+	Updatable::updateTouchUp(te, *this, mvp*m_camera.getMatrix());
 }
 
 void Render::update(Render& render)
@@ -34,7 +39,7 @@ void Render::update(Render& render)
 void Render::updateGPU(Render& render)
 {
 	bool restoreClip = false;
-	Clipping saveClip;
+	Rectangle2f saveClip;
 	if(Material::getGlobalEnableClipping())
 	{
 		saveClip = Material::getGlobalClipping();

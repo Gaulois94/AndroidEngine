@@ -28,6 +28,9 @@ class GridLayout : public Updatable, public GroupTransformable
 		/** \brief Remove the widget from the GridLayout given a position
 		 * \param drawable The Widget to remove*/
 		void removeWidget(uint32_t x, uint32_t y);
+
+		virtual Rectangle3f getGlobalRect() const;
+		virtual glm::mat4 getMatrix() const;
 	private:
 		/** \brief Replace correctly the widget on the GridLayout*/
 		void resetPosition();

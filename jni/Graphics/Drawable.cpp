@@ -21,7 +21,7 @@ void Drawable::updateGPU(Render& render)
 
 bool Drawable::testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	return (!m_staticToCamera && touchInRect(getRect(mvp), te.pid) || (m_staticToCamera && touchInRect(getRect(glm::inverse(render.getCamera().getMatrix()) * mvp), te.pid)));
+	return (!m_staticToCamera && touchInRect(getRect(mvp), te.pid) || (m_staticToCamera && touchInRect(getRect(mvp*glm::inverse(render.getCamera().getMatrix())), te.pid)));
 }
 
 void Drawable::draw(Render& render, const glm::mat4& transformation)
@@ -94,4 +94,33 @@ void Drawable::deleteVbos()
 void Drawable::initShaders()
 {
 	Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(JniMadeOf::jenv, 0, JniMadeOf::context);
+}
+
+void Drawable::addParentTransformable(const Updatable* parent)
+{
+	Updatable::addParentTransformable(parent);
+	setMVPMatrix();
+}
+
+void Drawable::delParentTransformable()
+{
+	Updatable::delParentTransformable();
+	setMVPMatrix();
+}
+
+Rectangle3f Drawable::getGlobalRect() const
+{
+	Rectangle3f rect = mvpToRect(getMatrix());
+	if(m_child.size() > 0)
+		return getRectAddiction(rect, Updatable::getGlobalRect());
+	return rect;
+}
+
+glm::mat4 Drawable::getMatrix() const
+{
+	glm::mat4 m = Transformable::getMatrix();
+	for(uint32_t i=0; i < m_parentTransformables.size(); i++)
+		if(m_parentTransformables[i]->getApplyChildrenTransformable())
+			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
+	return m;
 }

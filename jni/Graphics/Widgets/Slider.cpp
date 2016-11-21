@@ -1,6 +1,6 @@
 #include "Widgets/Slider.h"
 
-Slider::Slider(Updatable *parent, Material* backgroundMaterial, Material* cursorMaterial, uint32_t valueMin, uint32_t valueMax, const Orientation& position, int pourcentageGlobalRectangle) : 
+Slider::Slider(Updatable *parent, Material* backgroundMaterial, Material* cursorMaterial, float valueMin, float valueMax, const Orientation& position, int pourcentageGlobalRectangle) : 
 	Drawable(parent, NULL, Rectangle3f(0.0, 0.0, 0.0, 1.0, 1.0, 0.0)), m_background(this, backgroundMaterial), m_cursorRectangle(NULL, cursorMaterial), m_cursor(this, (Drawable&)m_cursorRectangle), 
 	m_minValue(valueMin), m_maxValue(valueMax), m_orientation(position), m_pourcentageGlobalRectangle(pourcentageGlobalRectangle)
 {
@@ -60,7 +60,6 @@ void Slider::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& 
 			m_value = fmax(m_value, m_minValue);
 
 			updateCursorPosition();
-			LOG_ERROR("TC X : %f, TC Y : %f, RECT X %f RECT Y %f RECT WIDTH %f RECT HEIGHT %fDEFAULTSIZE X %f", te.x, te.y, rect.x, rect.y, rect.width, rect.height, m_defaultSize.x);
 		}
 
 	}
@@ -78,9 +77,22 @@ float Slider::getValue() const
     return m_value;
 }
 
+void Slider::setLimits(float valueMin, float valueMax)
+{
+	m_minValue = valueMin;
+	m_maxValue = valueMax;
+}
+
+void Slider::setValue(float value)
+{
+	m_value = fmin(value, m_maxValue);
+	m_value = fmax(m_value, m_minValue);
+	updateCursorPosition();
+
+}
+
 void Slider::updateCursorPosition()
 {
-	LOG_ERROR("M_VALUE %f", m_value);
     if(m_orientation == HORIZONTAL)
         m_cursor.setPosition(glm::vec3((m_value-m_minValue) / m_maxValue * (1-m_pourcentageGlobalRectangle*0.01f), 0.0, 0.0));
     else

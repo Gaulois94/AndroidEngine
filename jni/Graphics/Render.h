@@ -31,6 +31,7 @@ class Render : public Updatable
 		virtual void updateGPU(Render& render);
 
 		virtual void moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+		virtual void updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		/** \brief draw all the information got by draw function*/
 		virtual void display()=0;

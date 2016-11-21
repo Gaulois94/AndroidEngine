@@ -4,7 +4,6 @@ Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f)
 {
 	m_defaultPos = glm::vec3(defaultConf.x, defaultConf.y, defaultConf.z);
 	m_defaultSize = glm::vec3(defaultConf.width, defaultConf.height, defaultConf.depth);
-	m_rect = Rectangle3f(m_defaultPos, m_defaultSize);
 	setMVPMatrix();
 }
 
@@ -97,20 +96,17 @@ void Transformable::setScale(const glm::vec3 &v, bool keepPos)
 void Transformable::setDefaultPos(const glm::vec3 &p)
 {
 	m_defaultPos = p;
-	m_rect = getRect(glm::mat4(1.0f));
 }
 
 void Transformable::setDefaultSize(const glm::vec3 &s)
 {
 	m_defaultSize = s;
-	m_rect = getRect(glm::mat4(1.0f));
 }
 
 void Transformable::setDefaultConf(const Rectangle3f &dc)
 {
 	setDefaultPos(glm::vec3(dc.x, dc.y, dc.z));
 	setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
-	m_rect = getRect(glm::mat4(1.0f));
 }
 
 void Transformable::setSphericCoordinate(float r, float theta, float phi)
@@ -217,11 +213,6 @@ EulerRotation Transformable::getEulerRotation() const
 	return e;
 }
 
-const Rectangle3f& Transformable::getRect() const
-{
-	return m_rect;
-}
-
 Rectangle3f Transformable::mvpToRect(const glm::mat4& mvp) const
 {
 	//Take the object 3D rect from its default configuration
@@ -296,7 +287,6 @@ void Transformable::setDefaultPositionOrigin(PositionOrigin p)
 void Transformable::setMVPMatrix()
 {	
     m_mvpMatrix = m_scale * (computeDefaultPositionOrigin() * m_positionOrigin * m_position) * m_rotate;
-	m_rect = getRect(glm::mat4(1.0f));
 }
 
 glm::mat4 Transformable::computeDefaultPositionOrigin()

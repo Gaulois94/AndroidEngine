@@ -80,3 +80,18 @@ void GridLayout::resetPosition()
 	//Reset the default size of the layout
 	setDefaultSize(glm::vec3(m_widgets.size() * maxSizeX, ((m_widgets.size() > 0) ? m_widgets[0].size() : 0) * maxSizeY, maxSizeZ));
 }
+
+Rectangle3f GridLayout::getGlobalRect() const
+{
+	Rectangle3f rect = getRect();
+	return getRectAddiction(rect, Updatable::getGlobalRect());
+}
+
+glm::mat4 GridLayout::getMatrix() const
+{
+	glm::mat4 m = Transformable::getMatrix();
+	for(uint32_t i=0; i < m_parentTransformables.size(); i++)
+		if(m_parentTransformables[i]->getApplyChildrenTransformable())
+			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
+	return m;
+}

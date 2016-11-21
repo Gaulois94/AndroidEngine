@@ -19,6 +19,11 @@ void Camera::move(const glm::vec3& m, bool useScale)
 	Transformable::move(-1.0f*m, useScale);
 }
 
+void Camera::setPosition(const glm::vec3& m, bool useScale)
+{
+	Transformable::setPosition(-1.0f*m, useScale);
+}
+
 void Camera::setOrientation(const glm::vec3& orientation)
 {
 	glm::vec3 unit = glm::normalize(orientation);

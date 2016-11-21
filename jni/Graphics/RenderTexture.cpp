@@ -1,6 +1,6 @@
 #include "RenderTexture.h"
 
-RenderTexture::RenderTexture(Updatable* parent, const Vector2f& size) : Render(parent)
+RenderTexture::RenderTexture(Updatable* parent, const Vector2ui& size) : Render(parent)
 {
 	//Create the framebuffer
 	glGenFramebuffers(1, &m_frameBuffer);

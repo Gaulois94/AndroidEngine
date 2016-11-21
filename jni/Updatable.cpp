@@ -7,7 +7,7 @@ bool Updatable::keyUpIsCheck = false;
 bool Updatable::keyDownIsCheck = false;
 Updatable* Updatable::objectFocused = NULL;
 
-Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true), m_canDraw(true)
+Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m_canUpdate(true), m_canDraw(true), m_applyMatrix(NULL)
 {
 	if(parent)
 		parent->addChild(this);
@@ -17,6 +17,7 @@ Updatable::~Updatable()
 {
 	if(Updatable::objectFocused == this)
 		Updatable::objectFocused = NULL;
+
 	setParent(NULL);
 }
 
@@ -117,7 +118,7 @@ void Updatable::updateGPU(Render& render)
 
 	bool restoreClip = false;
 	bool mEnableClip = Material::getGlobalEnableClipping();
-	Clipping clip;
+	Rectangle2f clip;
 
 	if(m_enableClipping)
 	{
@@ -157,7 +158,19 @@ void Updatable::updateGPU(Render& render)
 void Updatable::onUpdate(Render &render)
 {}
 
-void Updatable::onTouchUp(const TouchEvent& te)
+void Updatable::updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+{
+	if(Updatable::objectFocused == this)
+	{
+		onTouchUp(te, render, mvp);
+		return;
+	}
+
+	for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); it++)
+		(*it)->updateTouchUp(te, render, mvp);
+}
+
+void Updatable::onTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {}
 
 void Updatable::addChild(Updatable *child, int pos)
@@ -173,7 +186,7 @@ void Updatable::addChild(Updatable *child, int pos)
 		else
 		{
 			std::list<Updatable*>::iterator it = m_child.begin();
-			for(unsigned int i = 0; i < pos; ++i)
+			for(uint32_t i=0; i < pos; i++)
 				it++;
 			m_child.insert(it, child);
 		}
@@ -197,17 +210,26 @@ void Updatable::setCanDraw(bool d)
 
 void Updatable::setParent(Updatable *parent, int pos)
 {
+
 	if(m_parent)
+	{
+		delParentTransformable();
 		m_parent->removeChild(this);
+	}
 	
 	m_parent = parent;	
-	if(parent)
+
+	if(m_parent)
+	{
+		addParentTransformable(parent);
 		m_parent->addChild(this, pos);
+	}
 }
 
 bool Updatable::removeChild(Updatable *child)
 {
 	if(child->getParent() == this)
+	{
 		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
 		{
 			if(*it == child)
@@ -217,6 +239,7 @@ bool Updatable::removeChild(Updatable *child)
 				return true;
 			}
 		}
+	}
 	return false;
 }
 
@@ -273,7 +296,7 @@ Render* Updatable::getRenderParent()
 	return (m_parent) ? m_parent->getRenderParent() : NULL;
 }
 
-void Updatable::setClipping(const Clipping& clip)
+void Updatable::setClipping(const Rectangle2f& clip)
 {
 	m_clip = clip;
 }
@@ -283,7 +306,7 @@ void Updatable::enableClipping(bool enable)
 	m_enableClipping = enable;
 }
 
-const Clipping& Updatable::getClipping() const
+const Rectangle2f& Updatable::getClipping() const
 {
 	return m_clip;
 }
@@ -291,4 +314,44 @@ const Clipping& Updatable::getClipping() const
 bool Updatable::getEnableClipping() const
 {
 	return m_enableClipping;
+}
+
+void Updatable::setChildrenTransformable(const Transformable* tr)
+{
+	m_applyMatrix = tr;
+}
+
+void Updatable::addParentTransformable(const Updatable* parent)
+{
+	m_parentTransformables = parent->m_parentTransformables;
+	m_parentTransformables.push_back(parent);
+
+	for(auto* it : m_child)
+		it->addParentTransformable(this);
+}
+
+void Updatable::delParentTransformable()
+{
+	m_parentTransformables.clear();
+	for(auto* it : m_child)
+		it->addParentTransformable(this);
+}
+
+Rectangle3f Updatable::getGlobalRect() const
+{
+	if(m_child.size() > 0)
+	{
+		Rectangle3f rect = (*(m_child.begin()))->getGlobalRect();
+		std::list<Updatable*>::const_iterator it = m_child.begin();
+		it++;
+		for(;it != m_child.end(); ++it)
+			rect = getRectAddiction(rect, (*it)->getGlobalRect());
+		return rect;
+	}
+	return Rectangle3f();
+}
+
+const Transformable* Updatable::getApplyChildrenTransformable() const
+{
+	return m_applyMatrix;
 }

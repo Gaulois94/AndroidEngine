@@ -7,7 +7,7 @@ LOCAL_MODULE := engine
 LOCAL_CFLAGS := -Wall --std=c++11
 APP_OPTIM := debug
 
-LOCAL_SRC_FILES := Graphics/RenderTexture.cpp Graphics/RenderDrawabled.cpp
+LOCAL_SRC_FILES := ChangeMvp.cpp Graphics/RenderTexture.cpp Graphics/RenderDrawabled.cpp
 
 LOCAL_SRC_FILES += Graphics/Keyboard.cpp File.cpp JniMadeOf.cpp Updatable.cpp nativeUpdatable.cpp nativeJniMadeOf.cpp utils.cpp EventManager.cpp nativeEventManager.cpp CSV.cpp TextInterface.cpp
 
@@ -26,7 +26,7 @@ LOCAL_SRC_FILES += Graphics/Widgets/Button.cpp Graphics/Widgets/CheckBox.cpp Gra
 
 LOCAL_SRC_FILES += Map/Map.cpp Map/MapFiles.cpp  Map/Traces/DynamicTrace.cpp Map/Traces/StaticTrace.cpp Map/Traces/Trace.cpp Map/Datas/AnimDatas.cpp Map/Tiles/StaticTile.cpp Map/Tiles/Tile.cpp Map/Tiles/TileObject.cpp Map/Tiles/DefaultTile.cpp Map/Tiles/StaticAnim.cpp Map/Tiles/DynamicAnim.cpp
 
-LOCAL_SRC_FILES += Graphics/Widgets/Menu.cpp Graphics/Widgets/ItemMenu.cpp Graphics/Widgets/TextEntry.cpp Graphics/Widgets/GridLayout.cpp Graphics/Widgets/Slider.cpp
+LOCAL_SRC_FILES += Graphics/Widgets/Menu.cpp Graphics/Widgets/ItemMenu.cpp Graphics/Widgets/TextEntry.cpp Graphics/Widgets/GridLayout.cpp Graphics/Widgets/Slider.cpp Graphics/Widgets/ScrollWindow.cpp
 
 LOCAL_SRC_FILES += Listeners/Callback.cpp Listeners/ActiveListener.cpp
 

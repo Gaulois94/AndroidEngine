@@ -1,7 +1,7 @@
 #include "Materials/Material.h"
 
 float Material::maskColor[4];
-Clipping Material::globalClipping;
+Rectangle2f Material::globalClipping;
 bool Material::globalEnableClipping=false;
 
 Material::Material(const Shader *shader) : m_shader(shader), m_texture(NULL), m_vboID(0), m_isUsingShader(false)
@@ -143,7 +143,7 @@ void Material::setOpacity(float opac)
 	m_opacity = opac;
 }
 
-void Material::setClipping(const Clipping& clip)
+void Material::setClipping(const Rectangle2f& clip)
 {
 	m_clip = clip;
 }
@@ -153,7 +153,7 @@ void Material::enableClipping(bool enable)
 	m_enableClipping = enable;
 }
 
-void Material::setGlobalClipping(const Clipping& clip)
+void Material::setGlobalClipping(const Rectangle2f& clip)
 {
 	Material::globalClipping = clip;
 }
@@ -163,7 +163,7 @@ void Material::enableGlobalClipping(bool enable)
 	Material::globalEnableClipping = enable;
 }
 
-const Clipping& Material::getGlobalClipping()
+const Rectangle2f& Material::getGlobalClipping()
 {
 	return Material::globalClipping;
 }

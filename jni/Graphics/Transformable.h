@@ -168,11 +168,7 @@ class Transformable : public JniMadeOf
 
 		/** \brief get the 3D rectangle of the transformable given its default position and default size
 		 * \param m if you want to apply a transformation before getting the 3D rectangle coordinates*/
-		Rectangle3f getRect(const glm::mat4& m) const;
-
-		/** \brief get the 3D rectangle of the transformable given its default position and default size
-		 * \return the object rectangle in opengl coordinate*/
-		const Rectangle3f& getRect() const;
+		Rectangle3f getRect(const glm::mat4& m=glm::mat4(1.0f)) const;
 
 		/** \brief set the default configuration of the object : default position and default size
 		 * \param dc the new defaultConf*/
@@ -215,8 +211,6 @@ class Transformable : public JniMadeOf
 
 		float     m_theta;
 		float     m_phi;
-		Rectangle3f m_rect;
-
 		PositionOrigin m_defaultPosOrigin=BOTTOM_LEFT;
 };
 
