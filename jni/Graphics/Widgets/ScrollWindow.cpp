@@ -24,7 +24,6 @@ void ScrollWindow::updateFocus(const TouchEvent& te, Render& render, const glm::
 
 void ScrollWindow::onFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	LOG_ERROR("ON FOCUS");
 	m_oldValue   = m_value;
 	m_onFocusPos = glm::vec2(te.x, te.y);	
 	activeIt();
