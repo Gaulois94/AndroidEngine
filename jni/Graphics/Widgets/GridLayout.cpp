@@ -48,7 +48,7 @@ void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t 
 void GridLayout::resetPosition()
 {
 	//Get all Drawables' size and determine the maximum
-	float maxSizeX = 0, maxSizeY = 0;
+	float maxSizeX = 0, maxSizeY = 0, maxSizeZ = 0;
 	for(uint32_t i=0; i < m_widgets.size(); i++)
 	{
 		for(uint32_t j=0; j < m_widgets[i].size(); j++)
@@ -60,6 +60,7 @@ void GridLayout::resetPosition()
 
 				maxSizeX = fmax(colRect.width / (float)caseSize.x, maxSizeX);
 				maxSizeY = fmax(colRect.height / (float)caseSize.y, maxSizeY);
+				maxSizeZ = fmax(colRect.depth, maxSizeY);
 			}
 		}
 	}
@@ -75,4 +76,7 @@ void GridLayout::resetPosition()
 			}
 		}
 	}
+
+	//Reset the default size of the layout
+	setDefaultSize(glm::vec3(m_widgets.size() * maxSizeX, ((m_widgets.size() > 0) ? m_widgets[0].size() : 0) * maxSizeY, maxSizeZ));
 }
