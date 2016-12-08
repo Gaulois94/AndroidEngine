@@ -44,10 +44,8 @@ File::File(JNIEnv* env, jobject context, int id, const char* mode)
 	}
 }
 
-File::File(const char* path, const char* mode)
-{
-
-}
+File::File(const char* path, const char* mode) : File(JniMadeOf::getJEnv(), JniMadeOf::context, path, mode)
+{}
 
 File::File(JNIEnv* env, jobject context, const char* path, const char* mode)
 {

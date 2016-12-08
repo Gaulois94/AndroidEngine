@@ -556,7 +556,6 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 						}
 					}
 					st->addTileInTraceCoord(obj, XML_NthColumn, i);
-					LOG_ERROR("OBJECT ADDED AT %d, %d", XML_NthColumn, i);
 				}
 			}
 		}
@@ -581,8 +580,6 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 				else if(!strcmp(attrs[i], "name"))
 					nameCSVID.parse(attrs[i+1]);
 			}
-
-			LOG_ERROR("GET VALUES");
 
 			//Get IntCSV values
 			const std::vector<int32_t>*     tileID   = tileCSVID.getValues();
