@@ -39,7 +39,6 @@ void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t 
 		}
 	}
 
-
 	drawable->setParent(this);
 	addTransformable(drawable);
 	resetPosition();
@@ -94,4 +93,92 @@ glm::mat4 GridLayout::getMatrix() const
 		if(m_parentTransformables[i]->getApplyChildrenTransformable())
 			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
 	return m;
+}
+
+void GridLayout::removeWidget(uint32_t x, uint32_t y)
+{
+	removeWidget(m_widgets[x][y]);
+}
+
+void GridLayout::removeWidget(Drawable* widget)
+{
+	if(widget == NULL)
+		return;
+	bool found = false;
+	for(uint32_t i=0; i < m_widgets.size(); i++)
+	{
+		for(uint32_t j=0; j < m_widgets[i].size(); j++)
+		{
+			if(m_widgets[i][j] == widget)
+			{
+				found = true;
+				m_widgets[i][j]->setParent(NULL);
+				m_widgets[i][j] = NULL;
+				m_widgetsSize[i][j].x = 0;
+				m_widgetsSize[i][j].y = 0;
+
+
+				//Delete the row and the column if it is the last one and it is empty
+				bool del = true;
+
+				//Delete the column if needed
+				if(i == m_widgets.size()-1)
+				{
+					for(uint32_t k=0; k < m_widgets[i].size(); k++)
+					{
+						if(m_widgets[i][k])
+						{
+							del = false;
+							break;
+						}
+					}
+
+					if(del)
+					{
+						m_widgets.pop_back();
+						m_widgetsSize.pop_back();
+					}
+				}
+
+				//Delete the row if needed
+				if(j == m_widgets[i].size() - 1)
+				{
+					for(uint32_t k=0; k < m_widgets.size(); k++)
+					{
+						if(m_widgets[k][j])
+						{
+							del = false;
+							break;
+						}
+					}
+
+					if(del)
+						for(uint32_t k=0; k < m_widgets.size(); k++)
+						{
+							m_widgets[k].pop_back();
+							m_widgetsSize[k].pop_back();
+						}
+				}
+
+				goto endFor;
+			}
+		}
+	}
+
+	endFor:
+	if(found)
+		resetPosition();
+}
+
+void GridLayout::removeAll()
+{
+	//Delete the widgets as children
+	for(uint32_t i=0; i < m_widgets.size(); i++)
+		for(uint32_t j=0; j < m_widgets[i].size(); j++)
+			if(m_widgets[i][j])
+				m_widgets[i][j]->setParent(NULL);
+
+	m_widgets.clear();
+	m_widgetsSize.clear();
+	resetPosition();
 }

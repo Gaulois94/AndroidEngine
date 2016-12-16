@@ -29,6 +29,8 @@ class GridLayout : public Updatable, public GroupTransformable
 		 * \param drawable The Widget to remove*/
 		void removeWidget(uint32_t x, uint32_t y);
 
+		void removeAll();
+
 		virtual Rectangle3f getGlobalRect() const;
 		virtual glm::mat4 getMatrix() const;
 	private:

@@ -16,6 +16,8 @@ class Callback
 
 		/** \brief call the func with the data if the func exists*/
 		void fire();
+
+		void* getData(){return m_data;}
 	private:
 		void (*m_func)(void*);
 		void* m_data;
