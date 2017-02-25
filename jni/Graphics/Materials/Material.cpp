@@ -28,13 +28,14 @@ void Material::init(Render& render, const glm::mat4& mvp, const glm::mat4& model
 {
 	if(!m_shader)
 		return;
-	GLint uMaskColor      = glGetUniformLocation(m_shader->getProgramID(), "uMaskColor");
-	GLint uUseTexture     = glGetUniformLocation(m_shader->getProgramID(), "uUseTexture");
-	GLint uTextureHandle  = glGetUniformLocation(m_shader->getProgramID(), "uTexture");
-	GLint uOpacityHandle  = glGetUniformLocation(m_shader->getProgramID(), "uOpacity");
-	GLint uModelMatrix    = glGetUniformLocation(m_shader->getProgramID(), "uModelMatrix");
+	GLint uMaskColor          = glGetUniformLocation(m_shader->getProgramID(), "uMaskColor");
+	GLint uUseTexture         = glGetUniformLocation(m_shader->getProgramID(), "uUseTexture");
+	GLint uTextureHandle      = glGetUniformLocation(m_shader->getProgramID(), "uTexture");
+	GLint uOpacityHandle      = glGetUniformLocation(m_shader->getProgramID(), "uOpacity");
+	GLint uModelMatrix        = glGetUniformLocation(m_shader->getProgramID(), "uModelMatrix");
 
-	GLint uClippingClip   = glGetUniformLocation(m_shader->getProgramID(), "uClipping.clip");
+	GLint uLocalClippingClip  = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.clip");
+	GLint uGlobalClippingClip = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.clip");
 
 	if(m_texture)
 	{
@@ -65,47 +66,33 @@ void Material::init(Render& render, const glm::mat4& mvp, const glm::mat4& model
 	if(uModelMatrix != -1)
 		glUniformMatrix4fv(uModelMatrix, 1, false, glm::value_ptr(modelMatrix));
 
-	if(uClippingClip != -1)
+	if(uLocalClippingClip != -1)
 	{
-		GLint uClippingX      = glGetUniformLocation(m_shader->getProgramID(), "uClipping.x");
-		GLint uClippingY      = glGetUniformLocation(m_shader->getProgramID(), "uClipping.y");
-		GLint uClippingWidth  = glGetUniformLocation(m_shader->getProgramID(), "uClipping.width");
-		GLint uClippingHeight = glGetUniformLocation(m_shader->getProgramID(), "uClipping.height");
+		GLint uLocalClippingX      = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.x");
+		GLint uLocalClippingY      = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.y");
+		GLint uLocalClippingWidth  = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.width");
+		GLint uLocalClippingHeight = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.height");
 
-		glUniform1i(uClippingClip, m_enableClipping || Material::globalEnableClipping);
-		if(m_enableClipping)
-		{
-			if(Material::globalEnableClipping)
-			{
-				float xMin, xMax, yMin, yMax;
-				xMin = fmax(m_clip.x, Material::globalClipping.x);
-				xMax = fmin(m_clip.x + m_clip.width, Material::globalClipping.x + Material::globalClipping.width);
-				yMin = fmax(m_clip.y, Material::globalClipping.y);
-				yMax = fmin(m_clip.y + m_clip.height, Material::globalClipping.y + Material::globalClipping.height);
+		glUniform1i(uLocalClippingClip, m_enableClipping);
+        glUniform1f(uLocalClippingX, m_clip.x);
+        glUniform1f(uLocalClippingY, m_clip.y);
+        glUniform1f(uLocalClippingWidth, m_clip.width);
+        glUniform1f(uLocalClippingHeight, m_clip.height);
+    }
 
-				glUniform1f(uClippingX, yMin);
-				glUniform1f(uClippingY, yMin);
-				glUniform1f(uClippingWidth, fmax(xMax - xMin, 0.0));
-				glUniform1f(uClippingHeight, fmax(yMax - yMin, 0.0));
-			}
+    if(uGlobalClippingClip != -1)
+    {
+		GLint uGlobalClippingX      = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.x");
+		GLint uGlobalClippingY      = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.y");
+		GLint uGlobalClippingWidth  = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.width");
+		GLint uGlobalClippingHeight = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.height");
 
-			else
-			{
-				glUniform1f(uClippingX, m_clip.x);
-				glUniform1f(uClippingY, m_clip.y);
-				glUniform1f(uClippingWidth, m_clip.width);
-				glUniform1f(uClippingHeight, m_clip.height);
-			}
-		}
-
-		else if(Material::globalEnableClipping)
-		{
-			glUniform1f(uClippingX, Material::globalClipping.x);
-			glUniform1f(uClippingY, Material::globalClipping.y);
-			glUniform1f(uClippingWidth, Material::globalClipping.width);
-			glUniform1f(uClippingHeight, Material::globalClipping.height);
-		}
-	}
+		glUniform1i(uGlobalClippingClip, Material::globalEnableClipping);
+        glUniform1f(uGlobalClippingX, Material::globalClipping.x);
+        glUniform1f(uGlobalClippingY, Material::globalClipping.y);
+        glUniform1f(uGlobalClippingWidth, Material::globalClipping.width);
+        glUniform1f(uGlobalClippingHeight, Material::globalClipping.height);
+    }
 }
 
 void Material::bindTexture(const Texture* texture)

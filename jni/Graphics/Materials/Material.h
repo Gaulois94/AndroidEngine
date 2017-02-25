@@ -47,12 +47,28 @@ class Material : public JniMadeOf
 		/** \brief set the opacity. Value inferior to 0 is understand as no opacity handler*/
 		void setOpacity(float opac);
 
+		/** \brief set the local clipping of the material. The local clipping is a clipping based on the model coordinates system
+		 * \param clip the new local clipping */
 		void setClipping(const Rectangle2f& clip);
+
+		/** \brief enable the local clipping.
+		 * \param enable If the local clipping should be taking in account */
 		void enableClipping(bool enable);
 
+		/** \brief set the global clipping. Global clipping is the clipping based on the view coordinates (screen coordinates)
+		 * \param clip The new global clipping*/
 		static void setGlobalClipping(const Rectangle2f& clip);
+
+		/** \brief enable the global clipping.
+		 * \param enable If the global clipping should be taking in account */
 		static void enableGlobalClipping(bool enable);
+
+		/** \brief get the global clipping
+		 * \return the global clipping*/
 		static const Rectangle2f& getGlobalClipping();
+
+		/** \brief get whether or not the global clipping is enabled
+		 * \return the local clipping*/
 		static bool getGlobalEnableClipping();
 	protected:
 		const Shader* m_shader;

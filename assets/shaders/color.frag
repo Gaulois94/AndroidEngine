@@ -16,20 +16,33 @@ uniform bool uUseTexture;
 uniform bool uUseUniColor;
 uniform vec4 uUniColor;
 
-uniform Clipping uClipping;
+uniform Clipping uLocalClipping;
+uniform Clipping uGlobalClipping;
 
 varying vec2 varyTextureCoord;
 varying vec4 varyColor;
 varying vec4 varyModelPosition;
+varying vec4 varyPosition;
 
 void main()
 {
-	if(uClipping.clip)
+	//Do the clipping
+	//You have local clipping 
+	if(uLocalClipping.clip)
 	{
-		if(varyModelPosition.x < uClipping.x || varyModelPosition.y < uClipping.y 
-		   || varyModelPosition.x > uClipping.x +uClipping.width || varyModelPosition.y > uClipping.y + uClipping.height)
+		if(varyModelPosition.x < uLocalClipping.x || varyModelPosition.y < uLocalClipping.y 
+		   || varyModelPosition.x > uLocalClipping.x +uLocalClipping.width || varyModelPosition.y > uLocalClipping.y + uLocalClipping.height)
 			discard;
 	}
+
+	//And global clipping 
+	if(uGlobalClipping.clip)
+	{
+		if(varyPosition.x < uGlobalClipping.x || varyPosition.y < uGlobalClipping.y 
+		   || varyPosition.x > uGlobalClipping.x +uGlobalClipping.width || varyPosition.y > uGlobalClipping.y + uGlobalClipping.height)
+			discard;
+	}
+
 	if(uUseUniColor)
 		gl_FragColor = uUniColor;
 	else

@@ -22,7 +22,7 @@ Rectangle2<T> getRectIntersect(const Rectangle2<T>& r1, const Rectangle2<T>& r2)
 	yMin = fmax(r1.y, r2.y);
 	yMax = fmin(r1.y + r1.height, r2.y + r2.height);
 
-	return Rectangle2<T>(xMin, xMax, fmax(xMax - xMin, (T)(0.0)), fmax(yMax - yMin, (T)(0.0)));
+	return Rectangle2<T>(xMin, yMin, fmax(xMax-xMin, T(0.0)), fmax(yMax-yMin, T(0.0)));
 }
 
 template <typename T>
@@ -37,7 +37,7 @@ Rectangle3<T> getRectIntersect(const Rectangle3<T>& r1, const Rectangle3<T>& r2)
 	zMin = fmax(r1.z, r2.z);
 	zMax = fmin(r1.z + r1.depth, r2.z + r2.depth);
 
-	return Rectangle3<T>(xMin, xMax, fmax(xMax - xMin, (T)(0.0)), fmax(yMax - yMin, (T)(0.0)), zMin, fmax(zMax - zMin, (T)(0.0)));
+	return Rectangle3<T>(xMin, yMin, zMin, fmax(xMax - xMin, (T)(0.0)), fmax(yMax - yMin, (T)(0.0)), fmax(zMax - zMin, (T)(0.0)));
 }
 
 template <typename T>

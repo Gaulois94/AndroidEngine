@@ -105,6 +105,8 @@ void Menu::addItemMenu(ItemMenu* itemMenu)
 	}
 
 	itemMenu->setUpdateConfig(m_activeListener);
+	if(m_outsideListener)
+		itemMenu->setActiveListener(*m_outsideListener);
 
 	setDefaultSize(glm::vec3(size.x, size.y, 0.0f));
 	setDefaultPos(glm::vec3(0, -size.y, 0.0f));
@@ -131,14 +133,15 @@ Rectangle3f Menu::getDefaultConf() const
 	return Rectangle3f(getDefaultPos(), glm::vec3(size.x, size.y, 0.0f));
 }
 
+void Menu::fireUpdateConfiguration(Active* item, void* menu)
+{
+	Menu* self = ((Menu*)menu);
+	self->updateConfiguration();
+}
+
 void Menu::updateConfiguration()
 {
 
-}
-
-void Menu::fireUpdateConfiguration(Active* item, void* menu)
-{
-	((Menu*)menu)->updateConfiguration();
 }
 
 void Menu::onFocus(uint32_t pe, Render& r)

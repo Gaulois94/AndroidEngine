@@ -11,17 +11,29 @@ struct Clipping
 
 varying vec2 vary_textureCoord;
 
-uniform Clipping uClipping;
+uniform Clipping uLocalClipping;
+uniform Clipping uGlobalClipping;
 uniform sampler2D uTexture;
 uniform float uOpacity;
 varying vec4 varyModelPosition;
+varying vec4 varyPosition;
 
 void main()
 {
-	if(uClipping.clip)
+	//Do the clipping
+	//You have local clipping 
+	if(uLocalClipping.clip)
 	{
-		if(varyModelPosition.x < uClipping.x || varyModelPosition.y < uClipping.y 
-		   || varyModelPosition.x > uClipping.x +uClipping.width || varyModelPosition.y > uClipping.y + uClipping.height)
+		if(varyModelPosition.x < uLocalClipping.x || varyModelPosition.y < uLocalClipping.y 
+		   || varyModelPosition.x > uLocalClipping.x +uLocalClipping.width || varyModelPosition.y > uLocalClipping.y + uLocalClipping.height)
+			discard;
+	}
+
+	//And global clipping 
+	if(uGlobalClipping.clip)
+	{
+		if(varyPosition.x < uGlobalClipping.x || varyPosition.y < uGlobalClipping.y 
+		   || varyPosition.x > uGlobalClipping.x +uGlobalClipping.width || varyPosition.y > uGlobalClipping.y + uGlobalClipping.height)
 			discard;
 	}
 

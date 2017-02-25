@@ -13,8 +13,6 @@ TextEntry::TextEntry(Updatable* parent, Material*textMaterial, const Font* font,
 	m_cursor.setUpdateFocus(false);
 	m_textDrawable.setUpdateFocus(false);
 	m_rectangle.setUpdateFocus(false);
-//	m_rectangle.staticToCamera(true);
-//	m_textDrawable.staticToCamera(true);
 }
 
 void TextEntry::onUpdate(Render& render)
@@ -114,7 +112,6 @@ void TextEntry::setFont(const Font* font)
 
 void TextEntry::setText(const char* text)
 {
-	LOG_ERROR("TEXT %s", text);
 	TextInterface::setText(text);
 	m_textDrawable.setText(text);
 }

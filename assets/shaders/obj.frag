@@ -1,6 +1,17 @@
 precision mediump float;
+
+struct Clipping
+{
+	bool  clip;
+	float x;
+	float y;
+	float width;
+	float height;
+};
+
 varying vec3 varyNormal;
 varying vec3 varyN;
+varying vec4 varyModelPosition;
 varying vec3 varyCameraPos;
 varying mat4 varyCameraMVP;
 
@@ -10,8 +21,30 @@ uniform vec3 uSpecularColor;
 uniform float uTransparent;
 uniform float uSpecularHighlight;
 
+//Clipping
+uniform Clipping uLocalClipping;
+uniform Clipping uGlobalClipping;
+
+
 void main()
 {
+	//Do the clipping
+	//You have local clipping 
+	if(uLocalClipping.clip)
+	{
+		if(varyModelPosition.x < uLocalClipping.x || varyModelPosition.y < uLocalClipping.y 
+		   || varyModelPosition.x > uLocalClipping.x +uLocalClipping.width || varyModelPosition.y > uLocalClipping.y + uLocalClipping.height)
+			discard;
+	}
+
+	//And global clipping 
+	if(uGlobalClipping.clip)
+	{
+		if(varyN.x < uGlobalClipping.x || varyN.y < uGlobalClipping.y 
+		   || varyN.x > uGlobalClipping.x +uGlobalClipping.width || varyN.y > uGlobalClipping.y + uGlobalClipping.height)
+			discard;
+	}
+
 	highp vec3 L  = (varyCameraMVP * vec4(0.0, 0.0, 2.0, 1.0)).xyz; /*Light Position*/
 	highp vec3 N  = normalize(varyNormal);
 	highp vec3 directionLight  = normalize(L-varyN);

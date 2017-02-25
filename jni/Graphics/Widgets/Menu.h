@@ -26,6 +26,9 @@ class Menu : public Drawable
 		/** \brief set the alignement of ItemMenu. Default : BOTTOM_RIGHT
 		 * \param alignement The new ItemMenu alignement*/
 		void setItemAlignment(XAlignment alignement);
+		void setActiveListener(ActiveListener* al) {m_outsideListener = al; for(auto& im : m_itemsMenu) im->setActiveListener(*al);}
+
+		std::vector<ItemMenu*>& getItems() {return m_itemsMenu;}
 	private:
 		void updateConfiguration();
 		static void fireUpdateConfiguration(Active* item, void* menu);
@@ -34,6 +37,7 @@ class Menu : public Drawable
 		std::vector<ItemMenu*> m_itemsMenu;
 		Drawable* m_background;
 		ActiveListener m_activeListener;
+		ActiveListener* m_outsideListener=NULL;
 
 		XAlignment m_itemOrigin = X_LEFT;
 };

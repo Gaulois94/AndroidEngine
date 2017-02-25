@@ -11,6 +11,8 @@ ScrollWindow::~ScrollWindow()
 
 void ScrollWindow::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
+	if(!m_updateFocus || !m_canUpdate)
+		return;
 	if(testFocus(te, render, mvp))
 	{
 		onFocus(te, render, mvp);
@@ -69,6 +71,6 @@ void ScrollWindow::onUpdate(Render &render)
 {
 	const Rectangle3f rect = getRect();
 	m_clip = Rectangle2f(rect.x, rect.y, rect.width, rect.height);
-	if(m_isActive)
+	if(m_isActive && m_onFocusCount < MAX_SCROLLWINDOW_COUNT)
 		m_onFocusCount++;
 }

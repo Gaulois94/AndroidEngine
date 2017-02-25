@@ -23,7 +23,7 @@ Updatable::~Updatable()
 
 void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	if(!m_updateFocus || !m_canUpdate)
+	if(!m_updateFocus || !m_canUpdate || Updatable::focusIsCheck)
 		return;
 
 	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); ++it)
@@ -127,14 +127,9 @@ void Updatable::updateGPU(Render& render)
 			restoreClip = true;
 			clip = Material::getGlobalClipping();
 
-			Rectangle2f r = getRectIntersect(Rectangle2f(clip.x, clip.y, clip.height, clip.width), Rectangle2f(m_clip.x, m_clip.y, m_clip.height, m_clip.width));
+			Rectangle2f r = getRectIntersect(clip, m_clip);
 
-			clip.x = r.x;
-			clip.y = r.y;
-			clip.width = r.width;
-			clip.height = r.height;
-
-			Material::setGlobalClipping(clip);
+			Material::setGlobalClipping(r);
 		}
 
 		else
@@ -153,6 +148,9 @@ void Updatable::updateGPU(Render& render)
 		Material::enableGlobalClipping(mEnableClip);
 		Material::setGlobalClipping(clip);
 	}
+
+	else if(!mEnableClip)
+		Material::enableGlobalClipping(false);
 }
 
 void Updatable::onUpdate(Render &render)
