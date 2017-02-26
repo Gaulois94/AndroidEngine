@@ -52,7 +52,7 @@ void Menu::addItemMenu(ItemMenu* itemMenu)
 	//Size of previous items
 	for(ItemMenu* item : m_itemsMenu)
 	{
-		g = item->getDefaultSize() * item->getScale();
+		g = item->getRect().getSize();
 		size.x = fmax(size.x, g.x);
 		size.y += g.y;
 	}
@@ -60,13 +60,13 @@ void Menu::addItemMenu(ItemMenu* itemMenu)
 	//Size of the title
 	if(m_title)
 	{
-		g = m_title->getDefaultSize() * m_title->getScale();
+		g = m_title->getRect().getSize();
 		size.x = fmax(size.x, g.x);
 		size.y += g.y;
 	}
 
 	//Size of this item
-	g = itemMenu->getDefaultSize() * itemMenu->getScale();
+	g = itemMenu->getRect().getSize();
 	size.x = fmax(size.x, g.x);
 	size.y += g.y;
 
@@ -159,7 +159,7 @@ void Menu::setItemAlignment(XAlignment p)
 
 	for(ItemMenu* it : m_itemsMenu)
 	{
-		sum += it->getDefaultSize().y * it->getScale().y;
+		sum += it->getRect().height;
 		switch(p)
 		{
 			case X_LEFT:

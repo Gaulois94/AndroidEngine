@@ -42,6 +42,8 @@ class ScrollWidget : public Active, public Drawable
 
 		void setActiveScroll(bool as) {m_activeScroll = as;}
 
+		const Vector2f& getMoveValue() const{return m_value;}
+
 		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f)){}
 	private:
 		Transformable m_childTrans;
@@ -52,7 +54,7 @@ class ScrollWidget : public Active, public Drawable
 		Vector2f m_value;
 		Vector2f m_oldValue;
 		Rectangle2f m_maxBound;
-		Axis m_axis;
+		Axis m_axis = XY_AXIS;
 		bool m_activeScroll=true;
 };
 

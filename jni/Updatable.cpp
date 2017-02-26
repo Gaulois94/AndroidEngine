@@ -317,6 +317,8 @@ bool Updatable::getEnableClipping() const
 void Updatable::setChildrenTransformable(const Transformable* tr)
 {
 	m_applyMatrix = tr;
+	for(auto* it : m_child)
+		it->addParentTransformable(this);
 }
 
 void Updatable::addParentTransformable(const Updatable* parent)
@@ -347,6 +349,15 @@ Rectangle3f Updatable::getGlobalRect() const
 		return rect;
 	}
 	return Rectangle3f();
+}
+
+glm::mat4 Updatable::getApplyChildrenMatrix() const
+{
+	if(m_parent)
+	{
+		return m_parent->getApplyChildrenMatrix() * ((m_applyMatrix) ? m_applyMatrix->Transformable::getMatrix() : glm::mat4(1.0f));
+	}
+	return (m_applyMatrix) ? m_applyMatrix->Transformable::getMatrix() : glm::mat4(1.0f);
 }
 
 const Transformable* Updatable::getApplyChildrenTransformable() const

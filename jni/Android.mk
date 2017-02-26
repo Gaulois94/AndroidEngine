@@ -4,7 +4,7 @@ include $(CLEAR_VARS)
 LOCAL_C_INCLUDES += $(NDK_APP_PROJECT_PATH)/jni/Graphics/
 LOCAL_C_INCLUDES += $(NDK_APP_PROJECT_PATH)/../expat-android/jni/lib/
 LOCAL_MODULE := engine
-LOCAL_CFLAGS := -Wall --std=c++11
+LOCAL_CFLAGS := -Wall --std=c++11 -g
 APP_OPTIM := debug
 
 LOCAL_SRC_FILES := ChangeMvp.cpp Graphics/RenderTexture.cpp Graphics/RenderDrawabled.cpp

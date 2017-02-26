@@ -70,8 +70,6 @@ void ScrollWidget::onMoveEvent(const TouchEvent& te, Render& render, const glm::
 {
 	if(m_activeScroll && isActive())
 	{
-		Rectangle3f gRect = getDefaultConf();
-
 		//Compute the movement
 		float vX = -(te.x - m_onFocusPos.x);
 		float vY = -(te.y - m_onFocusPos.y);
@@ -80,36 +78,35 @@ void ScrollWidget::onMoveEvent(const TouchEvent& te, Render& render, const glm::
 		if(m_axis == X_AXIS || m_axis == XY_AXIS)
 		{
 			m_value.x = fmax(m_oldValue.x + vX, m_maxBound.x); 
-			m_value.x = fmin(m_value.x, m_maxBound.x - gRect.width + m_maxBound.width);
+			m_value.x = fmin(m_value.x, m_maxBound.x + m_maxBound.width);
 		}
 		if(m_axis == Y_AXIS || m_axis == XY_AXIS)
 		{
 			m_value.y = fmax(m_oldValue.y + vY, m_maxBound.y); 
-			m_value.y = fmin(m_value.y, m_maxBound.y - gRect.height + m_maxBound.height);
+			m_value.y = fmin(m_value.y, m_maxBound.y + m_maxBound.height);
 		}
 
 		//Set the clip
-		m_childTrans.setPosition(glm::vec3(m_value.x, m_value.y, 0));
+		m_childTrans.setPosition(glm::vec3(m_value.x, m_value.y, 0), true);
 	}
 }
 
 void ScrollWidget::setMaxBound(const Rectangle2f& r)
 {
 	m_maxBound = r;
-	Rectangle3f gRect = getDefaultConf();
 
 	if(m_axis == X_AXIS || m_axis == XY_AXIS)
 	{
 		m_value.x = fmax(m_value.x, m_maxBound.x); 
-		m_value.x = fmin(m_value.x, m_maxBound.x - gRect.width + m_maxBound.width);
+		m_value.x = fmin(m_value.x, m_maxBound.x + m_maxBound.width);
 	}
 	if(m_axis == Y_AXIS || m_axis == XY_AXIS)
 	{
 		m_value.y = fmax(m_value.y, m_maxBound.y); 
-		m_value.y = fmin(m_value.y, m_maxBound.y - gRect.height + m_maxBound.height);
+		m_value.y = fmin(m_value.y, m_maxBound.y + m_maxBound.height);
 	}
 
-	m_childTrans.setPosition(glm::vec3(m_value.x, m_value.y, 0));
+	m_childTrans.setPosition(glm::vec3(m_value.x, m_value.y, 0), true);
 }
 
 void ScrollWidget::setMoveValue(const Vector2f& mv)

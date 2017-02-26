@@ -17,7 +17,7 @@ class SlideMenu : public Drawable
 		 * \param maxSize the size used to clip the Widget when the menu is ON
 		 * \param backgroundItem the Drawable drawn just before the active item
 		 * \param backgroundMenu the Drawable drawn behind the SlideMenu while in activation*/
-		SlideMenu(Updatable* parent, const Vector2f& maxSize, Drawable* backgroundItem=NULL, Drawable* backgroundMenu = NULL);
+		SlideMenu(Updatable* parent, float height, Drawable* backgroundItem=NULL, Drawable* backgroundMenu = NULL);
 
 		~SlideMenu();
 
@@ -51,6 +51,7 @@ class SlideMenu : public Drawable
 		Drawable*              m_backgroundActive;
 		ActiveListener         m_itemListener;
 		Status                 m_status = OFF;
+		float                  m_height;
 };
 
 #endif

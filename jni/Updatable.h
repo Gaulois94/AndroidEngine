@@ -156,6 +156,8 @@ class Updatable : public JniMadeOf
 
 		static Updatable* objectFocused;
 		const Transformable* getApplyChildrenTransformable() const;
+
+		glm::mat4 getApplyChildrenMatrix() const;
 	protected:
 		//Functions used for Transformable trees. SHOULD BE TESTED
 		virtual void setChildrenTransformable(const Transformable* tr);

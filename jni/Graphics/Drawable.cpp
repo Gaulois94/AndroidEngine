@@ -119,8 +119,24 @@ Rectangle3f Drawable::getGlobalRect() const
 glm::mat4 Drawable::getMatrix() const
 {
 	glm::mat4 m = Transformable::getMatrix();
-	for(uint32_t i=0; i < m_parentTransformables.size(); i++)
+	/*for(uint32_t i=0; i < m_parentTransformables.size(); i++)
 		if(m_parentTransformables[i]->getApplyChildrenTransformable())
+		{
+			glm::vec4 temp;
 			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
+		}
+	*/
+
+	if(m_applyTransformation)
+		return m;
+
+	const Updatable* p = m_parent;
+	while(p != NULL)
+	{
+		if(p->getApplyChildrenTransformable())
+			m = p->getApplyChildrenTransformable()->getMatrix() * m;
+		p = p->getParent();
+	}
+
 	return m;
 }

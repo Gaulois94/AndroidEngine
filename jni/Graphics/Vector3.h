@@ -2,7 +2,7 @@
 #define VECTOR3_INCLUDE
 
 template<typename T>
-class Vector3<T>
+class Vector3
 {
 	public:
 		Vector3<T>(T a=0, T b=0, T c=0)
@@ -19,13 +19,13 @@ class Vector3<T>
 			z = v.z;
 		}
 
-		Vector2<T>& operator=(const Vector2<T>& copy)
+		Vector3<T>& operator=(const Vector3<T>& copy)
 		{
-			if(*copy != this)
+			if(&copy != this)
 			{
-				x = v.x;
-				y = v.y;
-				z = v.z;
+				x = copy.x;
+				y = copy.y;
+				z = copy.z;
 			}
 
 			return *this;

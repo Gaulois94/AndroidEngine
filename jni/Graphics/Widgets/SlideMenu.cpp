@@ -1,16 +1,16 @@
 #include "Widgets/SlideMenu.h"
 
-SlideMenu::SlideMenu(Updatable* parent, const Vector2f& maxSize, Drawable* backgroundItem, Drawable* backgroundMenu) : Drawable(parent, NULL, Rectangle3f(glm::vec3(0, 0, 0) ,glm::vec3(0, 0, 0))),
-//	m_scrollWidget(this, Rectangle2f(0.0, 0.0, 1.0, 1.0), Rectangle3f(0.0, 0.0, 0.0, maxSize.x, maxSize.y, 0.0)),
-	m_scrollWidget(this),
+SlideMenu::SlideMenu(Updatable* parent, float height, Drawable* backgroundItem, Drawable* backgroundMenu) : Drawable(parent, NULL, Rectangle3f(glm::vec3(0, 0, 0) ,glm::vec3(0, 0, 0))),
+	m_scrollWidget(this, Rectangle2f(0.0, 0.0, 0.0, 0.0), Rectangle3f(0, -height, 0.0, 0.0, height, 0.0)),
 	m_hiddenMenu(&m_scrollWidget, NULL, glm::vec3(0.0, 0.0, 0.0), backgroundMenu),
-   	m_backgroundActive(backgroundItem), m_itemListener(SlideMenu::listenerCallback, (void*)this)
+   	m_backgroundActive(backgroundItem), m_itemListener(SlideMenu::listenerCallback, (void*)this),
+	m_height(height)
 {
 	m_hiddenMenu.setActiveListener(&m_itemListener);
-	m_scrollWidget.enableClipping(false);
+//	m_scrollWidget.enableClipping(false);
 	if(backgroundItem)
 		addChild(backgroundItem);
-//	m_scrollWidget.setCanUpdate(true);
+	m_scrollWidget.setCanUpdate(true);
 }
 
 SlideMenu::~SlideMenu()
@@ -25,11 +25,13 @@ SlideMenu::~SlideMenu()
 void SlideMenu::addItemMenu(ItemMenu* im)
 {
 	m_hiddenMenu.addItemMenu(im);
-	updateConfiguration();
 
 	Rectangle3f hr = m_hiddenMenu.getDefaultConf();
-	m_scrollWidget.setMaxBound(Rectangle2f(hr.x, hr.y, hr.width, hr.height));
-//	m_scrollWidget.setMoveValue(Vector2f(0.0, 0.0));
+	m_scrollWidget.setDefaultConf(Rectangle3f(hr.x, -m_height, hr.z, hr.width, m_height, hr.depth));
+	m_scrollWidget.setMaxBound(Rectangle2f(0.0, 0.0, 0.0, fmax(0.0, hr.height - m_height)));
+	m_scrollWidget.setMoveValue(Vector2f(0.0, 0.0));
+
+	updateConfiguration();
 }
 
 void SlideMenu::addText(Material* m, Font* f, const std::string& t, const glm::vec3& defScale)
@@ -51,7 +53,7 @@ void SlideMenu::updateConfiguration()
 
 	if(m_status == ON)
 	{
-		m_scrollWidget.setCanUpdate(true);
+		m_scrollWidget.setActiveScroll(true);
 
 		//Show every item menu
 		for(uint32_t i=0; i < m_hiddenMenu.getItems().size(); i++)
@@ -62,16 +64,15 @@ void SlideMenu::updateConfiguration()
 
 	else if(m_status == OFF)
 	{
-		m_itemMenu->setParent(NULL);
-		m_scrollWidget.setCanUpdate(false);
-		addChild(m_itemMenu, 1);
+		m_scrollWidget.setActiveScroll(false);
 
 		//Hide everything except our item
 		for(uint32_t i=0; i < m_hiddenMenu.getItems().size(); i++)
 			m_hiddenMenu.getItems()[i]->setCanUpdate(false);
 		m_itemMenu->setCanUpdate(true);
 
-		m_scrollWidget.setMoveValue(Vector2f(0.0, -m_itemMenu->getPosition().y));
+		Rectangle3f r = m_itemMenu->getRect();
+		m_scrollWidget.setMoveValue(Vector2f(0.0, -m_itemMenu->getPosition().y - r.height));
 	}
 }
 

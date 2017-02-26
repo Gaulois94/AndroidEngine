@@ -7,6 +7,7 @@
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
 #include "Graphics/Rectangle2.h"
+#include "Graphics/Vector3.h"
 
 /** \brief the 3D rectangle operations.*/
 template<typename T>
@@ -49,6 +50,9 @@ class Rectangle3
 			height = rect.height;
 			depth  = rDepth;
 		}
+
+		glm::vec3 getSize() const {return glm::vec3(width, height, depth);}
+		glm::vec3 getPosition() const {return glm::vec3(x, y, z.r);}
 
 		T x;
 		T y;

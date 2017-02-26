@@ -5,7 +5,7 @@ ItemMenu::ItemMenu(Updatable* parent, Drawable* item) : Drawable(parent, NULL, i
 	item->setParent(this);
 	item->setApplyTransformation(this);
 	item->setUpdateFocus(false);
-	setDefaultSize(m_item->getDefaultSize() * m_item->getScale());
+	setDefaultSize(m_item->getRect().getSize());
 }
 
 void ItemMenu::setUpdateConfig(const ActiveListener& fu)
