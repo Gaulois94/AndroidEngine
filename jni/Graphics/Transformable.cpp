@@ -352,4 +352,5 @@ void Transformable::setResquestSize(const glm::vec3& v, bool keepPos)
 							 v.y / ((ds.y != 0) ? ds.y : 1),
 							 v.z / ((ds.z != 0) ? ds.z : 1));
 	setScale(s, keepPos);
+
 }

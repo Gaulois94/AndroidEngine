@@ -62,12 +62,14 @@ void Menu::addItemMenu(ItemMenu* itemMenu)
 	{
 		g = m_title->getRect().getSize();
 		size.x = fmax(size.x, g.x);
+		m_maxItemSize.y = fmax(m_maxItemSize.y, g.y);
 		size.y += g.y;
 	}
 
 	//Size of this item
 	g = itemMenu->getRect().getSize();
 	size.x = fmax(size.x, g.x);
+	m_maxItemSize.y = fmax(m_maxItemSize.y, g.y);
 	size.y += g.y;
 
 	switch(m_itemOrigin)
@@ -110,6 +112,7 @@ void Menu::addItemMenu(ItemMenu* itemMenu)
 
 	setDefaultSize(glm::vec3(size.x, size.y, 0.0f));
 	setDefaultPos(glm::vec3(0, -size.y, 0.0f));
+	m_maxItemSize.x = size.x;
 }
 
 Rectangle3f Menu::getDefaultConf() const

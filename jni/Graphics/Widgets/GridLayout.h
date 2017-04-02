@@ -31,12 +31,15 @@ class GridLayout : public Updatable, public GroupTransformable
 
 		void removeAll();
 
+		void setRescale(bool r){m_rescale = r;}
+
 		virtual Rectangle3f getGlobalRect() const;
 		virtual glm::mat4 getMatrix() const;
 	private:
 		/** \brief Replace correctly the widget on the GridLayout*/
 		void resetPosition();
 
+		bool m_rescale = true;
 		std::vector<std::vector<Drawable*>> m_widgets;/* <!All the widgets */
 		std::vector<std::vector<Vector2ui>> m_widgetsSize; /* <!All the widgets case taken */
 };

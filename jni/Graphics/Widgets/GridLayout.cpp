@@ -59,7 +59,7 @@ void GridLayout::resetPosition()
 
 				maxSizeX = fmax(colRect.width / (float)caseSize.x, maxSizeX);
 				maxSizeY = fmax(colRect.height / (float)caseSize.y, maxSizeY);
-				maxSizeZ = fmax(colRect.depth, maxSizeY);
+				maxSizeZ = fmax(colRect.depth, maxSizeZ);
 			}
 		}
 	}
@@ -70,7 +70,8 @@ void GridLayout::resetPosition()
 		{
 			if(m_widgets[i][j] && m_widgetsSize[i][j].x != 0)
 			{
-				m_widgets[i][j]->setResquestSize(glm::vec3(maxSizeX * m_widgetsSize[i][j].x, maxSizeY * m_widgetsSize[i][j].y, 1.0), true);
+				if(m_rescale)
+					m_widgets[i][j]->setResquestSize(glm::vec3(maxSizeX * m_widgetsSize[i][j].x, maxSizeY * m_widgetsSize[i][j].y, 1.0), true);
 				m_widgets[i][j]->setPosition(glm::vec3(maxSizeX*i, maxSizeY*j, 0.0f));
 			}
 		}

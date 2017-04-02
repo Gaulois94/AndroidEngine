@@ -45,6 +45,9 @@ class ScrollWidget : public Active, public Drawable
 		const Vector2f& getMoveValue() const{return m_value;}
 
 		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f)){}
+
+		void enableReverseX(bool e){m_reverseX = e;}
+		void enableReverseY(bool e){m_reverseY = e;}
 	private:
 		Transformable m_childTrans;
 		uint32_t m_onFocusCount;
@@ -56,6 +59,8 @@ class ScrollWidget : public Active, public Drawable
 		Rectangle2f m_maxBound;
 		Axis m_axis = XY_AXIS;
 		bool m_activeScroll=true;
+		bool m_reverseX=false;
+		bool m_reverseY=false;
 };
 
 #endif

@@ -6,6 +6,7 @@
 #include "Widgets/ItemMenu.h"
 #include "Widgets/Menu.h"
 #include "Widgets/ScrollWidget.h"
+#include "Rectangle3.h"
 
 class SlideMenu : public Drawable
 {

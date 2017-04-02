@@ -7,7 +7,6 @@ SlideMenu::SlideMenu(Updatable* parent, float height, Drawable* backgroundItem, 
 	m_height(height)
 {
 	m_hiddenMenu.setActiveListener(&m_itemListener);
-//	m_scrollWidget.enableClipping(false);
 	if(backgroundItem)
 		addChild(backgroundItem);
 	m_scrollWidget.setCanUpdate(true);
@@ -28,8 +27,11 @@ void SlideMenu::addItemMenu(ItemMenu* im)
 
 	Rectangle3f hr = m_hiddenMenu.getDefaultConf();
 	m_scrollWidget.setDefaultConf(Rectangle3f(hr.x, -m_height, hr.z, hr.width, m_height, hr.depth));
-	m_scrollWidget.setMaxBound(Rectangle2f(0.0, 0.0, 0.0, fmax(0.0, hr.height - m_height)));
 	m_scrollWidget.setMoveValue(Vector2f(0.0, 0.0));
+
+	Vector2f maxSize = m_hiddenMenu.getMaxItemSize();
+	setDefaultSize(glm::vec3(maxSize.x, maxSize.y, 0.0));
+	setDefaultPos(glm::vec3(0.0, -hr.height, 0.0));
 
 	updateConfiguration();
 }
@@ -59,6 +61,8 @@ void SlideMenu::updateConfiguration()
 		for(uint32_t i=0; i < m_hiddenMenu.getItems().size(); i++)
 			m_hiddenMenu.getItems()[i]->setCanUpdate(true);
 
+		Rectangle3f hr = m_hiddenMenu.getDefaultConf();
+		m_scrollWidget.setMaxBound(Rectangle2f(0.0, 0.0, 0.0, fmax(0.0, hr.height - m_height)));
 		m_scrollWidget.setMoveValue(Vector2f(0.0, 0.0));
 	}
 
@@ -72,6 +76,7 @@ void SlideMenu::updateConfiguration()
 		m_itemMenu->setCanUpdate(true);
 
 		Rectangle3f r = m_itemMenu->getRect();
+		m_scrollWidget.setMaxBound(Rectangle2f(0.0, 0.0, 0.0, -m_itemMenu->getPosition().y - r.height));
 		m_scrollWidget.setMoveValue(Vector2f(0.0, -m_itemMenu->getPosition().y - r.height));
 	}
 }
