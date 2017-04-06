@@ -10,6 +10,7 @@ SlideMenu::SlideMenu(Updatable* parent, float height, Drawable* backgroundItem, 
 	if(backgroundItem)
 		addChild(backgroundItem);
 	m_scrollWidget.setCanUpdate(true);
+	m_scrollWidget.setApplyTransformation(this);
 }
 
 SlideMenu::~SlideMenu()
@@ -31,7 +32,7 @@ void SlideMenu::addItemMenu(ItemMenu* im)
 
 	Vector2f maxSize = m_hiddenMenu.getMaxItemSize();
 	setDefaultSize(glm::vec3(maxSize.x, maxSize.y, 0.0));
-	setDefaultPos(glm::vec3(0.0, -hr.height, 0.0));
+	setDefaultPos(glm::vec3(0.0, -maxSize.y, 0.0));
 
 	updateConfiguration();
 }

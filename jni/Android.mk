@@ -1,5 +1,6 @@
 LOCAL_PATH := $(call my-dir)
 
+cmd-strip := 
 include $(CLEAR_VARS)
 LOCAL_C_INCLUDES += $(NDK_APP_PROJECT_PATH)/jni/Graphics/
 LOCAL_C_INCLUDES += $(NDK_APP_PROJECT_PATH)/../expat-android/jni/lib/

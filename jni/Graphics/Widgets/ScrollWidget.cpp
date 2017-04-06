@@ -4,6 +4,7 @@ ScrollWidget::ScrollWidget(Updatable* parent, const Rectangle2f& maxBound, const
 {
 	setMaxBound(m_maxBound);
 	m_permanentActivated = true;
+	m_childTrans.setApplyTransformation(this);
 	setChildrenTransformable(&m_childTrans);
 	m_enableClipping = true;
 }
@@ -47,11 +48,11 @@ void ScrollWidget::updateGPU(Render& r)
 {
 	if(m_enableClipping)
 	{
-		Rectangle3f globalRect = getRect();
+		Rectangle3f globalRect = getRect(r.getCamera().getMatrix());
 		m_clip                 = Rectangle2f(globalRect.x, globalRect.y, globalRect.width, globalRect.height);
 	}
 
-	Updatable::updateGPU(r);
+	Drawable::updateGPU(r);
 }
 
 void ScrollWidget::onTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)

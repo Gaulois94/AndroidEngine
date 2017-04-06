@@ -40,7 +40,8 @@ void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t 
 	}
 
 	drawable->setParent(this);
-	addTransformable(drawable);
+//	addTransformable(drawable);
+	drawable->setApplyTransformation(this);
 	resetPosition();
 }
 

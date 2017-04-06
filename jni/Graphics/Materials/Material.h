@@ -55,6 +55,10 @@ class Material : public JniMadeOf
 		 * \param enable If the local clipping should be taking in account */
 		void enableClipping(bool enable);
 
+		bool getEnableClipping() const {return m_enableClipping;}
+
+		const Rectangle2f& getClipping() const {return m_clip;}
+
 		/** \brief set the global clipping. Global clipping is the clipping based on the view coordinates (screen coordinates)
 		 * \param clip The new global clipping*/
 		static void setGlobalClipping(const Rectangle2f& clip);
