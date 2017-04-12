@@ -1,46 +1,47 @@
 #include "Button.h"
 
-Button::Button(Updatable *parent, Text &text, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(NULL), m_text(&text)
+Button::Button(Updatable *parent, Text &text, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(NULL), m_text(&text)
 {
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
 		setDefaultConf(m_text->getDefaultConf());
 
-	m_drawables.push_back(m_text);
-	m_drawables.push_back(m_background);
-	m_text->setParent(NULL);
+	m_text->setParent(this);
+	m_text->setApplyTransformation(this);
+	m_text->setUpdateFocus(false);
 	m_activeOnce = true;
 	centerText();
 	m_updateFocus = true;
 }
 
-Button::Button(Updatable *parent, Drawable &image, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(&image), m_text(NULL)
+Button::Button(Updatable *parent, Drawable &image, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(&image), m_text(NULL)
 {
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
 		setDefaultConf(m_background->getDefaultConf());
-	m_drawables.push_back(m_text);
-	m_drawables.push_back(m_background);
-	m_background->setParent(NULL);
+	m_background->setParent(this);
+	m_background->setApplyTransformation(this);
+	m_background->setUpdateFocus(false);
 	m_activeOnce = true;
 	m_updateFocus = true;
 }
 
-Button::Button(Updatable *parent, Text &text, Drawable &image, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(&image), m_text(&text)
+Button::Button(Updatable *parent, Text &text, Drawable &image, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(&image), m_text(&text)
 {
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
 		setDefaultConf(m_background->getDefaultConf());
-	m_drawables.push_back(m_text);
-	m_drawables.push_back(m_background);
-	m_background->setParent(NULL);
-	m_text->setParent(NULL);
+
+	m_text->setParent(this);
+	m_text->setApplyTransformation(this);
+	m_text->setUpdateFocus(false);
+	m_background->setParent(this);
+	m_background->setApplyTransformation(this);
+	m_background->setUpdateFocus(false);
 	centerText();
 	m_activeOnce = true;
 	m_updateFocus = true;
 }
 
-Button::Button(Updatable *parent, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(NULL), m_text(NULL)
+Button::Button(Updatable *parent, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(NULL), m_text(NULL)
 {
-	m_drawables.push_back(m_text);
-	m_drawables.push_back(m_background);
 	m_activeOnce = true;
 	m_updateFocus = true;
 }
@@ -52,12 +53,12 @@ void Button::onFocus(const TouchEvent& te, Render &render, const glm::mat4& mvp)
 
 void Button::update(Render &render)
 {
-	GroupDrawable::update(render);
+	Drawable::update(render);
 }
 
 void Button::onUpdate(Render &render)
 {
-	GroupDrawable::onUpdate(render);
+	Drawable::onUpdate(render);
 	Active::update();
 }
 
@@ -77,12 +78,19 @@ void Button::centerText()
 
 void Button::setBackground(Drawable &image)
 {
+	if(m_background)
+		m_background->setParent(NULL);
+
 	m_background = &image;
-	m_background->setUpdateFocus(false);
 
 	//Reset the parent
 	m_text->setParent(NULL);
-	m_background->setParent(this);
+	if(m_background)
+	{
+		m_background->setParent(this);
+		m_background->setUpdateFocus(false);
+		m_background->setApplyTransformation(this);
+	}
 	m_text->setParent(this);
 
 	//Change the background scale
@@ -91,8 +99,16 @@ void Button::setBackground(Drawable &image)
 
 void Button::setText(Text &string)
 {
+	if(m_text)
+		m_text->setParent(NULL);
 	m_text = &string;
-	m_text->setUpdateFocus(false);
+
+	if(m_text)
+	{
+		m_text->setParent(this);
+		m_text->setApplyTransformation(this);
+		m_text->setUpdateFocus(false);
+	}
 	centerText();
 }
 

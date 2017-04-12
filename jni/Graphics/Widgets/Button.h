@@ -3,12 +3,11 @@
 
 #include "Widgets/Active.h"
 #include "Rectangle3.h"
-#include "GroupDrawable.h"
 #include "Drawable.h"
 #include "Text.h"
 
 /** \brief Button class, use to create button*/
-class Button : public GroupDrawable, public Active
+class Button : public Drawable, public Active
 {
 	public:	
 		/** \brief Button constructor with only a Text drawn
@@ -36,6 +35,8 @@ class Button : public GroupDrawable, public Active
 
 		virtual void update(Render &render);
 		virtual void onUpdate(Render &render);
+
+		virtual void onDraw(Render &render, const glm::mat4& mvp=glm::mat4(1.0f)){}
 		void onFocus(const TouchEvent& te, Render &render, const glm::mat4& mvp=glm::mat4(1.0f));
 		void onTouchUp(const TouchEvent& te);
 

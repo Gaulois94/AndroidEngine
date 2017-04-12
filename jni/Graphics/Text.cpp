@@ -18,7 +18,6 @@ void Text::setFont(const Font* font)
 void Text::setText(const char* text)
 {
 	TextInterface::setText(text);
-	LOG_ERROR("WE ARE IN TEXT : SET TEXT %s STRLEN %d", m_text, strlen(text));
 
 	if(!m_font || !text)
 	{

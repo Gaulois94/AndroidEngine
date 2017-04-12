@@ -40,8 +40,8 @@ void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t 
 	}
 
 	drawable->setParent(this);
-//	addTransformable(drawable);
-	drawable->setApplyTransformation(this);
+	addTransformable(drawable);
+//	drawable->setApplyTransformation(this);
 	resetPosition();
 }
 
@@ -80,21 +80,8 @@ void GridLayout::resetPosition()
 
 	//Reset the default size of the layout
 	setDefaultSize(glm::vec3(m_widgets.size() * maxSizeX, ((m_widgets.size() > 0) ? m_widgets[0].size() : 0) * maxSizeY, maxSizeZ));
-}
 
-Rectangle3f GridLayout::getGlobalRect() const
-{
-	Rectangle3f rect = getRect();
-	return getRectAddiction(rect, Updatable::getGlobalRect());
-}
-
-glm::mat4 GridLayout::getMatrix() const
-{
-	glm::mat4 m = Transformable::getMatrix();
-	for(uint32_t i=0; i < m_parentTransformables.size(); i++)
-		if(m_parentTransformables[i]->getApplyChildrenTransformable())
-			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
-	return m;
+	setBackground(m_background);
 }
 
 void GridLayout::removeWidget(uint32_t x, uint32_t y)
@@ -183,4 +170,30 @@ void GridLayout::removeAll()
 	m_widgets.clear();
 	m_widgetsSize.clear();
 	resetPosition();
+}
+
+void GridLayout::setBackground(Drawable* background)
+{
+	m_background = background;
+	if(m_background)
+	{
+		m_background->setApplyTransformation(this);
+		m_background->setResquestSize(getDefaultSize());
+		m_background->setPosition(-m_background->getDefaultPos());
+	}
+}
+
+Rectangle3f GridLayout::getGlobalRect() const
+{
+	Rectangle3f rect = getRect();
+	return getRectAddiction(rect, Updatable::getGlobalRect());
+}
+
+glm::mat4 GridLayout::getMatrix() const
+{
+	glm::mat4 m = Transformable::getMatrix();
+	for(uint32_t i=0; i < m_parentTransformables.size(); i++)
+		if(m_parentTransformables[i]->getApplyChildrenTransformable())
+			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
+	return m;
 }

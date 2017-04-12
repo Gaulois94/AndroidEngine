@@ -26,12 +26,20 @@ class GridLayout : public Updatable, public GroupTransformable
 		void removeWidget(Drawable* drawable);
 
 		/** \brief Remove the widget from the GridLayout given a position
-		 * \param drawable The Widget to remove*/
+		 * \param x the x coordinate if the Drawable (GridLayout coordinate system)
+		 * \param y the y coordinate if the Drawable (GridLayout coordinate system)*/
 		void removeWidget(uint32_t x, uint32_t y);
 
+		/** \brief remove all the Drawable which are contained in the GridLayout*/
 		void removeAll();
 
+		/** \brief set if the GridLayout should rescale all the widgets or not. Should be set before adding widgets
+		 * \param r the boolean value of the rescaling*/
 		void setRescale(bool r){m_rescale = r;}
+
+		/** \brief set the background of the GridLayout.
+		 * \param background the new background*/
+		void setBackground(Drawable* background);
 
 		virtual Rectangle3f getGlobalRect() const;
 		virtual glm::mat4 getMatrix() const;
@@ -42,6 +50,8 @@ class GridLayout : public Updatable, public GroupTransformable
 		bool m_rescale = true;
 		std::vector<std::vector<Drawable*>> m_widgets;/* <!All the widgets */
 		std::vector<std::vector<Vector2ui>> m_widgetsSize; /* <!All the widgets case taken */
+
+		Drawable* m_background=NULL;
 };
 
 #endif
