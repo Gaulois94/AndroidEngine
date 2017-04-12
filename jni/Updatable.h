@@ -100,6 +100,9 @@ class Updatable : public JniMadeOf
 		 */
 		virtual bool removeChild(Updatable *child);
 
+		/** \brief remove every children of the Updatable */
+		void clearChild();
+
 		/** \brief Remove the child who is in the position indicate. It return true if the removing is correct, else it return false(maybe the position is wrong).
 		 * \param pos The child's position in the Updatable's child's list.
 		 * */

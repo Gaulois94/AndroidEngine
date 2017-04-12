@@ -224,6 +224,12 @@ void Updatable::setParent(Updatable *parent, int pos)
 	}
 }
 
+void Updatable::clearChild()
+{
+	for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
+		(*it)->setParent(NULL);
+}
+
 bool Updatable::removeChild(Updatable *child)
 {
 	if(child->getParent() == this)
