@@ -43,11 +43,13 @@ const char* TextInterface::getText() const
 
 void TextInterface::addChar(uint8_t c, int pos)
 {
+	//Use getText because the function is virtual.
+	const char* interText = getText();
 	if(pos == -1)
-		pos = strlen(m_text);
+		pos = strlen(interText);
 
-	char* text = (char*)malloc((strlen(m_text)+2)*sizeof(char));
-	strcpy(text, m_text);
+	char* text = (char*)malloc((strlen(interText)+2)*sizeof(char));
+	strcpy(text, interText);
 
 	if(c=='\b')
 	{
