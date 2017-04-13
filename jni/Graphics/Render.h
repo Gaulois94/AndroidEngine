@@ -7,6 +7,7 @@
 #include "Color.h"
 
 class Drawable;
+class Alert;
 
 /** \brief basic class Render. Use to put in common all classes used to draw something on texture, and update it*/
 class Render : public Updatable
@@ -21,6 +22,9 @@ class Render : public Updatable
 		 * \param drawable the object being drawn
 		 * \param transformation could apply a transformation to the Drawable object before being drawn.*/
 		virtual void draw(Drawable& drawable, const glm::mat4& transformation=glm::mat4(1.0));
+
+		virtual void keyDown(int32_t keyCode);
+		virtual void keyUp(int32_t keyCode);
 
 		/** \brief update all child focus with it as the Render object
 		 * \param pointerEvent the indice of the Motion Event
@@ -52,9 +56,12 @@ class Render : public Updatable
 
 		glm::vec3 getPositionOnScreen(const glm::vec3& p) const;
 		Render* getRenderParent();
+
+		void setAlert(Alert* alert);
 	protected:
 		Color m_ambientColor;
 		Camera m_camera;
+		Alert* m_alert=NULL;
 };
 
 #endif

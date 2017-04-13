@@ -1,5 +1,6 @@
 #include "Render.h"
 #include "Drawable.h"
+#include "Widgets/Alert.h"
 
 Render::Render(Updatable* parent) : Updatable(parent), m_ambientColor(0.1, 0.1, 0.1, 1.0)
 {
@@ -18,17 +19,43 @@ void Render::draw(Drawable& drawable, const glm::mat4& transformation)
 
 void Render::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	Updatable::updateFocus(te, *this, mvp*m_camera.getMatrix());
+	if(m_alert)
+		m_alert->updateFocus(te, *this, mvp*m_camera.getMatrix());
+
+	else
+		Updatable::updateFocus(te, *this, mvp*m_camera.getMatrix());
 }
 
 void Render::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	Updatable::moveEvent(te, *this, mvp*m_camera.getMatrix());
+	if(m_alert)
+		m_alert->moveEvent(te, *this, mvp*m_camera.getMatrix());
+	else
+		Updatable::moveEvent(te, *this, mvp*m_camera.getMatrix());
 }
 
 void Render::updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	Updatable::updateTouchUp(te, *this, mvp*m_camera.getMatrix());
+	if(m_alert)
+		m_alert->updateTouchUp(te, *this, mvp*m_camera.getMatrix());
+	else
+		Updatable::updateTouchUp(te, *this, mvp*m_camera.getMatrix());
+}
+
+void Render::keyDown(int32_t keyCode)
+{
+	if(m_alert)
+		m_alert->keyDown(keyCode);
+	else
+		Updatable::keyDown(keyCode);	
+}
+
+void Render::keyUp(int32_t keyCode)
+{
+	if(m_alert)
+		m_alert->keyUp(keyCode);
+	else
+		Updatable::keyUp(keyCode);	
 }
 
 void Render::update(Render& render)
@@ -79,4 +106,9 @@ glm::vec3 Render::getPositionOnScreen(const glm::vec3& p) const
 Render* Render::getRenderParent()
 {
 	return this;
+}
+
+void Render::setAlert(Alert* alert)
+{
+	m_alert=alert;
 }

@@ -186,19 +186,18 @@ void Renderer::update(Render& render)
 		
 
 			case KEYDOWN:
-				Updatable::keyDown(ev->keyEvent.keyCode);
+				keyDown(ev->keyEvent.keyCode);
 				Updatable::keyDownIsCheck = false;
 				break;
 
 			case KEYUP:
-				Updatable::keyUp(ev->keyEvent.keyCode);
+				keyUp(ev->keyEvent.keyCode);
 				Updatable::keyUpIsCheck = false;
 				break;	
 
 			case TOUCH_MOVE:
 				moveEvent(ev->touchEvent, *this);
 				break;
-				
 
 			default:
 				break;
@@ -257,7 +256,6 @@ bool Renderer::keyUpEvent(int32_t keyCode)
 	m_events.push_back(ev);
 
 	return true;
-
 }
 
 bool Renderer::keyDownEvent(int32_t keyCode)
