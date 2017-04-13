@@ -39,7 +39,8 @@ void Text::setText(const char* text)
 		if(text[i] == CHAR_NL)
 		{
 			posX = 0;
-			posY -= (float) m_font->getFontMetrics().leading / m_font->getLineHeight();
+			posY -= (float) m_font->getFontMetrics().leading + 1.0;
+			LOG_ERROR("POS Y %f", posY);
 
 			for(int j =0; j < 4; j++)
 			{
@@ -55,17 +56,17 @@ void Text::setText(const char* text)
 
 		FloatRect2 rectTexture = m_font->getTexture()->getDirectXRect(m_font->getCharRect(m_text[i]));
 
-		glm::vec2 size = m_font->getSize(m_text[i])/m_font->getLineHeight();
+		glm::vec2 size = m_font->getSize(m_text[i])/(float)m_font->getLineHeight();
 
 		float rectTextureCoord[] = {rectTexture.x, rectTexture.y,
 									rectTexture.x + rectTexture.width, rectTexture.y,
 									rectTexture.x, rectTexture.y + rectTexture.height,
 									rectTexture.x + rectTexture.width, rectTexture.y + rectTexture.height};
 
-		float rectLetterCoord[]  = {posX, posY, 0,
-									posX + size.x, posY, 0,
-									posX, posY + size.y, 0,
-									posX + size.x, posY + size.y, 0};
+		float rectLetterCoord[]  = {posX, posY, 0.0,
+									posX + size.x, posY, 0.0,
+									posX, posY + size.y, 0.0,
+									posX + size.x, posY + size.y, 0.0};
 
 		for(int j =0; j < 4; j++)
 		{
@@ -80,7 +81,7 @@ void Text::setText(const char* text)
 
 	initVbos(letterCoords, textureCoords);
 
-	//Readjust the default configuration of the Text object
+	//Read just the default configuration of the Text object
 	
 	setDefaultPos(glm::vec3(0.0f, -posY, 0.0f));
 	setDefaultSize(glm::vec3(posX, -posY + 1, 0.0f));
