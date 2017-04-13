@@ -25,7 +25,7 @@ class TextInterface
 
 		/** \brief get the text string.
 		 * \return the text string.*/
-		const char* getText() const;
+		virtual const char* getText() const; //Need to be virtual (the text shown is not the text entered)
 
 		/** \brief add a character to the text.
 		 * Following it's value, it can be rejected (like shift control), removing char (backspace, delete) or adding the char at the position

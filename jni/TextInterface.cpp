@@ -1,7 +1,8 @@
 #include "TextInterface.h"
 
-TextInterface::TextInterface(const Font* font, const char* text) : m_font(font), m_text(NULL)
+TextInterface::TextInterface(const Font* font, const char* text) : m_font(NULL), m_text(NULL)
 {
+	setFont(font);
 	setText(text);
 }
 
@@ -42,7 +43,6 @@ const char* TextInterface::getText() const
 
 void TextInterface::addChar(uint8_t c, int pos)
 {
-	LOG_ERROR("ADD CHAR");
 	if(pos == -1)
 		pos = strlen(m_text);
 
@@ -51,7 +51,6 @@ void TextInterface::addChar(uint8_t c, int pos)
 
 	if(c=='\b')
 	{
-		LOG_ERROR("BACKSPACE");
 		for(int i=pos-1; i < strlen(text); i++)
 			text[i] = text[i+1];
 	}
