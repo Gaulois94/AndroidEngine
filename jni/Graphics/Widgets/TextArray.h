@@ -26,9 +26,9 @@ class TextArray : public Text
 		const char* getText() const {return m_textNotModified.c_str();}
 		TextArrayCutting getCutting() const {return m_cutting;}
 	private:
-		double m_lineLength;
+		double m_lineLength=1.0;
 		std::string m_textNotModified;
-		TextArrayCutting m_cutting;
+		TextArrayCutting m_cutting=BY_CHAR;
 };
 
 #endif
