@@ -12,7 +12,7 @@ Alert::~Alert()
 	close();
 }
 
-virtual void Alert::close()
+void Alert::close()
 {
 	if(m_render)
 		m_render->setAlert(NULL);

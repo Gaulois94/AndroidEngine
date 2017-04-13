@@ -4,7 +4,7 @@
 #include "Widgets/Alert.h"
 #include "Widgets/Button.h"
 
-class AlertDialog : public Alert
+class AlertDialog : public Alert, public Transformable
 {
 	public:
 		AlertDialog(Render* render, Drawable* innerDrawwable, Button* cancel, Button* ok);

@@ -60,6 +60,8 @@ void Render::keyUp(int32_t keyCode)
 
 void Render::update(Render& render)
 {
+	if(m_alert)
+		m_alert->update(*this);
 	Updatable::update(*this);
 }
 
@@ -76,6 +78,8 @@ void Render::updateGPU(Render& render)
 
 	clear();
 	initDraw();
+		if(m_alert)
+			m_alert->updateGPU(*this);
 		Updatable::updateGPU(*this);
 	stopDraw();
 	display();

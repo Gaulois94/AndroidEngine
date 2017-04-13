@@ -83,7 +83,7 @@ void Text::setText(const char* text)
 
 	//Read just the default configuration of the Text object
 	
-	setDefaultPos(glm::vec3(0.0f, -posY, 0.0f));
+	setDefaultPos(glm::vec3(0.0f, posY, 0.0f));
 	setDefaultSize(glm::vec3(posX, -posY + 1, 0.0f));
 	free(letterCoords);
 	free(textureCoords);

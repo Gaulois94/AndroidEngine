@@ -207,8 +207,8 @@ void Renderer::update(Render& render)
 		delete ev;
 	}
 
-	Updatable::update(render);
-	Updatable::updateGPU(render);
+	Render::update(render);
+	Render::updateGPU(render);
 }
 
 void Renderer::initDraw()
