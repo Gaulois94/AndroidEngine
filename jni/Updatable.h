@@ -48,11 +48,11 @@ class Updatable : public JniMadeOf
 
 		/** \brief pass the keyCode for a keyUpEvent to each child, until a child handle the event
 		 * \param keyCode the code of the key*/
-		void keyUp(int32_t keyCode);
+		virtual void keyUp(int32_t keyCode);
 
 		/** \brief pass the keyCode for a keyDownEvent to each child, until a child handle the event
 		 * \param keyCode the code of the key*/
-		void keyDown(int32_t keyCode);
+		virtual void keyDown(int32_t keyCode);
 
 		/** \brief handle the key up event.
 		 * \param keyCode the code of the key
