@@ -15,7 +15,9 @@
 #include "Render.h"
 #include "TextInterface.h"
 
-/** \brief manage a text on the screen. */
+/** \brief manage a text on the screen.
+ * The height of a text is 1.0f exactly. The width depends of the length of the text and the Font.
+ * The default position is (0.0, 0.0, 0.0) */
 class Text : public Drawable, public TextInterface
 {
 	public:
