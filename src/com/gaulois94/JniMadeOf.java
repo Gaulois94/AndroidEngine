@@ -37,7 +37,7 @@ public class JniMadeOf
 	{
 		context = c;
 		res = context.getResources();
-		initJniMadeOf(c.getAssets(), c);
+		initJniMadeOf(c.getAssets(), c, c.getClassLoader());
 	}
 
 	protected void setPtr(long ptr)
@@ -46,7 +46,7 @@ public class JniMadeOf
 		setJobject();
 	}
 
-	protected static native void initJniMadeOf(AssetManager asset, Context c);
+	protected static native void initJniMadeOf(AssetManager asset, Context c, ClassLoader classLoader);
 	protected native void destroyJniMadeOf(long ptr);
 	protected native void setJobjectJniMadeOf(long ptr, JniMadeOf j);
 

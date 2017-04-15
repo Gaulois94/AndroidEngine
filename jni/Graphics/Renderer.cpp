@@ -183,7 +183,6 @@ void Renderer::update(Render& render)
 				if(Updatable::objectFocused)
 					updateTouchUp(ev->touchEvent, *this);
 				break;
-		
 
 			case KEYDOWN:
 				keyDown(ev->keyEvent.keyCode);

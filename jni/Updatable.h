@@ -146,7 +146,7 @@ class Updatable : public JniMadeOf
 
 		/** \brief Get the first Render parent
 		 * \return the first Render parent. NULL if doesn't exist*/
-		Render* getRenderParent();
+		virtual Render* getRenderParent();
 
 		void setClipping(const Rectangle2f& clip);
 		void enableClipping(bool enable);

@@ -14,6 +14,11 @@ Alert::~Alert()
 
 void Alert::close()
 {
+	if(m_listener)
+		m_listener->fire();
 	if(m_render)
+	{
 		m_render->setAlert(NULL);
+		m_render = NULL;
+	}
 }

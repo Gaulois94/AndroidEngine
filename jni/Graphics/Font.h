@@ -81,7 +81,7 @@ class Font : public JniMadeOf
 		 * \param padX the x space between each character
 		 * \param padY the y space between each character
 		 * \param size the character size on the texture */
-		static Font* fontFromAssets(const std::string path, uint32_t padX=1, uint32_t padY=1, uint32_t size=36);
+		static Font* fontFromAssets(const std::string path, uint32_t padX=1, uint32_t padY=1, uint32_t size=128);
 	private:
 		std::vector<glm::vec2> m_charSize;
 		std::vector<glm::vec2> m_charPos;

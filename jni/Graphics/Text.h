@@ -26,7 +26,7 @@ class Text : public Drawable, public TextInterface
 		 * \param material The text material
 		 * \param font the text font
 		 * \param text the text string*/
-		Text(Updatable* parent, Material* material, const Font* font, const char* text);
+		Text(Updatable* parent, Material* material, const Font* font, const std::string& text);
 
 		/** \brief Create an empty text.*/
 		Text();

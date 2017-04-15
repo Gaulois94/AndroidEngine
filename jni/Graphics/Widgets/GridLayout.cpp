@@ -1,6 +1,6 @@
 #include "GridLayout.h"
 
-GridLayout::GridLayout(Updatable* parent) : Updatable(parent), GroupTransformable()
+GridLayout::GridLayout(Updatable* parent) : Drawable(parent, NULL)
 {}
 
 void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t nbXCases, uint32_t nbYCases)
@@ -40,8 +40,7 @@ void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t 
 	}
 
 	drawable->setParent(this);
-	addTransformable(drawable);
-//	drawable->setApplyTransformation(this);
+	drawable->setApplyTransformation(this);
 	resetPosition();
 }
 
@@ -55,7 +54,7 @@ void GridLayout::resetPosition()
 		{
 			if(m_widgets[i][j] && m_widgetsSize[i][j].x != 0)
 			{
-				Rectangle3f colRect = m_widgets[i][j]->getRect();
+				Rectangle3f colRect = m_widgets[i][j]->getInnerRect();
 				Vector2ui& caseSize = m_widgetsSize[i][j];
 
 				maxSizeX = fmax(colRect.width / (float)caseSize.x, maxSizeX);
@@ -72,8 +71,14 @@ void GridLayout::resetPosition()
 			if(m_widgets[i][j] && m_widgetsSize[i][j].x != 0)
 			{
 				if(m_rescale)
-					m_widgets[i][j]->setResquestSize(glm::vec3(maxSizeX * m_widgetsSize[i][j].x, maxSizeY * m_widgetsSize[i][j].y, 1.0), true);
-				m_widgets[i][j]->setPosition(glm::vec3(maxSizeX*i, maxSizeY*j, 0.0f));
+					m_widgets[i][j]->setRequestSize(glm::vec3(maxSizeX * m_widgetsSize[i][j].x, maxSizeY * m_widgetsSize[i][j].y, 1.0), true);
+
+				glm::vec3 widgetDefaultSize = m_widgets[i][j]->getDefaultSize();
+				widgetDefaultSize.x = widgetDefaultSize.x == 0 ? 1.0 : widgetDefaultSize.x;
+				widgetDefaultSize.y = widgetDefaultSize.y == 0 ? 1.0 : widgetDefaultSize.y;
+				widgetDefaultSize.z = widgetDefaultSize.z == 0 ? 1.0 : widgetDefaultSize.z;
+
+				m_widgets[i][j]->setPosition(glm::vec3(maxSizeX*i, maxSizeY*j, 0.0f) - m_widgets[i][j]->getDefaultPos() * m_widgets[i][j]->getInnerRect().getSize() / widgetDefaultSize);
 			}
 		}
 	}
@@ -178,7 +183,7 @@ void GridLayout::setBackground(Drawable* background)
 	if(m_background)
 	{
 		m_background->setApplyTransformation(this);
-		m_background->setResquestSize(getDefaultSize());
+		m_background->setRequestSize(getDefaultSize());
 		m_background->setPosition(-m_background->getDefaultPos());
 	}
 }

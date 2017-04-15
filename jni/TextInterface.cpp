@@ -64,7 +64,7 @@ void TextInterface::addChar(uint8_t c, int pos)
 			text[i] = text[i+1];
 	}
 
-	else if(c >= ' ' && c <= '~')
+	else if(c >= ' ' && c <= '~' || c == '\n' || c=='\t')
 	{
 		for(int i=strlen(text)+1; i > pos; i--)
 			text[i] = text[i-1];

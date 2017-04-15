@@ -36,9 +36,25 @@ class TextEntry : public Drawable, public TextInterface
 		void setBackgroundScale(const glm::vec3& scale);
 		void setTextScale(const glm::vec3& scale);
 
+		/** \brief get the maximum number of character the TextEntry can have
+		 * \return the maximum number of character. Negative numbers = no limits*/
+		int32_t getMaxChar() const{return m_maxChar;}
+
+		/** \brief tell if the characters are hidden on the screen
+		 * \return the hidden caracteristics of the characters*/
+		bool isCharHidden() const{return m_hideChar;}
+
+		/** \brief set the hidden caracteristics of the characters shown on the screen
+		 * \param h shall the characters be hidden or not.*/
+		void setHiddenChar(bool h);
+
+		/** \brief set the maximum number of character the TextEntry can have. Over limit characters will be deleted 
+		 * \param limit the new maximum number of character. Negative numbers = no limits*/
+		void setMaxChar(int32_t limit);
+
 		const Rectangle& getBackground() const;
 		const Text& getTextDrawable() const;
-		void setResquestSize(const glm::vec3& scale, bool keepPos=true);
+		void setRequestSize(const glm::vec3& scale, bool keepPos=true);
 	private:
 		bool m_firstFocus=false;
 		Material* m_textMaterial;
@@ -47,9 +63,11 @@ class TextEntry : public Drawable, public TextInterface
 		uint32_t m_cursorPosition=0;
 		Material* m_cursorMaterial;
 		Rectangle m_cursor;
-		uint32_t m_cursorAnim=0;
-		bool     m_showCursor=true;
-		bool     m_isWriting = false;
+		uint32_t m_cursorAnim = 0;
+		bool     m_showCursor = true;
+		bool     m_isWriting  = false;
+		bool     m_hideChar   = false;
+		int32_t  m_maxChar    = -1;
 };
 
 #endif

@@ -8,7 +8,7 @@
 
 /** \class GridLayout
  * \brief Permit to place widgets on the GridLayout. The coordinate system is the same as opengl (0,0 is at the bottom left)*/
-class GridLayout : public Updatable, public GroupTransformable
+class GridLayout : public Drawable
 {
 	public:
 		GridLayout(Updatable* parent);
@@ -43,6 +43,8 @@ class GridLayout : public Updatable, public GroupTransformable
 
 		virtual Rectangle3f getGlobalRect() const;
 		virtual glm::mat4 getMatrix() const;
+
+		void onDraw(Render& render, const glm::mat4& mvp = glm::mat4(1.0f)){}
 	private:
 		/** \brief Replace correctly the widget on the GridLayout*/
 		void resetPosition();

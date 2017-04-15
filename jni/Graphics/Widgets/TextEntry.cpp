@@ -71,19 +71,22 @@ bool TextEntry::onKeyDown(int32_t key)
 {
 	if(Updatable::objectFocused == this)
 	{
-		LOG_ERROR("C : %d", key);
-		addChar((uint8_t)key);
-
 		//Update the cursor position
-		
 		//BACKSPACE
 		if(key == '\b' && m_cursorPosition > 0)
 			m_cursorPosition--;
+		else
+		{
+			if(strlen(getText()) >= m_maxChar)
+				goto endAddChar;
 
-		else if(key >= ' ' && key <= '~')
-			m_cursorPosition++;
+			else if(key >= ' ' && key <= '~' || key == '\n' || key == '\t')
+				m_cursorPosition++;
+		}
 
-		updateTextPosition();
+		addChar((uint8_t)key);
+
+endAddChar:
 		return true;
 	}
 	return false;
@@ -93,15 +96,17 @@ void TextEntry::updateTextPosition()
 {
 	glm::vec2 charPos = m_textDrawable.getCharPosition(m_cursorPosition);
 	glm::vec3 textPos = m_textDrawable.getPosition();
-	Rectangle3f rect = m_rectangle.getRect();
+	Rectangle3f rect = m_rectangle.getInnerRect();
 
 	if(charPos.x < -textPos.x)
-		m_textDrawable.setPosition(glm::vec3(charPos.x, textPos.y, 0.0), false);
+		m_textDrawable.setPosition(glm::vec3(charPos.x, -charPos.y, 0.0), false);
 
 	else if(charPos.x > textPos.x + rect.width-1.0/CURSOR_SCALE)
-		m_textDrawable.setPosition(glm::vec3(-charPos.x + rect.width-1.0/CURSOR_SCALE, textPos.y, 0.0), false);
+		m_textDrawable.setPosition(glm::vec3(-charPos.x + rect.width-1.0/CURSOR_SCALE, -charPos.y, 0.0), false);
+	else
+		m_textDrawable.setPosition(glm::vec3(m_textDrawable.getPosition().x, -charPos.y, 0.0));
 
-	m_cursor.setPosition((glm::vec3(charPos, 0.0) + m_textDrawable.getPosition())*glm::vec3(CURSOR_SCALE, 1, 1), true);
+	m_cursor.setPosition((glm::vec3(charPos.x, 0.0, 0.0) + glm::vec3(m_textDrawable.getPosition().x, 0.0, 0.0))*glm::vec3(CURSOR_SCALE, 1, 1), true);
 }
 
 void TextEntry::setFont(const Font* font)
@@ -112,8 +117,36 @@ void TextEntry::setFont(const Font* font)
 
 void TextEntry::setText(const char* text)
 {
-	TextInterface::setText(text);
-	m_textDrawable.setText(text);
+	//Remember to truncate the text !
+	char* t=NULL;
+	const char* textParam=text;
+	if(m_maxChar >= 0 && strlen(text) > m_maxChar)
+	{
+		t = (char*)malloc(m_maxChar+1);
+		memcpy(t, text, m_maxChar);
+		t[m_maxChar] = '\0';
+		textParam = t;
+	}
+
+	TextInterface::setText(textParam);
+
+	//Handle the hidden caracteristics of the text
+	if(m_hideChar)
+	{
+		char* newText = (char*)malloc(strlen(textParam)+1);
+		memset(newText, '*', strlen(textParam));
+		m_textDrawable.setText(newText);
+		free(newText);
+	}
+	else
+		m_textDrawable.setText(textParam);
+
+
+	//If we have truncate the text
+	if(t)
+		free(t);
+
+	updateTextPosition();
 }
 
 void TextEntry::setBackgroundScale(const glm::vec3& scale)
@@ -137,7 +170,23 @@ const Text& TextEntry::getTextDrawable() const
 	return m_textDrawable;
 }
 
-void TextEntry::setResquestSize(const glm::vec3& size, bool keepPos)
+void TextEntry::setMaxChar(int32_t limit)
+{
+	m_maxChar = limit;
+	if(m_maxChar >= 0)
+	{
+		std::string newText(getText(), 0, limit);
+		setText(newText.c_str());
+	}
+}
+
+void TextEntry::setHiddenChar(bool h)
+{
+	m_hideChar = h;
+	setText(getText());
+}
+
+void TextEntry::setRequestSize(const glm::vec3& size, bool keepPos)
 {
 	m_rectangle.setScale(size);
 	setDefaultSize(glm::vec3(size.x, size.y, 0.0));

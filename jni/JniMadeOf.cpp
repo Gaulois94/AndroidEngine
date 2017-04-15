@@ -1,10 +1,11 @@
 #include "JniMadeOf.h"
 
-JNIEnv* JniMadeOf::jenv = 0;
-jobject JniMadeOf::context = 0;
-jobject JniMadeOf::jassetsManager = 0;
+JNIEnv* JniMadeOf::jenv                 = 0;
+jobject JniMadeOf::context              = 0;
+jobject JniMadeOf::jassetsManager       = 0;
+jobject JniMadeOf::jclassLoader         = 0;
 AAssetManager* JniMadeOf::assetsManager = NULL;
-JavaVM* JniMadeOf::vm = 0;
+JavaVM* JniMadeOf::vm                   = 0;
 
 JniMadeOf::JniMadeOf(){}
 
@@ -31,12 +32,30 @@ void JniMadeOf::setJobject(jobject jobj)
 JNIEnv* JniMadeOf::getJEnv()
 {
 	JNIEnv* env;
-	if (JniMadeOf::vm->GetEnv((void**)&env, JNI_VERSION_1_4) != JNI_OK)
-		LOG_ERROR("Failed to get the environment using GetEnv()");
+	int getEnvStat = JniMadeOf::vm->GetEnv((void**)&env, JNI_VERSION_1_4);
 
+	if(getEnvStat == JNI_EDETACHED)
+	{
+		LOG_ERROR("Jni environnement not attached");
+		if (JniMadeOf::vm->AttachCurrentThread(&env, NULL) < 0)
+			LOG_ERROR("Failed to get the environment using AttachCurrentThread()");
+	}
 
-	if (JniMadeOf::vm->AttachCurrentThread(&env, NULL) < 0)
-		LOG_ERROR("Failed to get the environment using AttachCurrentThread()");
+	else if(getEnvStat == JNI_EVERSION)
+		LOG_ERROR("GetEnv : version not supported");
+
+	else if(getEnvStat != JNI_OK)
+		LOG_ERROR("Fail to get the JNI Environnement");
 
 	return env;
+}
+
+jclass JniMadeOf::getClass(const std::string& className)
+{
+	JNIEnv* env = JniMadeOf::getJEnv();
+	jclass loaderClass = env->GetObjectClass(JniMadeOf::jclassLoader);
+	jmethodID findClassMethod = env->GetMethodID(loaderClass, "findClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+
+
+    return (jclass)env->CallObjectMethod(JniMadeOf::jclassLoader, findClassMethod, env->NewStringUTF(className.c_str()));
 }

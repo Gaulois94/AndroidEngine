@@ -3,6 +3,7 @@
 
 #include <jni.h>
 #include "logger.h"
+#include <string>
 #include <android/asset_manager_jni.h>
 #include <android/asset_manager.h>
 
@@ -30,11 +31,14 @@ class JniMadeOf
 		jobject getJobject() const;
 
 		static JNIEnv* getJEnv();
+		static jclass  getClass(const std::string& className);
 
+		//Static Variables
 		static JNIEnv* jenv; /* <the java environment. Should be constante while the application run.*/
 		static AAssetManager* assetsManager;
 		static jobject context;
 		static jobject jassetsManager;
+		static jobject jclassLoader;
 		static JavaVM* vm;
 	protected:
 		jobject m_obj;

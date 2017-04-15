@@ -39,11 +39,9 @@ std::string getTextFromRes(const std::string& id)
 	for(uint32_t i=0; i < ids.size()-1; i++)
         currentClassName += "$" + ids[i];
 
-    jclass rClass    = env->FindClass(currentClassName.c_str());
+    jclass rClass    = JniMadeOf::getClass(currentClassName);
     jfieldID fieldID = env->GetStaticFieldID(rClass, ids.rbegin()->c_str(), "I");
     int intID        = env->GetStaticIntField(rClass, fieldID);
-
-    LOG_ERROR("INT ID %d", intID);
 
     //Get the string resources
 	jobject resource      = env->CallObjectMethod(JniMadeOf::context, resourceMethod);
@@ -54,8 +52,6 @@ std::string getTextFromRes(const std::string& id)
 	const char* textValC = env->GetStringUTFChars(jTextVal, 0);
     std::string textVal = textValC;
 	env->ReleaseStringUTFChars(jTextVal, textValC);
-
-    LOG_ERROR("TEXT VAL %s", textVal.c_str());
 
     return textVal;
 }

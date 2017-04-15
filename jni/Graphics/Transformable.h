@@ -166,6 +166,8 @@ class Transformable : public JniMadeOf
 		 * \param mvp The mvp matrix applied to the Transformable*/
 		Rectangle3f mvpToRect(const glm::mat4& mvp) const;
 
+		Rectangle3f getInnerRect(const glm::mat4& m=glm::mat4(1.0f)) const;
+
 		/** \brief get the 3D rectangle of the transformable given its default position and default size
 		 * \param m if you want to apply a transformation before getting the 3D rectangle coordinates*/
 		Rectangle3f getRect(const glm::mat4& m=glm::mat4(1.0f)) const;
@@ -183,7 +185,7 @@ class Transformable : public JniMadeOf
 
 		/** \brief This function is used for setting the size of the transformable. Used for complicated Drawable that doesn't want to scale bruptely the object entirely.
 		 * \param v the new size to apply. Basically, the size will be divised by the default size of the object. Remember that the Object is generally scaled. Use keepPos for keeping the transformable on the correct position*/
-		virtual void setResquestSize(const glm::vec3& v, bool keepPos=true);
+		virtual void setRequestSize(const glm::vec3& v, bool keepPos=true);
 	protected:
 		/** \brief create the new matrix result from the position, the scale and the rotation. */
 		void setMVPMatrix();

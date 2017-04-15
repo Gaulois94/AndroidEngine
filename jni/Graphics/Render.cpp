@@ -21,7 +21,6 @@ void Render::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& 
 {
 	if(m_alert)
 		m_alert->updateFocus(te, *this, mvp*m_camera.getMatrix());
-
 	else
 		Updatable::updateFocus(te, *this, mvp*m_camera.getMatrix());
 }
@@ -60,9 +59,9 @@ void Render::keyUp(int32_t keyCode)
 
 void Render::update(Render& render)
 {
+	Updatable::update(*this);
 	if(m_alert)
 		m_alert->update(*this);
-	Updatable::update(*this);
 }
 
 void Render::updateGPU(Render& render)
@@ -78,9 +77,9 @@ void Render::updateGPU(Render& render)
 
 	clear();
 	initDraw();
+		Updatable::updateGPU(*this);
 		if(m_alert)
 			m_alert->updateGPU(*this);
-		Updatable::updateGPU(*this);
 	stopDraw();
 	display();
 

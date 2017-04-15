@@ -267,6 +267,11 @@ Rectangle3f Transformable::mvpToRect(const glm::mat4& mvp) const
 	return Rectangle3f(xMin, yMin, zMin, xMax - xMin, yMax - yMin, zMax - zMin);
 }
 
+Rectangle3f Transformable::getInnerRect(const glm::mat4& m) const
+{
+	return mvpToRect(m*m_mvpMatrix);
+}
+
 Rectangle3f Transformable::getRect(const glm::mat4& m) const
 {
 	/* Get the proper transformable matrix.*/
@@ -345,7 +350,7 @@ glm::mat4 Transformable::computeDefaultPositionOrigin()
 	return glm::mat4(1.0f);
 }
 
-void Transformable::setResquestSize(const glm::vec3& v, bool keepPos)
+void Transformable::setRequestSize(const glm::vec3& v, bool keepPos)
 {
 	const glm::vec3& ds = getDefaultSize();
 	glm::vec3 s  = glm::vec3(v.x / ((ds.x != 0) ? ds.x : 1),

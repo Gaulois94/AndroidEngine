@@ -1,8 +1,8 @@
 #include "Text.h"
 
-Text::Text(Updatable* parent, Material* material, const Font* font, const char* text) : Drawable(parent, material), TextInterface(font, text)
+Text::Text(Updatable* parent, Material* material, const Font* font, const std::string& text) : Drawable(parent, material), TextInterface(font, text.c_str())
 {
-	setText(text);
+	setText(text.c_str());
 }
 
 Text::Text() : Drawable(NULL, NULL), TextInterface(NULL, NULL)
@@ -30,6 +30,7 @@ void Text::setText(const char* text)
 	float *letterCoords = (float*) malloc(strlen(m_text) * 4 * 3 * sizeof(float));
 
 	//We start at the position (0.0, 0.0)
+	float maxPosX = 0.0f;
 	float posX = 0.0f;
 	float posY = 0.0f;
 
@@ -38,6 +39,7 @@ void Text::setText(const char* text)
 		//If the character is \n, we jump to the next line (posY -= m_font->getLineHeight())
 		if(text[i] == CHAR_NL)
 		{
+			maxPosX = fmax(maxPosX, posX);
 			posX = 0;
 			posY -= (float) m_font->getFontMetrics().leading + 1.0;
 			LOG_ERROR("POS Y %f", posY);
@@ -82,9 +84,9 @@ void Text::setText(const char* text)
 	initVbos(letterCoords, textureCoords);
 
 	//Read just the default configuration of the Text object
-	
+	maxPosX = fmax(maxPosX, posX);
 	setDefaultPos(glm::vec3(0.0f, posY, 0.0f));
-	setDefaultSize(glm::vec3(posX, -posY + 1, 0.0f));
+	setDefaultSize(glm::vec3(maxPosX, -posY + 1, 0.0f));
 	free(letterCoords);
 	free(textureCoords);
 }
@@ -159,7 +161,7 @@ glm::vec2 Text::getCharPosition(uint32_t index, bool useScale) const
 		if(m_text[i] == CHAR_NL)
 		{
 			posX = 0;
-			posY -= (float) m_font->getFontMetrics().leading / m_font->getLineHeight();
+			posY -= 1.0;
 		}
 
 		glm::vec2 size = m_font->getSize(m_text[i])/m_font->getLineHeight();
@@ -186,7 +188,7 @@ int Text::getCharAt(float x, float y)
 		if(m_text[i] == CHAR_NL)
 		{
 			posX = 0;
-			posY -= (float) m_font->getFontMetrics().leading / m_font->getLineHeight();
+			posY -= 1;
 		}
 
 		else

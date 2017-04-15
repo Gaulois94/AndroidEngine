@@ -64,7 +64,7 @@ class Button : public Drawable, public Active
 		 * \param Button has a Text*/
 		bool hasText()  const;
 
-		virtual void setResquestSize(const glm::vec3& v, bool keepPos=true);
+		virtual void setRequestSize(const glm::vec3& v, bool keepPos=true);
 	protected:
 		/** \brief center the text in the Button*/
 		void centerText(); 

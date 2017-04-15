@@ -9,7 +9,7 @@ extern "C"
 	JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_destroyJniMadeOf(JNIEnv* jenv, jobject jobj, jlong ptr);
 	JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_setJNIEnvJniMadeOf(JNIEnv* jenv, jclass jcls);
 	JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_setJobjectJniMadeOf(JNIEnv* jenv, jlong ptr, jobject jobj);
-	JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_initJniMadeOf(JNIEnv* jenv, jclass jcls, jobject assetManager, jobject context);
+	JNIEXPORT void JNICALL Java_com_gaulois94_JniMadeOf_initJniMadeOf(JNIEnv* jenv, jclass jcls, jobject assetManager, jobject context, jobject classLoader);
 };
 
 #endif

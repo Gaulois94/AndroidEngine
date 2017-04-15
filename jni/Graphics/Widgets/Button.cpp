@@ -2,8 +2,9 @@
 
 Button::Button(Updatable *parent, Text &text, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(NULL), m_text(&text)
 {
+	m_text->setPosition(glm::vec3(0.0, 0.0, 0.0));
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
-		setDefaultConf(m_text->getDefaultConf());
+		setDefaultConf(m_text->getInnerRect());
 
 	m_text->setParent(this);
 	m_text->setApplyTransformation(this);
@@ -15,8 +16,9 @@ Button::Button(Updatable *parent, Text &text, const Rectangle3f &rect) : Drawabl
 
 Button::Button(Updatable *parent, Drawable &image, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(&image), m_text(NULL)
 {
+	m_background->setPosition(glm::vec3(0.0, 0.0, 0.0));
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
-		setDefaultConf(m_background->getDefaultConf());
+		setDefaultConf(m_background->getInnerRect());
 	m_background->setParent(this);
 	m_background->setApplyTransformation(this);
 	m_background->setUpdateFocus(false);
@@ -26,8 +28,9 @@ Button::Button(Updatable *parent, Drawable &image, const Rectangle3f &rect) : Dr
 
 Button::Button(Updatable *parent, Text &text, Drawable &image, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(&image), m_text(&text)
 {
+	m_background->setPosition(glm::vec3(0.0, 0.0, 0.0));
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
-		setDefaultConf(m_background->getDefaultConf());
+		setDefaultConf(m_background->getInnerRect());
 
 	m_text->setParent(this);
 	m_text->setApplyTransformation(this);
@@ -127,10 +130,20 @@ bool Button::hasText() const
 	return (m_text != NULL);
 }
 
-void Button::setResquestSize(const glm::vec3& size, bool keepPos)
+void Button::setRequestSize(const glm::vec3& size, bool keepPos)
 {
 	setDefaultSize(size);
 	setBackgroundScale();
+	if(m_text)
+	{
+		glm::vec3 textSize = m_text->getInnerRect().getSize();
+
+		float textScale = fmin(size.y/textSize.y, size.x/textSize.x);
+		textScale = fmin(1.0, textScale);
+
+		if(textScale < 1.0)
+			m_text->scale(glm::vec3(textScale, textScale, 1.0));
+	}
 	centerText();
 }
 
