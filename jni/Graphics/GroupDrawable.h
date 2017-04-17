@@ -42,8 +42,25 @@ class GroupDrawable : public Drawable
 		/** \brief Get the ResourcesManager's drawables.
 		 * \return the drawable's ResourcesManager.*/
 		std::list<Drawable*> getDrawables(); //Return the list of drawables
+
 	protected:
+		/** \brief Add a sub drawable to the Object.
+		 * \param d the Drawable to add
+		 * \param pos the position of the Drawable in the list (number greater than the number of Drawable own by the Object of inferior at 0 will be pushed at the end)*/
+		void addSubDrawable(Drawable* d, int pos=-1);
+
+		/** \brief Delete a Drawable own by the Object
+		 * \param d The Drawable to remove from the list*/
+		void deleteSubDrawable(Drawable* d);
+
+		/** \brief Delete a Drawable own by the Object
+		 * \param pos The position of the Drawable in the list. number inferior at 0 or greater than the size of drawables own by the Object is consider as the end of the list.*/
+		void deleteSubDrawable(int pos=-1);
+
+		/** \brief Should we delete the Drawable in the Destructor ?
+		 * \param del the new value*/
 		void deleteAuto(bool del);
+
 		bool m_deleteAuto;
 		std::list<Drawable*> m_drawables; //The list of drawables
 };

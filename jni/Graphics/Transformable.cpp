@@ -96,17 +96,27 @@ void Transformable::setScale(const glm::vec3 &v, bool keepPos)
 void Transformable::setDefaultPos(const glm::vec3 &p)
 {
 	m_defaultPos = p;
+	if(m_changeCallback)
+		m_changeCallback->fire();
 }
 
 void Transformable::setDefaultSize(const glm::vec3 &s)
 {
 	m_defaultSize = s;
+	if(m_changeCallback)
+		m_changeCallback->fire();
 }
 
 void Transformable::setDefaultConf(const Rectangle3f &dc)
 {
-	setDefaultPos(glm::vec3(dc.x, dc.y, dc.z));
-	setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
+	//We want to fire once the callback object
+	Callback* c = m_changeCallback;
+	m_changeCallback = NULL;
+		setDefaultPos(glm::vec3(dc.x, dc.y, dc.z));
+		setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
+	m_changeCallback = c;
+	if(m_changeCallback)
+		m_changeCallback->fire();
 }
 
 void Transformable::setSphericCoordinate(float r, float theta, float phi)
@@ -291,6 +301,8 @@ void Transformable::setDefaultPositionOrigin(PositionOrigin p)
 
 void Transformable::setMVPMatrix()
 {	
+	if(m_changeCallback)
+		m_changeCallback->fire();
     m_mvpMatrix = m_scale * (computeDefaultPositionOrigin() * m_positionOrigin * m_position) * m_rotate;
 }
 
@@ -358,4 +370,9 @@ void Transformable::setRequestSize(const glm::vec3& v, bool keepPos)
 							 v.z / ((ds.z != 0) ? ds.z : 1));
 	setScale(s, keepPos);
 
+}
+
+void Transformable::setChangeCallback(Callback* c)
+{
+	m_changeCallback = c;
 }

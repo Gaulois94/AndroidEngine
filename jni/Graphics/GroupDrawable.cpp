@@ -72,3 +72,29 @@ void GroupDrawable::deleteAuto(bool del)
 {
 	m_deleteAuto = del;
 }
+
+void GroupDrawable::addSubDrawable(Drawable* d, int pos)
+{
+	d->setParent(NULL);
+	if(pos < 0 || pos >= m_drawables.size())
+		m_drawables.push_back(d);
+	else
+		m_drawables.insert(std::advance(m_drawables.begin(), pos), d);
+
+}
+
+void GroupDrawable::deleteSubDrawable(Drawable* d)
+{
+	m_drawables.remove(d);
+}
+
+void GroupDrawable::deleteSubDrawable(int pos)
+{
+	if(m_drawables.size() == 0)
+		return;
+
+	if(pos < 0 || pos >= m_drawables.size())
+		m_drawables.erase(m_drawables.end());
+	else
+		m_drawables.erase(std::advance(m_drawables.begin(), pos));
+}

@@ -6,8 +6,7 @@ Button::Button(Updatable *parent, Text &text, const Rectangle3f &rect) : Drawabl
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
 		setDefaultConf(m_text->getInnerRect());
 
-	m_text->setParent(this);
-	m_text->setApplyTransformation(this);
+	addSubDrawable(m_text);
 	m_text->setUpdateFocus(false);
 	m_activeOnce = true;
 	centerText();
@@ -19,8 +18,7 @@ Button::Button(Updatable *parent, Drawable &image, const Rectangle3f &rect) : Dr
 	m_background->setPosition(glm::vec3(0.0, 0.0, 0.0));
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
 		setDefaultConf(m_background->getInnerRect());
-	m_background->setParent(this);
-	m_background->setApplyTransformation(this);
+	addSubDrawable(m_background);
 	m_background->setUpdateFocus(false);
 	m_activeOnce = true;
 	m_updateFocus = true;
@@ -32,11 +30,9 @@ Button::Button(Updatable *parent, Text &text, Drawable &image, const Rectangle3f
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
 		setDefaultConf(m_background->getInnerRect());
 
-	m_text->setParent(this);
-	m_text->setApplyTransformation(this);
+	addSubDrawable(m_background);
+	addSubDrawable(m_text);
 	m_text->setUpdateFocus(false);
-	m_background->setParent(this);
-	m_background->setApplyTransformation(this);
 	m_background->setUpdateFocus(false);
 	centerText();
 	m_activeOnce = true;

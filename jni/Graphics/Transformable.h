@@ -182,6 +182,9 @@ class Transformable : public JniMadeOf
 
 		PositionOrigin getDefaultPositionOrigin() const;
 
+		/** \brief Set the Callback object when the object is modified (transformationMatrix, defaultConf)
+		 * \param c the new Callback. NULL if None.*/
+		void setChangeCallback(Callback* c);
 
 		/** \brief This function is used for setting the size of the transformable. Used for complicated Drawable that doesn't want to scale bruptely the object entirely.
 		 * \param v the new size to apply. Basically, the size will be divised by the default size of the object. Remember that the Object is generally scaled. Use keepPos for keeping the transformable on the correct position*/
@@ -214,6 +217,7 @@ class Transformable : public JniMadeOf
 		float     m_theta;
 		float     m_phi;
 		PositionOrigin m_defaultPosOrigin=BOTTOM_LEFT;
+		Callback* m_changeCallback=NULL;
 };
 
 #endif

@@ -7,7 +7,7 @@
 #include "Text.h"
 
 /** \brief Button class, use to create button*/
-class Button : public Drawable, public Active
+class Button : public GroupDrawable, public Active
 {
 	public:	
 		/** \brief Button constructor with only a Text drawn
