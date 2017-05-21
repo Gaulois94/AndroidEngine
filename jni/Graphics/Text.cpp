@@ -42,7 +42,6 @@ void Text::setText(const char* text)
 			maxPosX = fmax(maxPosX, posX);
 			posX = 0;
 			posY -= (float) m_font->getFontMetrics().leading + 1.0;
-			LOG_ERROR("POS Y %f", posY);
 
 			for(int j =0; j < 4; j++)
 			{

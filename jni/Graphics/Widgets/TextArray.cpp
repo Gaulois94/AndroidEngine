@@ -3,7 +3,6 @@
 TextArray::TextArray(Updatable* parent, Material* mtl, const Font* font, const std::string& text, double lineLength, TextArrayCutting cutting) : Text(parent, mtl, font, text.c_str()), m_lineLength(lineLength), m_cutting(cutting)
 {
 	setText(text.c_str());
-
 }
 
 void TextArray::setLineLength(double lineLength)

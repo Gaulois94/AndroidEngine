@@ -11,6 +11,7 @@
 #include "logger.h"
 #include "JniMadeOf.h"
 #include "Rectangle3.h"
+#include "Listeners/Callback.h"
 
 /** \brief contains the spheric coordinates */
 struct SphericCoord

@@ -18,7 +18,7 @@ class GroupDrawable : public Drawable
 		 * \param parent its parent
 		 * \param material The drawables material.
 		 * \param defaultConf The default configuration (pos and size) of the GroupDrawable*/
-		GroupDrawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf);
+		GroupDrawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf=Rectangle3f());
 
 		~GroupDrawable();
 

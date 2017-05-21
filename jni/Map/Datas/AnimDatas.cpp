@@ -22,14 +22,14 @@ const std::vector<Rectangle2ui*>* DynamicEntity::getSubRects() const
 	return &m_tileRects;
 }
 
-const std::vector<std::string>*  DynamicEntity::getNames() const
+const std::vector<std::string>&  DynamicEntity::getNames() const
 {
-	return &m_names;
+	return m_names;
 }
 
-const std::vector<std::string>*  DynamicEntity::getTypes() const
+const std::vector<std::string>&  DynamicEntity::getTypes() const
 {
-	return &m_types;
+	return m_types;
 }
 
 StaticEntity::StaticEntity(createStaticAnimPtr create, uint32_t n, uint32_t nX, uint32_t posX, uint32_t posY, uint32_t sizeX, uint32_t sizeY, uint32_t spacX, uint32_t spacY) :
@@ -45,14 +45,14 @@ StaticAnim* StaticEntity::createStaticAnim(Updatable* parent, const Texture* tex
 	return NULL;
 }
 
-const std::vector<std::string>*  StaticEntity::getNames() const
+const std::vector<std::string>&  StaticEntity::getNames() const
 {
-	return &m_names;
+	return m_names;
 }
 
-const std::vector<std::string>*  StaticEntity::getTypes() const
+const std::vector<std::string>&  StaticEntity::getTypes() const
 {
-	return &m_types;
+	return m_types;
 }
 
 

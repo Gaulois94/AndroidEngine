@@ -16,13 +16,22 @@ public class Tool
 {
 	public static String copyAssetToData(Context context, String fileName)
 	{
-		return Tool.copyAssetTo(context, fileName, context.getFilesDir().getAbsolutePath() + "/" + fileName);
+		try
+		{
+			return Tool.copyAssetTo(context, fileName, context.getFilesDir().getCanonicalPath() + "/" + fileName);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static String copyAssetTo(Context context, String input, String output)
 	{
 		try
 		{
+			Log.d("Engine", "copying " + input + " to : " + output);
 			InputStream in       = context.getAssets().open(input);
 			FileOutputStream out = new FileOutputStream(output);
 			byte[] buffer = new byte[1024];
@@ -30,7 +39,7 @@ public class Tool
 			while((read = in.read(buffer)) != -1)
 				out.write(buffer, 0, read);
 			in.close();
-			out.flush();
+//			out.flush();
 			out.close();
 		}
 		catch (Exception e)

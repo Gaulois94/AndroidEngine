@@ -27,7 +27,6 @@ Tile* StaticTrace::getTileWorldCoords(double x, double y)
 
 Tile* StaticTrace::getTileTraceCoords(int x, int y)
 {
-	LOG_ERROR("INDICE %d, %d", (x - m_padX)/m_sizeX,(y - m_padY)/m_sizeY);
 	if(x < 0 || y < 0 || x >= m_nbCasesX * m_sizeX - m_padX || y >= m_nbCasesY * m_sizeY - m_padY)
 		return NULL;
 

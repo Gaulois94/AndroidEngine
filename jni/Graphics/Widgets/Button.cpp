@@ -1,6 +1,6 @@
 #include "Button.h"
 
-Button::Button(Updatable *parent, Text &text, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(NULL), m_text(&text)
+Button::Button(Updatable *parent, Text &text, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(NULL), m_text(&text)
 {
 	m_text->setPosition(glm::vec3(0.0, 0.0, 0.0));
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
@@ -13,7 +13,7 @@ Button::Button(Updatable *parent, Text &text, const Rectangle3f &rect) : Drawabl
 	m_updateFocus = true;
 }
 
-Button::Button(Updatable *parent, Drawable &image, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(&image), m_text(NULL)
+Button::Button(Updatable *parent, Drawable &image, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(&image), m_text(NULL)
 {
 	m_background->setPosition(glm::vec3(0.0, 0.0, 0.0));
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
@@ -24,7 +24,7 @@ Button::Button(Updatable *parent, Drawable &image, const Rectangle3f &rect) : Dr
 	m_updateFocus = true;
 }
 
-Button::Button(Updatable *parent, Text &text, Drawable &image, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(&image), m_text(&text)
+Button::Button(Updatable *parent, Text &text, Drawable &image, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(&image), m_text(&text)
 {
 	m_background->setPosition(glm::vec3(0.0, 0.0, 0.0));
 	if(rect == Rectangle3f(0, 0, 0, 0, 0, 0))
@@ -39,7 +39,7 @@ Button::Button(Updatable *parent, Text &text, Drawable &image, const Rectangle3f
 	m_updateFocus = true;
 }
 
-Button::Button(Updatable *parent, const Rectangle3f &rect) : Drawable(parent, NULL, rect), Active(), m_background(NULL), m_text(NULL)
+Button::Button(Updatable *parent, const Rectangle3f &rect) : GroupDrawable(parent, NULL, rect), Active(), m_background(NULL), m_text(NULL)
 {
 	m_activeOnce = true;
 	m_updateFocus = true;

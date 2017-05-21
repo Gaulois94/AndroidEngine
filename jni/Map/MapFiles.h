@@ -42,6 +42,16 @@ class StaticFile : public MapFile
 		 * \param def put def to true if you want to create a DefaultTile
 		 * \return the Tile created. NULL if can't be created*/
 		Tile*  createTile(Updatable* parent, uint32_t tileID, bool def);
+
+		/** \brief Retrieve the name of the tileID
+		 * \param tileID the tile identifiant
+		 * \return the name*/
+		const std::string& getTileName(uint32_t tileID) const{return m_tileDatas[tileID]->name;}
+
+		/** \brief Retrieve the type of the tileID
+		 * \param tileID the tile identifiant
+		 * \return the type*/
+		const std::string& getTileType(uint32_t tileID) const{return m_tileDatas[tileID]->type;}
 	private:
 		std::vector<StaticDatas*> m_tileDatas;
 		uint32_t m_spacingX;

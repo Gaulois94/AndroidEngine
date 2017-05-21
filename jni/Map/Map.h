@@ -240,6 +240,11 @@ class Map : public Drawable
 		 * \param attrs the attributes of the section*/
 		static void endElement(void* map, const char* name);
 	private:
+		/** \brief Function called for each tile found
+		 * \param name the name of the tile
+		 * \param type the type of the tile*/
+		virtual void foundTile(const std::string& name, const std::string& type){}
+
 		//The Parser
 		XML_Parser m_parser;
 		//Files

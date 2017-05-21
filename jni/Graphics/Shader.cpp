@@ -54,6 +54,7 @@ Shader* Shader::loadFromStrings(const std::string& vertexString, const std::stri
 		int length=0;
 		glGetProgramInfoLog(shader->m_programID, ERROR_MAX_LENGTH, &length, error);
 		LOG_ERROR("Could not link shader-> : \n %s", error);
+		LOG_ERROR("%s", vertexString.c_str());
 
 		delete shader;
 		return NULL;

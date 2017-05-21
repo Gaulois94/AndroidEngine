@@ -35,7 +35,6 @@ Tile* StaticFile::createTile(Updatable* parent, uint32_t tileID, bool def)
     //True value : (tWidth - tileSizeX + tileSizeX + spacingX -1) / (tileSizeX + spacingX) + 1 
     //where tileSizeX + spacingX -1 is for rounded the value to the upper case if needed;
 	uint32_t numberTileX = (m_texture->getWidth() + m_spacingX - 1) / (m_spacingX + m_tileSizeX) + 1;
-	LOG_ERROR("NUMBER TILE X %d", tileID / numberTileX);
 	Rectangle2ui subRect;
 
 	subRect.x      = (tileID % numberTileX) * (m_tileSizeX + m_spacingX);

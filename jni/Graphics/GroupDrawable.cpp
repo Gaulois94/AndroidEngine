@@ -79,7 +79,11 @@ void GroupDrawable::addSubDrawable(Drawable* d, int pos)
 	if(pos < 0 || pos >= m_drawables.size())
 		m_drawables.push_back(d);
 	else
-		m_drawables.insert(std::advance(m_drawables.begin(), pos), d);
+	{
+		auto it = m_drawables.begin();
+		std::advance(it, pos);
+		m_drawables.insert(it, d);
+	}
 
 }
 
@@ -96,5 +100,9 @@ void GroupDrawable::deleteSubDrawable(int pos)
 	if(pos < 0 || pos >= m_drawables.size())
 		m_drawables.erase(m_drawables.end());
 	else
-		m_drawables.erase(std::advance(m_drawables.begin(), pos));
+	{
+		auto it = m_drawables.begin();
+		std::advance(it, pos);
+		m_drawables.erase(it);
+	}
 }

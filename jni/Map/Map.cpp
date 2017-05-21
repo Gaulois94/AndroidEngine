@@ -161,6 +161,8 @@ void Map::startElementFiles(void *data, const char* name, const char** attrs)
 			sd->createStaticTile = map->getStaticTileFunction(name, type);
 			sd->material = map->getStaticTileMaterial(name, type);
 			sd->info = map->getStaticTileInfo(name, type);
+			sd->name = name;
+			sd->type = type;
 			//And bind it to the file
 			sf->addStaticDatas(sd);
 		}
@@ -418,6 +420,7 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 				if(de)
 				{
 					//Then finally create the tile
+					map->foundTile(de->getNames()[tileID], de->getTypes()[tileID]);
 					Tile* tile = de->createDynamicAnim(NULL, de->material, df->getTexture(), *(de->getSubRects()), de->info, tileID, 8, posX, posY);
 					dt->addTile(tile, posX, posY);
 				}
@@ -426,6 +429,7 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 					StaticEntity* se = df->getStaticEntity(name);
 					if(se)
 					{
+						map->foundTile(se->getNames()[tileID], se->getTypes()[tileID]);
 						Tile* tile = se->createStaticAnim(NULL, df->getTexture(), tileID, posX, posY);
 						dt->addTile(tile, posX, posY);
 					}
@@ -454,6 +458,7 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 
 			if(sf)
 			{
+				map->foundTile(sf->getTileName(tileID), sf->getTileType(tileID));
 				Tile* tile = sf->createTile(NULL, tileID, false);
 				dt->addTile(tile, posX, posY);
 			}
@@ -500,13 +505,13 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 					//Get the file following the file ID (id 0 --> first file created)
 					StaticFile* sf  = map->m_staticFiles[(*fileID)[i]];
 
+					map->foundTile(sf->getTileName((*tileID)[i]), sf->getTileType((*tileID)[i]));
 					//And create this tile
 					Tile* tile      = sf->createTile(NULL, (*tileID)[i], false);
 
 					//If the tile is created
 					if(tile != NULL)
 						st->addTileInTraceCoord(tile, XML_NthColumn, i); //Add it
-					LOG_ERROR("TILE ADDED AT %d, %d", XML_NthColumn, i);
 				}
 
 				//Then we look for objects
@@ -519,7 +524,7 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 						continue;
 
 					//Create this object
-					LOG_ERROR("MAKE POINTER OBJECT");
+					map->foundTile(objDatas->name, objDatas->type);
 					TileObject* obj = objDatas->createObject(NULL, objDatas->nbCasesX, objDatas->nbCasesY, objDatas->tileSizeX, objDatas->tileSizeY, objDatas->info);
 
 					uint32_t j;
@@ -546,8 +551,6 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 
 							//And create the tile
 							Tile* tile = sf->createTile(NULL, (*tileID)[k], false);
-							if(tile->getMaterial())
-								LOG_ERROR("TILE HAS MATERIAL");
 							if(tile == NULL)
 								continue;
 

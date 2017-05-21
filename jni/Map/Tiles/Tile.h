@@ -3,6 +3,8 @@
 
 #include "Graphics/Drawable.h"
 
+/** \class Tile
+ * \brief Default class for Tiles. The Tile will be scaled if created by the Map (or MapFiles) by it's size in pixel. Then one pixel has width=1.0 and height=1.0.*/
 class Tile : public Drawable
 {
 	public:

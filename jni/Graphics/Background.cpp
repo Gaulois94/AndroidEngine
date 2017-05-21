@@ -1,14 +1,14 @@
 #include "Background.h"
 
-Background::Background(Updatable* parent, Drawable* theDrawable, Drawable* background) : GroupDrawable(parent, NULL), m_drawables(theDrawable), m_background(background), m_changeCallback(Background::changeDrawableRect, (void*)this)
+Background::Background(Updatable* parent, Drawable* theDrawable, Drawable* background) : GroupDrawable(parent, NULL), m_drawable(theDrawable), m_background(background), m_changeCallback(Background::changeDrawableRect, (void*)this)
 {
-	if(m_drawables)
+	if(m_drawable)
 	{
-		m_drawables->setPosition(glm::vec3(0.0, 0.0, 0.0) - m_drawables->getDefaultPos());
-		m_drawables->setChangeCallback(&m_changeCallback);
+		m_drawable->setPosition(glm::vec3(0.0, 0.0, 0.0) - m_drawable->getDefaultPos());
+		m_drawable->setChangeCallback(&m_changeCallback);
 		if(m_background)
 			addSubDrawable(m_background);
-		addSubDrawable(m_drawables);
+		addSubDrawable(m_drawable);
 	}
 	updateBackgroundRect();
 }
@@ -41,20 +41,20 @@ void Background::setBackground(Drawable* b)
 
 void Background::updateBackgroundRect()
 {
-	if(m_drawables)
+	if(m_drawable)
 	{
 		//Else we would had have a loop function....
-		m_drawables->setChangeCallback(NULL);
-		setDefaultSize(m_drawables->getInnerRect().getSize());
-		m_drawables->setPosition(glm::vec3(0.0, 0.0, 0.0) - m_drawables->getDefaultPos());
+		m_drawable->setChangeCallback(NULL);
+		setDefaultSize(m_drawable->getInnerRect().getSize());
+		m_drawable->setPosition(glm::vec3(0.0, 0.0, 0.0) - m_drawable->getDefaultPos());
 	}
 
-	if(m_background && m_drawables)
+	if(m_background && m_drawable)
 	{
 		m_background->setPosition(glm::vec3(0.0, 0.0, 0.0));
 		m_background->setRequestSize(getDefaultSize());
 	}
 
-	if(m_drawables)
-		m_drawables->setChangeCallback(&m_changeCallback);
+	if(m_drawable)
+		m_drawable->setChangeCallback(&m_changeCallback);
 }

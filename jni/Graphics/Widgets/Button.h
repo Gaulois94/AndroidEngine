@@ -4,6 +4,7 @@
 #include "Widgets/Active.h"
 #include "Rectangle3.h"
 #include "Drawable.h"
+#include "GroupDrawable.h"
 #include "Text.h"
 
 /** \brief Button class, use to create button*/
