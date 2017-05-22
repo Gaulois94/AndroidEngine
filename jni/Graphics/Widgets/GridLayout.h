@@ -37,14 +37,12 @@ class GridLayout : public Drawable
 		 * \param r the boolean value of the rescaling*/
 		void setRescale(bool r){m_rescale = r;}
 
-		/** \brief set the background of the GridLayout.
-		 * \param background the new background*/
-		void setBackground(Drawable* background);
-
 		virtual Rectangle3f getGlobalRect() const;
 		virtual glm::mat4 getMatrix() const;
 
 		void onDraw(Render& render, const glm::mat4& mvp = glm::mat4(1.0f)){}
+
+		static void childrenTransfListener(void* data);
 	private:
 		/** \brief Replace correctly the widget on the GridLayout*/
 		void resetPosition();
@@ -53,7 +51,7 @@ class GridLayout : public Drawable
 		std::vector<std::vector<Drawable*>> m_widgets;/* <!All the widgets */
 		std::vector<std::vector<Vector2ui>> m_widgetsSize; /* <!All the widgets case taken */
 
-		Drawable* m_background=NULL;
+		Callback m_changeCallback;
 };
 
 #endif

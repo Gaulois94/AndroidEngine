@@ -33,6 +33,14 @@ class SlideMenu : public Drawable
 		void addText(Material* m, Font* f, const std::string& t, const glm::vec3& imediatScale = glm::vec3(1.0, 1.0, 1.0));
 
 		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f)){}
+
+		/** \brief get the active ItemMenu
+		 * \return the active ItemMenu*/
+		void ItemMenu* getActiveItemMenu();
+
+		/** \brief get the ID of the active ItemMenu (useful if the indice is better than the Object in itself)
+		 * \return -1 if no active ItemMenu, the indice of it otherwise*/
+		void int getActiveNbItemMenu() const;
 	private:
 		//----------------------Private functions-------------------------//
 		/** \brief update the configuration of the menu (item matrix)*/
