@@ -92,3 +92,17 @@ void SlideMenu::listenerCallback(Active* a, void* data)
 		self->m_status = ON;
 	self->updateConfiguration();
 }
+
+void const ItemMenu* SlideMenu::getActiveItemMenu() const
+{
+	return m_itemMenu;
+}
+
+
+void int SlideMenu::getActiveNbItemMenu() const
+{
+	for(uint32_t i=0; i < m_hiddenMenu.getItems().size(); i++)
+		if(m_hiddenMenu.getItems()[i] == m_itemMenu)
+			return i;
+	return -1;
+}

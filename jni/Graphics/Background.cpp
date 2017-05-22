@@ -1,6 +1,6 @@
 #include "Background.h"
 
-Background::Background(Updatable* parent, Drawable* theDrawable, Drawable* background) : GroupDrawable(parent, NULL), m_drawable(theDrawable), m_background(background), m_changeCallback(Background::changeDrawableRect, (void*)this)
+Background::Background(Updatable* parent, Drawable* theDrawable, Drawable* background) : GroupDrawable(parent, NULL, Rectangle3f()), m_drawable(theDrawable), m_background(background), m_changeCallback(Background::changeDrawableRect, (void*)this)
 {
 	if(m_drawable)
 	{

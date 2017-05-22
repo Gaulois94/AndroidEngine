@@ -84,7 +84,6 @@ void GroupDrawable::addSubDrawable(Drawable* d, int pos)
 		std::advance(it, pos);
 		m_drawables.insert(it, d);
 	}
-
 }
 
 void GroupDrawable::deleteSubDrawable(Drawable* d)

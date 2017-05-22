@@ -1,6 +1,6 @@
 #include "GridLayout.h"
 
-GridLayout::GridLayout(Updatable* parent) : Drawable(parent, NULL)
+GridLayout::GridLayout(Updatable* parent) : Drawable(parent, NULL), m_changeCallback(GridLayout::childrenTransfListener, (void*)this)
 {}
 
 void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t nbXCases, uint32_t nbYCases)
@@ -9,7 +9,7 @@ void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t 
 		return;
 
 	//Complete the number of columns
-	for(uint32_t i=m_widgets.size(); i <= x; i++)
+	for(uint32_t i=m_widgets.size(); i <= x+nbXCases-1; i++)
 	{
 		m_widgets.push_back(std::vector<Drawable*>());
 		m_widgetsSize.push_back(std::vector<Vector2ui>());
@@ -18,7 +18,7 @@ void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t 
 	//Complete the number of rows
 	for(uint32_t i=0; i < m_widgets.size(); i++)
 	{
-		for(uint32_t j=m_widgets[i].size(); j <= y; j++)
+		for(uint32_t j=m_widgets[i].size(); j <= y+nbYCases-1; j++)
 		{
 			m_widgets[i].push_back(NULL);
 			m_widgetsSize[i].push_back(Vector2ui());
@@ -41,52 +41,116 @@ void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t 
 
 	drawable->setParent(this);
 	drawable->setApplyTransformation(this);
+	drawable->setChangeCallback(&m_changeCallback);
 	resetPosition();
 }
 
 void GridLayout::resetPosition()
 {
-	//Get all Drawables' size and determine the maximum
-	float maxSizeX = 0, maxSizeY = 0, maxSizeZ = 0;
+	std::vector<std::vector<glm::vec3>> crSize; //Column / row size
 	for(uint32_t i=0; i < m_widgets.size(); i++)
 	{
+		crSize.push_back(std::vector<glm::vec3>());
+		for(uint32_t j=0; j < m_widgets[i].size(); j++)
+			crSize[i].push_back(glm::vec3(0.0, 0.0, 0.0));
+	}
+
+	//Get all Drawables' size and determine the maximum
+	float maxSizeZ = 0;
+	for(uint32_t i=0; i < m_widgets.size(); i++)
+	{
+		float maxSizeY = 0;
 		for(uint32_t j=0; j < m_widgets[i].size(); j++)
 		{
-			if(m_widgets[i][j] && m_widgetsSize[i][j].x != 0)
+			if(m_widgets[i][j] && (m_widgetsSize[i][j].x != 0 || m_widgetsSize[i][j].y != 0))
 			{
 				Rectangle3f colRect = m_widgets[i][j]->getInnerRect();
 				Vector2ui& caseSize = m_widgetsSize[i][j];
 
-				maxSizeX = fmax(colRect.width / (float)caseSize.x, maxSizeX);
-				maxSizeY = fmax(colRect.height / (float)caseSize.y, maxSizeY);
+				//Update the cr table and get the maxSizeX for row
+				float maxSizeX = 0;
+				if(caseSize.x != 0)
+					maxSizeX = colRect.width / (float)caseSize.x;
+				maxSizeY       = (caseSize.y != 0) ? fmax(colRect.height / (float)caseSize.y, maxSizeY) : maxSizeY;
+				for(uint32_t k=0; k < j; k++)
+				{
+					maxSizeX       = fmax(crSize[i][k].x, maxSizeX);
+					crSize[i][k].x = maxSizeX;
+				}
+
+				//Update the cr table from column
+				for(uint32_t k=0; k < i; k++)
+					crSize[k][j].y = maxSizeY;
+
 				maxSizeZ = fmax(colRect.depth, maxSizeZ);
+				for(uint32_t i2=0; i2 < m_widgetsSize[i][j].x; i2++)
+					crSize[i+i2][j].x = maxSizeX;
+
+				for(uint32_t j2=0; j2 < m_widgetsSize[i][j].y; j2++)
+					crSize[i][j+j2].y = maxSizeY;
 			}
 		}
 	}
 
+	LOG_ERROR("SIZE ! ");
 	for(uint32_t i=0; i < m_widgets.size(); i++)
 	{
+		for(uint32_t j=0; j < m_widgets[0].size(); j++)
+			LOG_ERROR("%f %f", crSize[i][j].x, crSize[i][j].y);
+		LOG_ERROR(" ");
+	}
+
+	//Update the size and position of all widgets
+	//
+	//Get the current position of all widgets
+	float currentPosX=0;
+	for(uint32_t i=0; i < m_widgets.size(); i++)
+	{
+		float currentPosY=0;
 		for(uint32_t j=0; j < m_widgets[i].size(); j++)
 		{
 			if(m_widgets[i][j] && m_widgetsSize[i][j].x != 0)
 			{
+				m_widgets[i][j]->setChangeCallback(NULL);
 				if(m_rescale)
-					m_widgets[i][j]->setRequestSize(glm::vec3(maxSizeX * m_widgetsSize[i][j].x, maxSizeY * m_widgetsSize[i][j].y, 1.0), true);
+				{
+					/* Need to get the widgets size (all column and row size aren't the same...*/
+					float currentSizeX=0;
+					float currentSizeY=0;
+					for(uint32_t i2=0; i2 < m_widgetsSize[i][j].x; i2++)
+						currentSizeX+=crSize[i+i2][j].x;
+
+					for(uint32_t j2=0; j2 < m_widgetsSize[i][j].y; j2++)
+						currentSizeY+=crSize[i][j+j2].y;
+					m_widgets[i][j]->setRequestSize(glm::vec3(currentSizeX, currentSizeY, 1.0), true);
+				}
 
 				glm::vec3 widgetDefaultSize = m_widgets[i][j]->getDefaultSize();
 				widgetDefaultSize.x = widgetDefaultSize.x == 0 ? 1.0 : widgetDefaultSize.x;
 				widgetDefaultSize.y = widgetDefaultSize.y == 0 ? 1.0 : widgetDefaultSize.y;
 				widgetDefaultSize.z = widgetDefaultSize.z == 0 ? 1.0 : widgetDefaultSize.z;
 
-				m_widgets[i][j]->setPosition(glm::vec3(maxSizeX*i, maxSizeY*j, 0.0f) - m_widgets[i][j]->getDefaultPos() * m_widgets[i][j]->getInnerRect().getSize() / widgetDefaultSize);
+				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos() * m_widgets[i][j]->getInnerRect().getSize() / widgetDefaultSize);
+				m_widgets[i][j]->setChangeCallback(&m_changeCallback);
 			}
+			currentPosY+=crSize[i][j].y;
 		}
+		if(m_widgets[i].size() > 0)
+			currentPosX+=crSize[i][0].x;
 	}
 
-	//Reset the default size of the layout
-	setDefaultSize(glm::vec3(m_widgets.size() * maxSizeX, ((m_widgets.size() > 0) ? m_widgets[0].size() : 0) * maxSizeY, maxSizeZ));
+	float completeSizeX = 0;
+	float completeSizeY = 0;
 
-	setBackground(m_background);
+	for(uint32_t i=0; i < crSize.size(); i++)
+		if(crSize[i].size() > 0)
+			completeSizeX += crSize[i][0].x;
+
+	for(uint32_t i=0; crSize.size() > 0 && i < crSize[0].size(); i++)
+		completeSizeY += crSize[0][i].y;
+
+	//Reset the default size of the layout
+	setDefaultSize(glm::vec3(completeSizeX, completeSizeY, maxSizeZ));
 }
 
 void GridLayout::removeWidget(uint32_t x, uint32_t y)
@@ -107,6 +171,8 @@ void GridLayout::removeWidget(Drawable* widget)
 			{
 				found = true;
 				m_widgets[i][j]->setParent(NULL);
+				m_widgets[i][j]->setApplyTransformation(NULL);
+				m_widgets[i][j]->setChangeCallback(NULL);
 				m_widgets[i][j] = NULL;
 				m_widgetsSize[i][j].x = 0;
 				m_widgetsSize[i][j].y = 0;
@@ -170,22 +236,15 @@ void GridLayout::removeAll()
 	for(uint32_t i=0; i < m_widgets.size(); i++)
 		for(uint32_t j=0; j < m_widgets[i].size(); j++)
 			if(m_widgets[i][j])
+			{
+				m_widgets[i][j]->setChangeCallback(NULL);
+				m_widgets[i][j]->setApplyTransformation(NULL);
 				m_widgets[i][j]->setParent(NULL);
+			}
 
 	m_widgets.clear();
 	m_widgetsSize.clear();
 	resetPosition();
-}
-
-void GridLayout::setBackground(Drawable* background)
-{
-	m_background = background;
-	if(m_background)
-	{
-		m_background->setApplyTransformation(this);
-		m_background->setRequestSize(getDefaultSize());
-		m_background->setPosition(-m_background->getDefaultPos());
-	}
 }
 
 Rectangle3f GridLayout::getGlobalRect() const
@@ -201,4 +260,10 @@ glm::mat4 GridLayout::getMatrix() const
 		if(m_parentTransformables[i]->getApplyChildrenTransformable())
 			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
 	return m;
+}
+
+void GridLayout::childrenTransfListener(void* data)
+{
+	GridLayout* self = (GridLayout*)data;
+	self->resetPosition();
 }

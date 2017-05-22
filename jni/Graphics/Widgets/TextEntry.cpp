@@ -135,6 +135,7 @@ void TextEntry::setText(const char* text)
 	{
 		char* newText = (char*)malloc(strlen(textParam)+1);
 		memset(newText, '*', strlen(textParam));
+		newText[strlen(textParam)] = '\0';
 		m_textDrawable.setText(newText);
 		free(newText);
 	}
