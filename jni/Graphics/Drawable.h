@@ -12,6 +12,7 @@
 #include "EventManager.h"
 #include "Render.h"
 #include <GLES2/gl2.h>
+#include "Listeners/Listener.h"
 
 /** \brief Basic class drawable */
 class Drawable : public GroupTransformable, public Updatable
@@ -30,6 +31,7 @@ class Drawable : public GroupTransformable, public Updatable
 		virtual void draw(Render& render, const glm::mat4& transformation=glm::mat4(1.0));
 
 		virtual bool testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+
 		virtual void updateGPU(Render& render);
 
 		virtual void moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));

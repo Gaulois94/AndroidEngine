@@ -19,7 +19,7 @@ class ScrollWidget : public Active, public Drawable
 		 * \param parent The parent
 		 * \param clipBound The rectangle in which the Widget can move. It is defined with defConf and not by the Transformation
 		 * \param defConf The default conf of the Widget.*/
-		ScrollWidget(Updatable* parent, const Rectangle2f& clipBound = Rectangle2f(0.0, 0.0, 1.0, 1.0), const Rectangle3f& defConf = Rectangle3f(0.0, 0.0, 0.0, 1.0, 1.0, 0.0));
+		ScrollWidget(Updatable* parent, const Rectangle2f& clipBound = Rectangle2f(0.0, 0.0, 1.0, 1.0), const Rectangle3f& defConf = Rectangle3f(0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
 
 		/** \brief Destructor*/
 		~ScrollWidget();

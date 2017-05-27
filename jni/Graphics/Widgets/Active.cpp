@@ -113,19 +113,19 @@ void Active::setActiveOnce(bool activeOnce)
 void Active::setActiveListener(const ActiveListener& fireActive)
 {
 	m_fireActive = fireActive;
-	m_fireActive.setActive(this);
+	m_fireActive.setThis(this);
 }
 
 void Active::setDisactiveListener(const ActiveListener& fireDisactive)
 {
 	m_fireDisactive = fireDisactive;
-	m_fireDisactive.setActive(this);
+	m_fireDisactive.setThis(this);
 }
 
 void Active::setOnChangeListener(const ActiveListener& fireChange)
 {
 	m_fireChange = fireChange;
-	m_fireDisactive.setActive(this);
+	m_fireDisactive.setThis(this);
 }
 
 bool Active::isPermanentSelected() const

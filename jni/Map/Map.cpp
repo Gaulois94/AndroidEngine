@@ -600,6 +600,7 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 					if(se)
 					{
 						//Need to be changed
+						map->foundTile(se->getNames()[(*tileID)[i]], se->getTypes()[(*tileID)[i]]);
 						Tile* tile = se->createStaticAnim(NULL, df->getTexture(), (*tileID)[i], 0, 0);
 						st->addTile(tile, XML_NthColumn, i);
 					}

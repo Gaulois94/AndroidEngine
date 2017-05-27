@@ -36,7 +36,6 @@ JNIEnv* JniMadeOf::getJEnv()
 
 	if(getEnvStat == JNI_EDETACHED)
 	{
-		LOG_ERROR("Jni environnement not attached");
 		if (JniMadeOf::vm->AttachCurrentThread(&env, NULL) < 0)
 			LOG_ERROR("Failed to get the environment using AttachCurrentThread()");
 	}

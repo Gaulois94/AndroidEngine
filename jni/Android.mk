@@ -29,7 +29,7 @@ LOCAL_SRC_FILES += Map/Map.cpp Map/MapFiles.cpp  Map/Traces/DynamicTrace.cpp Map
 
 LOCAL_SRC_FILES += Graphics/Widgets/Menu.cpp Graphics/Widgets/ItemMenu.cpp Graphics/Widgets/TextEntry.cpp Graphics/Widgets/GridLayout.cpp Graphics/Widgets/Slider.cpp Graphics/Widgets/ScrollWindow.cpp Graphics/Widgets/SlideMenu.cpp Graphics/Widgets/ScrollWidget.cpp Graphics/Widgets/Alert.cpp Graphics/Widgets/AlertDialog.cpp Graphics/Widgets/AlertMessage.cpp
 
-LOCAL_SRC_FILES += Listeners/Callback.cpp Listeners/ActiveListener.cpp
+LOCAL_SRC_FILES += Listeners/Callback.cpp
 
 
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv2 -ljnigraphics -latomic -lexpat

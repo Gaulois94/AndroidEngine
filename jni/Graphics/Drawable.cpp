@@ -21,7 +21,21 @@ void Drawable::updateGPU(Render& render)
 
 bool Drawable::testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	return (!m_staticToCamera && touchInRect(getRect(mvp), te.pid) || (m_staticToCamera && touchInRect(getRect(mvp*glm::inverse(render.getCamera().getMatrix())), te.pid)));
+	if(!m_staticToCamera)
+	{
+		Rectangle3f rect = getRect(mvp);
+		if(Material::getGlobalEnableClipping())
+			return touchInRect(getRectIntersect(rect, Rectangle3f(Material::getGlobalClipping(), 0.0, 0.0)), te.pid);
+		return touchInRect(rect, te.pid);
+	}
+
+	else
+	{
+		Rectangle3f rect = getRect(mvp*glm::inverse(render.getCamera().getMatrix()));
+		if(Material::getGlobalEnableClipping())
+			return touchInRect(getRectIntersect(rect, Rectangle3f(Material::getGlobalClipping(), 0.0, 0.0)), te.pid);
+		return touchInRect(rect, te.pid);
+	}
 }
 
 void Drawable::draw(Render& render, const glm::mat4& transformation)

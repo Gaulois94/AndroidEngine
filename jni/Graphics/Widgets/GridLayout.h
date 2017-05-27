@@ -37,10 +37,16 @@ class GridLayout : public Drawable
 		 * \param r the boolean value of the rescaling*/
 		void setRescale(bool r){m_rescale = r;}
 
+		/** \brief set the space between widgets
+		 * \param padding the space between widgets*/
+		void setPadding(const Vector2f& padding);
+
 		virtual Rectangle3f getGlobalRect() const;
 		virtual glm::mat4 getMatrix() const;
 
 		void onDraw(Render& render, const glm::mat4& mvp = glm::mat4(1.0f)){}
+
+		const Vector2f& getPadding() const {return m_padding;}
 
 		static void childrenTransfListener(void* data);
 	private:
@@ -52,6 +58,7 @@ class GridLayout : public Drawable
 		std::vector<std::vector<Vector2ui>> m_widgetsSize; /* <!All the widgets case taken */
 
 		Callback m_changeCallback;
+		Vector2f m_padding;
 };
 
 #endif

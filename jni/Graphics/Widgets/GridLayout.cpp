@@ -45,6 +45,12 @@ void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t 
 	resetPosition();
 }
 
+void GridLayout::setPadding(const Vector2f& padding)
+{
+	m_padding = padding;
+	resetPosition();
+}
+
 void GridLayout::resetPosition()
 {
 	std::vector<std::vector<glm::vec3>> crSize; //Column / row size
@@ -92,14 +98,6 @@ void GridLayout::resetPosition()
 		}
 	}
 
-	LOG_ERROR("SIZE ! ");
-	for(uint32_t i=0; i < m_widgets.size(); i++)
-	{
-		for(uint32_t j=0; j < m_widgets[0].size(); j++)
-			LOG_ERROR("%f %f", crSize[i][j].x, crSize[i][j].y);
-		LOG_ERROR(" ");
-	}
-
 	//Update the size and position of all widgets
 	//
 	//Get the current position of all widgets
@@ -130,13 +128,14 @@ void GridLayout::resetPosition()
 				widgetDefaultSize.y = widgetDefaultSize.y == 0 ? 1.0 : widgetDefaultSize.y;
 				widgetDefaultSize.z = widgetDefaultSize.z == 0 ? 1.0 : widgetDefaultSize.z;
 
-				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos() * m_widgets[i][j]->getInnerRect().getSize() / widgetDefaultSize);
+//				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos() * m_widgets[i][j]->getInnerRect().getSize() / widgetDefaultSize);
+				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos());
 				m_widgets[i][j]->setChangeCallback(&m_changeCallback);
 			}
-			currentPosY+=crSize[i][j].y;
+			currentPosY+=crSize[i][j].y + m_padding.y;
 		}
 		if(m_widgets[i].size() > 0)
-			currentPosX+=crSize[i][0].x;
+			currentPosX+=crSize[i][0].x + m_padding.x;
 	}
 
 	float completeSizeX = 0;

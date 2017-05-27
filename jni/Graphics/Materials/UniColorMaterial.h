@@ -21,6 +21,10 @@ class UniColorMaterial : public Material
 		virtual void init(Render& render, const glm::mat4& mvp, const glm::mat4& modelMatrix);
 		virtual void disableShader();
 
+		/** \brief Set the alpha component of the color
+		 * \param alpha the new value for the alpha component*/
+		void setAlpha(float alpha) {m_color[3] = alpha;}
+
 		/** \brief set the color of this material
 		 * \param color the new color*/
 		void setColor(const Color& color);
@@ -32,6 +36,10 @@ class UniColorMaterial : public Material
 		/** \brief get the color used by this material
 		 * \return the material color.*/
 		Color getColor() const;
+
+		/** \brief get the alpha component value
+		 * \return the alpha component value*/
+		float getAlpha() const{return m_color[3];}
 	private:
 		float* m_color;
 };

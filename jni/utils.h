@@ -74,4 +74,11 @@ Rectangle3<T> getRectAddiction(const Rectangle3<T>& r1, const Rectangle3<T>& r2)
  * \return the text of the resource*/
 std::string getTextFromRes(const std::string& id);
 
+inline
+bool isBigEndian()
+{
+	int i=1;
+    return (*(char*)&i != 1);
+}
+
 #endif

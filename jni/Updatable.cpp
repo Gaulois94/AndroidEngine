@@ -26,6 +26,31 @@ void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat
 	if(!m_updateFocus || !m_canUpdate || Updatable::focusIsCheck)
 		return;
 
+
+	//Handle clipping. Might change the onUpdate outcome
+	bool restoreClip = false;
+	bool mEnableClip = Material::getGlobalEnableClipping();
+	Rectangle2f clip;
+
+	if(m_enableClipping)
+	{
+		if(Material::getGlobalEnableClipping())
+		{
+			restoreClip = true;
+			clip = Material::getGlobalClipping();
+
+			Rectangle2f r = getRectIntersect(clip, m_clip);
+
+			Material::setGlobalClipping(r);
+		}
+
+		else
+		{
+			Material::enableGlobalClipping(true);
+			Material::setGlobalClipping(m_clip);
+		}
+	}
+
 	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); ++it)
 	{
 		(*it)->updateFocus(te, render, mvp);
@@ -40,6 +65,15 @@ void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat
 		Updatable::focusIsCheck = true;
 		return;
 	}
+
+	if(restoreClip)
+	{
+		Material::enableGlobalClipping(mEnableClip);
+		Material::setGlobalClipping(clip);
+	}
+
+	else if(!mEnableClip)
+		Material::enableGlobalClipping(false);
 }
 
 bool Updatable::testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
@@ -51,8 +85,12 @@ void Updatable::onFocus(const TouchEvent& te, Render& render, const glm::mat4& m
 {
 	Updatable::objectFocused = this;
 	Updatable::focusIsCheck = true;
-	if(m_focusCallback)
-		m_focusCallback(this, m_focusDatas);
+	LOG_DEBUG("Focus !");
+	if(m_focusListener)
+	{
+		LOG_DEBUG("FIRE !");
+		m_focusListener->fire();
+	}
 }
 
 void Updatable::keyUp(int32_t keyCode)
@@ -113,7 +151,7 @@ void Updatable::update(Render &render)
 
 void Updatable::updateGPU(Render& render)
 {
-	if(!m_canUpdate || !m_canDraw)
+	if(!m_canDraw)
 		return;
 
 	bool restoreClip = false;
@@ -178,13 +216,13 @@ void Updatable::addChild(Updatable *child, int pos)
 
 	if(child != NULL && !isChild(child))
 	{
-		if(pos < 0 || pos >= m_child.size())
+		if(pos < 0 || (uint32_t)(pos) >= m_child.size())
 			m_child.push_back(child);
 
 		else
 		{
 			std::list<Updatable*>::iterator it = m_child.begin();
-			for(uint32_t i=0; i < pos; i++)
+			for(int i=0; i < pos; i++)
 				it++;
 			m_child.insert(it, child);
 		}
@@ -272,12 +310,6 @@ bool Updatable::isChild(const Updatable *child)
 		}
 
 	return isChild;
-}
-
-void Updatable::setFocusCallback(void (*focusCallback)(Updatable*, void*), void* data)
-{
-	m_focusCallback = focusCallback;
-	m_focusDatas    = data;
 }
 
 bool Updatable::getCanUpdate() const

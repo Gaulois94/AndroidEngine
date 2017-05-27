@@ -29,10 +29,11 @@ class Menu : public Drawable
 		void setItemAlignment(XAlignment alignement);
 		void setActiveListener(ActiveListener* al) {m_outsideListener = al; for(auto& im : m_itemsMenu) im->setActiveListener(*al);}
 
-		std::vector<ItemMenu*>& getItems() {return m_itemsMenu;}
+		const std::vector<ItemMenu*>& getItems() const {return m_itemsMenu;}
+		uint32_t getNbItems() const {return m_itemsMenu.size();}
 		const Vector2f& getMaxItemSize() const {return m_maxItemSize;}
-	private:
 		void updateConfiguration();
+	private:
 		static void fireUpdateConfiguration(Active* item, void* menu);
 
 		Drawable* m_title;

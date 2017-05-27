@@ -8,6 +8,7 @@
 #include "Event.h"
 #include "utils.h"
 #include "Transformable.h"
+#include "Listeners/Listener.h"
 #define GLM_FORCE_RADIANS
 
 #include <glm/glm.hpp>
@@ -135,11 +136,6 @@ class Updatable : public JniMadeOf
 		 * \return return the value of m_canUpdate*/
 		bool getCanUpdate() const;
 
-		/** \brief Set the callback when the Updatable is on focus
-		 * \param focusCallback the functon to call
-		 * \param data the data to pass */
-		void setFocusCallback(void (*focusCallback)(Updatable*, void*), void* data=NULL);
-
 		/** \brief Tell if the Updatable can be update on GPU side.
 		 * \return m_canDraw*/
 		virtual bool canDraw() const;
@@ -161,6 +157,10 @@ class Updatable : public JniMadeOf
 		const Transformable* getApplyChildrenTransformable() const;
 
 		glm::mat4 getApplyChildrenMatrix() const;
+
+		/** \brief set the listener on focus.
+		 * \param listener the new listener. Can be NULL*/
+		void setFocusListener(UpdatableListener* listener){m_focusListener = listener; if(m_focusListener) m_focusListener->setThis(this);}
 	protected:
 		//Functions used for Transformable trees. SHOULD BE TESTED
 		virtual void setChildrenTransformable(const Transformable* tr);
@@ -172,14 +172,14 @@ class Updatable : public JniMadeOf
 		bool m_updateFocus;
 		bool m_canUpdate;
 		bool m_canDraw;
-		void (*m_focusCallback)(Updatable*, void*)=NULL;
-		void* m_focusDatas=NULL;
 
 		bool m_enableClipping = false;
 		Rectangle2f m_clip;
 
 		const Transformable* m_applyMatrix;
 		std::vector<const Updatable*> m_parentTransformables;
+
+		UpdatableListener* m_focusListener=NULL;
 
 		static bool focusIsCheck;   /** Tell if we have finished to get the focus*/
 		static bool keyUpIsCheck;   /** Tell if the key event was handled of not*/

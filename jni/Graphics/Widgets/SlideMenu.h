@@ -36,15 +36,16 @@ class SlideMenu : public Drawable
 
 		/** \brief get the active ItemMenu
 		 * \return the active ItemMenu*/
-		void ItemMenu* getActiveItemMenu();
+		const ItemMenu* getActiveItemMenu() const;
 
 		/** \brief get the ID of the active ItemMenu (useful if the indice is better than the Object in itself)
 		 * \return -1 if no active ItemMenu, the indice of it otherwise*/
-		void int getActiveNbItemMenu() const;
-	private:
-		//----------------------Private functions-------------------------//
+		int getActiveNbItemMenu() const;
+
 		/** \brief update the configuration of the menu (item matrix)*/
 		void updateConfiguration();
+	private:
+		//----------------------Private functions-------------------------//
 
 		/** \brief the callback of the listener
 		 * \param a the ItemMenu activated

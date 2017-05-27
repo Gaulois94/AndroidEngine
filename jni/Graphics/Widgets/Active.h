@@ -2,7 +2,7 @@
 #define DEF_ACTIVE
 
 #include "logger.h"
-#include "Listeners/ActiveListener.h"
+#include "Listeners/Listener.h"
 
 /** \brief basic class for activation / selection system as Button or CheckBox*/
 class Active

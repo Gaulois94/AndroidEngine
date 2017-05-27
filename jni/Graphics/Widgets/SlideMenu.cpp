@@ -25,9 +25,6 @@ SlideMenu::~SlideMenu()
 void SlideMenu::addItemMenu(ItemMenu* im)
 {
 	m_hiddenMenu.addItemMenu(im);
-
-	Rectangle3f hr = m_hiddenMenu.getDefaultConf();
-	m_scrollWidget.setDefaultConf(Rectangle3f(hr.x, -m_height, hr.z, hr.width, m_height, hr.depth));
 	m_scrollWidget.setMoveValue(Vector2f(0.0, 0.0));
 
 	Vector2f maxSize = m_hiddenMenu.getMaxItemSize();
@@ -65,6 +62,8 @@ void SlideMenu::updateConfiguration()
 		Rectangle3f hr = m_hiddenMenu.getDefaultConf();
 		m_scrollWidget.setMaxBound(Rectangle2f(0.0, 0.0, 0.0, fmax(0.0, hr.height - m_height)));
 		m_scrollWidget.setMoveValue(Vector2f(0.0, 0.0));
+		m_scrollWidget.setDefaultConf(Rectangle3f(hr.x, -m_height, hr.z, hr.width, m_height, hr.depth));
+		m_hiddenMenu.updateConfiguration();
 	}
 
 	else if(m_status == OFF)
@@ -73,12 +72,20 @@ void SlideMenu::updateConfiguration()
 
 		//Hide everything except our item
 		for(uint32_t i=0; i < m_hiddenMenu.getItems().size(); i++)
+		{
 			m_hiddenMenu.getItems()[i]->setCanUpdate(false);
+			m_hiddenMenu.getItems()[i]->setUpdateFocus(false);
+		}
 		m_itemMenu->setCanUpdate(true);
+		m_itemMenu->setUpdateFocus(true);
 
 		Rectangle3f r = m_itemMenu->getRect();
 		m_scrollWidget.setMaxBound(Rectangle2f(0.0, 0.0, 0.0, -m_itemMenu->getPosition().y - r.height));
 		m_scrollWidget.setMoveValue(Vector2f(0.0, -m_itemMenu->getPosition().y - r.height));
+
+		Vector2f maxSize = m_hiddenMenu.getMaxItemSize();
+		m_scrollWidget.setDefaultConf(Rectangle3f(0.0, -maxSize.y, 0.0, maxSize.x, maxSize.y, 0.0));
+		m_hiddenMenu.setDefaultConf(Rectangle3f(0, -maxSize.y, 0, maxSize.x, maxSize.y, 0.0));
 	}
 }
 
@@ -93,13 +100,13 @@ void SlideMenu::listenerCallback(Active* a, void* data)
 	self->updateConfiguration();
 }
 
-void const ItemMenu* SlideMenu::getActiveItemMenu() const
+const ItemMenu* SlideMenu::getActiveItemMenu() const
 {
 	return m_itemMenu;
 }
 
 
-void int SlideMenu::getActiveNbItemMenu() const
+int SlideMenu::getActiveNbItemMenu() const
 {
 	for(uint32_t i=0; i < m_hiddenMenu.getItems().size(); i++)
 		if(m_hiddenMenu.getItems()[i] == m_itemMenu)
