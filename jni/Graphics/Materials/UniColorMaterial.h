@@ -41,7 +41,10 @@ class UniColorMaterial : public Material
 		 * \return the alpha component value*/
 		float getAlpha() const{return m_color[3];}
 	private:
+		void getAttributs();
 		float* m_color;
+		GLint  m_uColor;
+		GLint  m_uUseUniColor;
 };
 
 #endif

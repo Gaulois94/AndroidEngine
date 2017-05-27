@@ -75,6 +75,7 @@ class Material : public JniMadeOf
 		 * \return the local clipping*/
 		static bool getGlobalEnableClipping();
 	protected:
+		virtual void getAttributs();
 		const Shader* m_shader;
 		const Texture* m_texture;
 		GLuint m_vboID;
@@ -87,6 +88,24 @@ class Material : public JniMadeOf
 
 		static Rectangle2f globalClipping;
 		static bool globalEnableClipping;
+
+		//Shader attributs
+		GLint m_uMaskColor;
+		GLint m_uUseTexture;
+		GLint m_uTextureHandle;
+		GLint m_uOpacityHandle;
+		GLint m_uModelMatrix;
+		GLint m_uLocalClippingClip;
+		GLint m_uGlobalClippingClip;
+		GLint m_uLocalClippingX;
+		GLint m_uLocalClippingY;
+		GLint m_uLocalClippingWidth;
+		GLint m_uLocalClippingHeight;
+
+		GLint m_uGlobalClippingX;
+		GLint m_uGlobalClippingY;
+		GLint m_uGlobalClippingWidth;
+		GLint m_uGlobalClippingHeight;
 };
 
 #endif

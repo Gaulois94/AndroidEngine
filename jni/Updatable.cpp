@@ -355,8 +355,6 @@ bool Updatable::getEnableClipping() const
 void Updatable::setChildrenTransformable(const Transformable* tr)
 {
 	m_applyMatrix = tr;
-	for(auto* it : m_child)
-		it->addParentTransformable(this);
 }
 
 void Updatable::addParentTransformable(const Updatable* parent)

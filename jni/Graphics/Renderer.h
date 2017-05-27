@@ -91,6 +91,14 @@ class Renderer : public Render
 		/** \brief show the keyboard
 		 * \param show show the keyboard or hide it*/
 		void showKeyboard(bool show);
+
+		/** \brief get the width in pixels of the Renderer
+		 * \return the width in pixels*/
+		int getWidth() const {return m_width;}
+
+		/** \brief get the height in pixels of the Renderer
+		 * \return the height in pixels*/
+		int getHeight() const {return m_height;}
 	protected:
 		void terminate();
 		EGLDisplay m_disp;

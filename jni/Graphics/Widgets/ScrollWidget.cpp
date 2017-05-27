@@ -1,6 +1,6 @@
 #include "Widgets/ScrollWidget.h"
 
-ScrollWidget::ScrollWidget(Updatable* parent, const Rectangle2f& maxBound, const Rectangle3f& defConf) : Active(), Drawable(parent, NULL, defConf), m_onFocusCount(0), m_value(0, 0), m_oldValue(m_value), m_maxBound(maxBound)
+ScrollWidget::ScrollWidget(Updatable* parent, const Rectangle2f& maxBound, const Rectangle3f& defConf) : Active(), Drawable(parent, NULL, defConf), m_onFocusCount(0), m_value(0, 0), m_oldValue(m_value), m_scrollSpeed(1.0, 1.0), m_maxBound(maxBound)
 {
 	setMaxBound(m_maxBound);
 	m_permanentActivated = true;
@@ -78,12 +78,12 @@ void ScrollWidget::onMoveEvent(const TouchEvent& te, Render& render, const glm::
 		//Compute the position
 		if(m_axis == X_AXIS || m_axis == XY_AXIS)
 		{
-			m_value.x = fmax(m_oldValue.x + vX, m_maxBound.x); 
+			m_value.x = fmax(m_oldValue.x + vX*m_scrollSpeed.x, m_maxBound.x); 
 			m_value.x = fmin(m_value.x, m_maxBound.x + m_maxBound.width);
 		}
 		if(m_axis == Y_AXIS || m_axis == XY_AXIS)
 		{
-			m_value.y = fmax(m_oldValue.y + vY, m_maxBound.y); 
+			m_value.y = fmax(m_oldValue.y + vY*m_scrollSpeed.y, m_maxBound.y); 
 			m_value.y = fmin(m_value.y, m_maxBound.y + m_maxBound.height);
 		}
 

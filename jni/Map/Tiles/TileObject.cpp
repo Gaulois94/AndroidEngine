@@ -21,10 +21,8 @@ void TileObject::addTile(Tile* tile, uint32_t x, uint32_t y)
 	if(!tile || x >= m_nbCasesX || y >= m_nbCasesY)
 		return;
 
-	LOG_ERROR("ADD TILE IN OBJECT");
 	addTransformable(tile);
 	tile->setParent(this);
 	tile->setPosition(glm::vec3(x*m_tileSizeX, (m_nbCasesY - 1 - y) * m_tileSizeY, 0.0));
-	LOG_ERROR("RELATIVE POSITION %d, %d", x*m_tileSizeX, (m_nbCasesY - 1 - y) * m_tileSizeY);
 	m_tiles[x][y] = tile;
 }

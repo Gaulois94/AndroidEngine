@@ -142,11 +142,14 @@ void GridLayout::resetPosition()
 	float completeSizeY = 0;
 
 	for(uint32_t i=0; i < crSize.size(); i++)
+	{
 		if(crSize[i].size() > 0)
 			completeSizeX += crSize[i][0].x;
+		completeSizeX += m_padding.x;
+	}
 
 	for(uint32_t i=0; crSize.size() > 0 && i < crSize[0].size(); i++)
-		completeSizeY += crSize[0][i].y;
+		completeSizeY += crSize[0][i].y + m_padding.y;
 
 	//Reset the default size of the layout
 	setDefaultSize(glm::vec3(completeSizeX, completeSizeY, maxSizeZ));
@@ -250,15 +253,6 @@ Rectangle3f GridLayout::getGlobalRect() const
 {
 	Rectangle3f rect = getRect();
 	return getRectAddiction(rect, Updatable::getGlobalRect());
-}
-
-glm::mat4 GridLayout::getMatrix() const
-{
-	glm::mat4 m = Transformable::getMatrix();
-	for(uint32_t i=0; i < m_parentTransformables.size(); i++)
-		if(m_parentTransformables[i]->getApplyChildrenTransformable())
-			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
-	return m;
 }
 
 void GridLayout::childrenTransfListener(void* data)

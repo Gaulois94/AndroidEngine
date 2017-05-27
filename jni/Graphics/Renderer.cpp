@@ -6,6 +6,9 @@
 #include "Graphics/Sprite.h"
 #include "Graphics/Widgets/Menu.h"
 #include "globalValues.h"
+#include "time.h"
+
+uint64_t currentTime=0;
 
 Renderer* globalRenderer = NULL;
 
@@ -208,6 +211,12 @@ void Renderer::update(Render& render)
 
 	Render::update(render);
 	Render::updateGPU(render);
+
+	struct timespec t;
+	clock_gettime(CLOCK_REALTIME, &t);
+
+	LOG_ERROR("FPS %f", 1.0e9/(t.tv_nsec - currentTime));
+	currentTime = t.tv_nsec;
 }
 
 void Renderer::initDraw()

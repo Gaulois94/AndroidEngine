@@ -8,6 +8,7 @@ Material::Material(const Shader *shader) : m_shader(shader), m_texture(NULL), m_
 {
 	if(!m_shader)
 		LOG_ERROR("ERROR LOADING SHADER");
+	getAttributs();
 }
 
 Material::~Material()
@@ -28,70 +29,53 @@ void Material::init(Render& render, const glm::mat4& mvp, const glm::mat4& model
 {
 	if(!m_shader)
 		return;
-	GLint uMaskColor          = glGetUniformLocation(m_shader->getProgramID(), "uMaskColor");
-	GLint uUseTexture         = glGetUniformLocation(m_shader->getProgramID(), "uUseTexture");
-	GLint uTextureHandle      = glGetUniformLocation(m_shader->getProgramID(), "uTexture");
-	GLint uOpacityHandle      = glGetUniformLocation(m_shader->getProgramID(), "uOpacity");
-	GLint uModelMatrix        = glGetUniformLocation(m_shader->getProgramID(), "uModelMatrix");
-
-	GLint uLocalClippingClip  = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.clip");
-	GLint uGlobalClippingClip = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.clip");
 
 	if(m_texture)
 	{
-		if(uMaskColor != -1)
+		if(m_uMaskColor != -1)
 		{
 			m_texture->getMaskColor().getFloatArray(maskColor);
-			glUniform4fv(uMaskColor, 1, maskColor);
+			glUniform4fv(m_uMaskColor, 1, maskColor);
 		}
-		if(uUseTexture != -1)
-			glUniform1i(uUseTexture, true);
-		if(uTextureHandle != -1)
-			glUniform1i(uTextureHandle, 0);
+		if(m_uUseTexture != -1)
+			glUniform1i(m_uUseTexture, true);
+		if(m_uTextureHandle != -1)
+			glUniform1i(m_uTextureHandle, 0);
 	}
 
 	else
 	{
-		if(uMaskColor != -1)
-			glUniform4fv(uMaskColor, 1, maskColor);
-		if(uUseTexture != -1)
-			glUniform1i(uUseTexture, false);
-		if(uTextureHandle != -1)
-			glUniform1i(uTextureHandle, 0);
+		if(m_uMaskColor != -1)
+			glUniform4fv(m_uMaskColor, 1, maskColor);
+		if(m_uUseTexture != -1)
+			glUniform1i(m_uUseTexture, false);
+		if(m_uTextureHandle != -1)
+			glUniform1i(m_uTextureHandle, 0);
 	}
 
-	if(uOpacityHandle != -1)
-		glUniform1f(uOpacityHandle, m_opacity);
+	if(m_uOpacityHandle != -1)
+		glUniform1f(m_uOpacityHandle, m_opacity);
 
-	if(uModelMatrix != -1)
-		glUniformMatrix4fv(uModelMatrix, 1, false, glm::value_ptr(modelMatrix));
+	if(m_uModelMatrix != -1)
+		glUniformMatrix4fv(m_uModelMatrix, 1, false, glm::value_ptr(modelMatrix));
 
-	if(uLocalClippingClip != -1)
+	if(m_uLocalClippingClip != -1)
 	{
-		GLint uLocalClippingX      = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.x");
-		GLint uLocalClippingY      = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.y");
-		GLint uLocalClippingWidth  = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.width");
-		GLint uLocalClippingHeight = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.height");
-
-		glUniform1i(uLocalClippingClip, m_enableClipping);
-        glUniform1f(uLocalClippingX, m_clip.x);
-        glUniform1f(uLocalClippingY, m_clip.y);
-        glUniform1f(uLocalClippingWidth, m_clip.width);
-        glUniform1f(uLocalClippingHeight, m_clip.height);
+		glUniform1i(m_uLocalClippingClip, m_enableClipping);
+        glUniform1f(m_uLocalClippingX, m_clip.x);
+        glUniform1f(m_uLocalClippingY, m_clip.y);
+        glUniform1f(m_uLocalClippingWidth, m_clip.width);
+        glUniform1f(m_uLocalClippingHeight, m_clip.height);
     }
 
-    if(uGlobalClippingClip != -1)
+    if(m_uGlobalClippingClip != -1)
     {
-		GLint uGlobalClippingX      = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.x");
-		GLint uGlobalClippingY      = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.y");
-		GLint uGlobalClippingWidth  = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.width");
-		GLint uGlobalClippingHeight = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.height");
 
-		glUniform1i(uGlobalClippingClip, Material::globalEnableClipping);
-        glUniform1f(uGlobalClippingX, Material::globalClipping.x);
-        glUniform1f(uGlobalClippingY, Material::globalClipping.y);
-        glUniform1f(uGlobalClippingWidth, Material::globalClipping.width);
-        glUniform1f(uGlobalClippingHeight, Material::globalClipping.height);
+		glUniform1i(m_uGlobalClippingClip, Material::globalEnableClipping);
+        glUniform1f(m_uGlobalClippingX, Material::globalClipping.x);
+        glUniform1f(m_uGlobalClippingY, Material::globalClipping.y);
+        glUniform1f(m_uGlobalClippingWidth, Material::globalClipping.width);
+        glUniform1f(m_uGlobalClippingHeight, Material::globalClipping.height);
     }
 }
 
@@ -158,4 +142,26 @@ const Rectangle2f& Material::getGlobalClipping()
 bool Material::getGlobalEnableClipping()
 {
 	return Material::globalEnableClipping;
+}
+
+void Material::getAttributs()
+{
+	m_uMaskColor            = glGetUniformLocation(m_shader->getProgramID(), "uMaskColor");
+	m_uUseTexture           = glGetUniformLocation(m_shader->getProgramID(), "uUseTexture");
+	m_uTextureHandle        = glGetUniformLocation(m_shader->getProgramID(), "uTexture");
+	m_uOpacityHandle        = glGetUniformLocation(m_shader->getProgramID(), "uOpacity");
+	m_uModelMatrix          = glGetUniformLocation(m_shader->getProgramID(), "uModelMatrix");
+
+	m_uLocalClippingClip    = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.clip");
+	m_uGlobalClippingClip   = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.clip");
+
+	m_uLocalClippingX       = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.x");
+	m_uLocalClippingY       = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.y");
+	m_uLocalClippingWidth   = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.width");
+	m_uLocalClippingHeight  = glGetUniformLocation(m_shader->getProgramID(), "uLocalClipping.height");
+
+	m_uGlobalClippingX      = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.x");
+	m_uGlobalClippingY      = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.y");
+	m_uGlobalClippingWidth  = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.width");
+	m_uGlobalClippingHeight = glGetUniformLocation(m_shader->getProgramID(), "uGlobalClipping.height");
 }

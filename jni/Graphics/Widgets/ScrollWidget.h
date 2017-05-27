@@ -40,14 +40,14 @@ class ScrollWidget : public Active, public Drawable
 		 * \param mv the new position*/
 		void setMoveValue(const Vector2f& mv);
 
+		void setScrollSpeed(const Vector2f& s) {m_scrollSpeed = s;}
+
 		void setActiveScroll(bool as) {m_activeScroll = as;}
 
 		const Vector2f& getMoveValue() const{return m_value;}
+		const Vector2f& getScrollSpeed() const{return m_scrollSpeed;}
 
 		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f)){}
-
-		void enableReverseX(bool e){m_reverseX = e;}
-		void enableReverseY(bool e){m_reverseY = e;}
 	private:
 		Transformable m_childTrans;
 		uint32_t m_onFocusCount;
@@ -56,11 +56,10 @@ class ScrollWidget : public Active, public Drawable
 		Vector2f m_yInterval;
 		Vector2f m_value;
 		Vector2f m_oldValue;
+		Vector2f m_scrollSpeed;
 		Rectangle2f m_maxBound;
 		Axis m_axis = XY_AXIS;
 		bool m_activeScroll=true;
-		bool m_reverseX=false;
-		bool m_reverseY=false;
 };
 
 #endif

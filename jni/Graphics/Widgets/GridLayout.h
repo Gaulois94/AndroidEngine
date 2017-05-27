@@ -42,7 +42,6 @@ class GridLayout : public Drawable
 		void setPadding(const Vector2f& padding);
 
 		virtual Rectangle3f getGlobalRect() const;
-		virtual glm::mat4 getMatrix() const;
 
 		void onDraw(Render& render, const glm::mat4& mvp = glm::mat4(1.0f)){}
 
