@@ -3,11 +3,15 @@
 float Material::maskColor[4];
 Rectangle2f Material::globalClipping;
 bool Material::globalEnableClipping=false;
+const Shader* Material::currentShader=NULL;
 
 Material::Material(const Shader *shader) : m_shader(shader), m_texture(NULL), m_vboID(0), m_isUsingShader(false)
 {
 	if(!m_shader)
+	{
 		LOG_ERROR("ERROR LOADING SHADER");
+		return;
+	}
 	getAttributs();
 }
 
@@ -18,11 +22,12 @@ Material::~Material()
 
 void Material::enableShader()
 {
-	if(m_shader)
+	if(m_shader && Material::currentShader != m_shader)
 	{
 		glUseProgram(m_shader->getProgramID());
-		m_isUsingShader = true;
+		Material::currentShader = m_shader;
 	}
+	m_isUsingShader = true;
 }
 
 void Material::init(Render& render, const glm::mat4& mvp, const glm::mat4& modelMatrix)
@@ -96,6 +101,7 @@ void Material::disableShader()
 {
 	glUseProgram(0);
 	m_isUsingShader = false;
+	Material::currentShader = NULL;
 }
 
 const Shader* Material::getShader() const

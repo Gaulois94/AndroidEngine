@@ -43,7 +43,7 @@ public class JniMadeOf
 	protected void setPtr(long ptr)
 	{
 		m_ptr = ptr;
-		setJobject();
+//		setJobject();
 	}
 
 	protected static native void initJniMadeOf(AssetManager asset, Context c, ClassLoader classLoader);

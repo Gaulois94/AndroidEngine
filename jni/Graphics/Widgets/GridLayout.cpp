@@ -3,6 +3,14 @@
 GridLayout::GridLayout(Updatable* parent) : Drawable(parent, NULL), m_changeCallback(GridLayout::childrenTransfListener, (void*)this)
 {}
 
+GridLayout::~GridLayout()
+{
+	for(uint32_t i=0; i < m_widgets.size(); i++)
+		for(uint32_t j=0; j < m_widgets[i].size(); j++)
+			if(m_widgets[i][j])
+				m_widgets[i][j]->setChangeCallback(NULL);
+}
+
 void GridLayout::addWidget(Drawable* drawable, uint32_t x, uint32_t y, uint32_t nbXCases, uint32_t nbYCases)
 {
 	if(drawable == NULL || nbYCases < 1 || nbXCases < 1)
@@ -259,4 +267,16 @@ void GridLayout::childrenTransfListener(void* data)
 {
 	GridLayout* self = (GridLayout*)data;
 	self->resetPosition();
+}
+
+bool GridLayout::removeChild(Updatable* child)
+{
+	if(Updatable::removeChild(child))
+		for(uint32_t i=0; i < m_widgets.size(); i++)
+			for(uint32_t j=0; j < m_widgets[i].size(); j++)
+				if(m_widgets[i][j] && (Updatable*)(m_widgets[i][j]) == child)
+				{
+					m_widgets[i][j] = NULL;
+					return true;
+				}
 }

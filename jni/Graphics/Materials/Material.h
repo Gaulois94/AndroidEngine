@@ -74,8 +74,11 @@ class Material : public JniMadeOf
 		/** \brief get whether or not the global clipping is enabled
 		 * \return the local clipping*/
 		static bool getGlobalEnableClipping();
+
+		static const Shader* currentShader;
 	protected:
 		virtual void getAttributs();
+
 		const Shader* m_shader;
 		const Texture* m_texture;
 		GLuint m_vboID;

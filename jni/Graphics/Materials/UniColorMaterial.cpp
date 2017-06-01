@@ -3,6 +3,8 @@
 UniColorMaterial::UniColorMaterial(const Color& color) : Material(Shader::shaders.get("color")), m_color(NULL)
 {
 	setColor(color);
+	if(!getShader())
+		return;
 	getAttributs();
 }
 

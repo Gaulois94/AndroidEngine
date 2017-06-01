@@ -301,9 +301,9 @@ void Transformable::setDefaultPositionOrigin(PositionOrigin p)
 
 void Transformable::setMVPMatrix()
 {	
+    m_mvpMatrix = m_scale * (computeDefaultPositionOrigin() * m_positionOrigin * m_position) * m_rotate;
 	if(m_changeCallback)
 		m_changeCallback->fire();
-    m_mvpMatrix = m_scale * (computeDefaultPositionOrigin() * m_positionOrigin * m_position) * m_rotate;
 }
 
 glm::mat4 Transformable::computeDefaultPositionOrigin()

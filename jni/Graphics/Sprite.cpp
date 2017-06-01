@@ -58,7 +58,6 @@ void Sprite::onDraw(Render& render, const glm::mat4& mvp)
 	}	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	m_material->unbindTexture();
-	m_material->disableShader();
 }
 
 void Sprite::setTexture(const Texture* texture, bool resetSubTextureRect)

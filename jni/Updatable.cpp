@@ -11,6 +11,7 @@ Updatable::Updatable(Updatable *parent) : m_parent(NULL), m_updateFocus(true), m
 {
 	if(parent)
 		parent->addChild(this);
+	m_iterDelete = m_child.end();
 }
 
 Updatable::~Updatable()
@@ -143,10 +144,21 @@ void Updatable::update(Render &render)
 {
 	if(!m_canUpdate)
 		return;
+
 	onUpdate(render);
-	for(std::list<Updatable*>::iterator it = m_child.begin(); it!=m_child.end(); ++it)
+	std::list<Updatable*>::iterator it = m_child.begin();
+	while(it!=m_child.end())
+	{
 		if(*it)
 			(*it)->update(render);
+		if(m_hasErase)
+		{
+			it = m_iterDelete;
+			m_hasErase = false;
+		}
+		else
+			it++;
+	}
 }
 
 void Updatable::updateGPU(Render& render)
@@ -216,14 +228,13 @@ void Updatable::addChild(Updatable *child, int pos)
 
 	if(child != NULL && !isChild(child))
 	{
-		if(pos < 0 || (uint32_t)(pos) >= m_child.size())
+		if(pos < 0 || pos >= (int)(m_child.size()))
 			m_child.push_back(child);
 
 		else
 		{
 			std::list<Updatable*>::iterator it = m_child.begin();
-			for(int i=0; i < pos; i++)
-				it++;
+			std::advance(it, pos);
 			m_child.insert(it, child);
 		}
 	}
@@ -255,7 +266,7 @@ void Updatable::setParent(Updatable *parent, int pos)
 	
 	m_parent = parent;	
 
-	if(m_parent)
+	if(parent)
 	{
 		addParentTransformable(parent);
 		m_parent->addChild(this, pos);
@@ -265,7 +276,11 @@ void Updatable::setParent(Updatable *parent, int pos)
 void Updatable::clearChild()
 {
 	for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-		(*it)->setParent(NULL);
+	{
+		(*it)->delParentTransformable();
+		(*it)->m_parent = NULL;
+	}
+	m_child.clear();
 }
 
 bool Updatable::removeChild(Updatable *child)
@@ -276,8 +291,9 @@ bool Updatable::removeChild(Updatable *child)
 		{
 			if(*it == child)
 			{
-				m_child.erase(it);
+				m_iterDelete = m_child.erase(it);
 				child->m_parent = NULL;
+				m_hasErase = true;
 				return true;
 			}
 		}
@@ -291,8 +307,7 @@ bool Updatable::removeChild(unsigned int pos)
 		return false;
 
 	std::list<Updatable*>::iterator it = m_child.begin();
-	for(unsigned int i = 0; i != pos; i++)
-		it++;
+	std::advance(it, pos);
 
 	(*it)->setParent(NULL);
 	return true;

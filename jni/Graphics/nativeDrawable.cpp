@@ -1,5 +1,160 @@
 #include "nativeDrawable.h"
 
+namespace
+{
+	const char* colorVert = 
+					"precision mediump float;"
+					"attribute vec3 vPosition;"
+					"attribute vec4 vColor;"
+					"attribute vec2 vTextureCoord;"
+
+					"uniform mat4 uMVP;"
+					"uniform mat4 uCameraMVP;"
+					"uniform mat4 uModelMatrix;"
+
+					"varying vec4 varyColor;"
+					"varying vec2 varyTextureCoord;"
+					"varying vec4 varyModelPosition;"
+					"varying vec4 varyPosition;"
+
+					"void main()"
+					"{"
+						"gl_Position       = uMVP * vec4(vPosition, 1.0);"
+						"varyPosition      = gl_Position;"
+						"varyModelPosition = uModelMatrix * vec4(vPosition, 1.0);"
+						"varyColor         = vColor;"
+						"varyTextureCoord  = vTextureCoord;"
+					"}";
+
+	const char* colorFrag = 
+					"precision mediump float;"
+					""
+					"struct Clipping"
+					"{"
+					"	bool  clip;"
+					"	float x;"
+					"	float y;"
+					"	float width;"
+					"	float height;"
+					"};"
+					""
+					"uniform vec4 uMaskColor;"
+					""
+					"uniform sampler2D uTexture;"
+					"uniform bool uUseTexture;"
+					"uniform bool uUseUniColor;"
+					"uniform vec4 uUniColor;"
+					""
+					"uniform Clipping uLocalClipping;"
+					"uniform Clipping uGlobalClipping;"
+					""
+					"varying vec2 varyTextureCoord;"
+					"varying vec4 varyColor;"
+					"varying vec4 varyModelPosition;"
+					"varying vec4 varyPosition;"
+					""
+					"void main()"
+					"{"
+					"	//Do the clipping"
+					"	//You have local clipping "
+					"	if(uLocalClipping.clip)"
+					"	{"
+					"		if(varyModelPosition.x < uLocalClipping.x || varyModelPosition.y < uLocalClipping.y "
+					"		   || varyModelPosition.x > uLocalClipping.x +uLocalClipping.width || varyModelPosition.y > uLocalClipping.y + uLocalClipping.height)"
+					"			discard;"
+					"	}"
+					""
+					"	//And global clipping "
+					"	if(uGlobalClipping.clip)"
+					"	{"
+					"		if(varyPosition.x < uGlobalClipping.x || varyPosition.y < uGlobalClipping.y "
+					"		   || varyPosition.x > uGlobalClipping.x +uGlobalClipping.width || varyPosition.y > uGlobalClipping.y + uGlobalClipping.height)"
+					"			discard;"
+					"	}"
+					""
+					"	if(uUseUniColor)"
+					"		gl_FragColor = uUniColor;"
+					"	else"
+					"		gl_FragColor = varyColor;"
+					""
+					"	if(uUseTexture)"
+					"	{"
+					"		vec4 textColor = texture2D(uTexture, varyTextureCoord);"
+					""
+					"		if(uMaskColor[3] == 0.0 && textColor[3] == 0.0)"
+					"			discard;"
+					"		else if(uMaskColor == textColor)"
+					"			discard;"
+					"	}"
+					"}";
+
+	const char* textureVert =
+					"precision mediump float;"
+					"attribute vec3 vPosition;"
+					"attribute vec2 vTextureCoord;"
+					"uniform mat4 uMVP;"
+					"uniform mat4 uModelMatrix;"
+					""
+					"varying vec2 vary_textureCoord;"
+					"varying vec4 varyModelPosition;"
+					"varying vec4 varyPosition;"
+					""
+					"void main()"
+					"{"
+					"	gl_Position       = uMVP * vec4(vPosition, 1.0);"
+					"	varyPosition      = gl_Position;"
+					"	vary_textureCoord = vTextureCoord;"
+					"	varyModelPosition = uModelMatrix * vec4(vPosition, 1.0);"
+					"}";
+
+	const char* textureFrag =
+					"precision mediump float;"
+					""
+					"struct Clipping"
+					"{"
+					"	bool  clip;"
+					"	float x;"
+					"	float y;"
+					"	float width;"
+					"	float height;"
+					"};"
+					""
+					"varying vec2 vary_textureCoord;"
+					""
+					"uniform Clipping uLocalClipping;"
+					"uniform Clipping uGlobalClipping;"
+					"uniform sampler2D uTexture;"
+					"uniform float uOpacity;"
+					"varying vec4 varyModelPosition;"
+					"varying vec4 varyPosition;"
+					""
+					"void main()"
+					"{"
+					"	//Do the clipping"
+					"	//You have local clipping "
+					"	if(uLocalClipping.clip)"
+					"	{"
+					"		discard;"
+					"		if(varyModelPosition.x < uLocalClipping.x || varyModelPosition.y < uLocalClipping.y "
+					"		   || varyModelPosition.x > uLocalClipping.x +uLocalClipping.width || varyModelPosition.y > uLocalClipping.y + uLocalClipping.height)"
+					"			discard;"
+					"	}"
+					""
+					"	//And global clipping "
+					"	if(uGlobalClipping.clip)"
+					"	{"
+					"		if(varyPosition.x < uGlobalClipping.x || varyPosition.y < uGlobalClipping.y "
+					"		   || varyPosition.x > uGlobalClipping.x +uGlobalClipping.width || varyPosition.y > uGlobalClipping.y + uGlobalClipping.height)"
+					"			discard;"
+					"	}"
+					""
+					"	gl_FragColor = texture2D(uTexture, vary_textureCoord);"
+					"	if(uOpacity > 0.0)"
+					"		gl_FragColor.a = uOpacity;"
+					"}";
+	
+}
+
 JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Drawable_addShaderDrawable(JNIEnv *jenv, jclass jcls, jstring key, jlong shader)
 {
     const char *k = jenv->GetStringUTFChars(key, 0);
@@ -65,12 +220,26 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(
 
 	for(int i = 0; i < size; i++)
 	{
+		LOG_ERROR("LOADING SHADER NUMBER %d", i);
 		std::string pathfString = "shaders/" + files[i] + ".frag";
 		std::string pathvString = "shaders/" + files[i] + ".vert";
 
 		File vertexFile        = File(jenv, context, pathvString.c_str(), "r");
 		File fragFile          = File(jenv, context, pathfString.c_str(), "r");
+		
 		Shader::shaders.add(files[i], Shader::loadFromFiles(vertexFile, fragFile));
+		  
+		/*  
+		if(files[i] == "color")
+		{
+			Shader::shaders.add(files[i], Shader::loadFromStrings(colorVert, colorFrag));
+		}
+		else if(files[i] == "texture")
+		{
+			Shader::shaders.add(files[i], Shader::loadFromStrings(textureVert, textureFrag));
+		}
+		*/
+		
 	}
 }
 

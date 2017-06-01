@@ -51,8 +51,8 @@ void Drawable::draw(Render& render, const glm::mat4& transformation)
 		mvp = render.getCamera().getMatrix() * mvp;
 	onDraw(render, mvp);
 
-	if(m_material)
-		m_material->disableShader();
+//	if(m_material)
+//		m_material->disableShader();
 }
 
 void Drawable::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)

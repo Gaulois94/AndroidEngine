@@ -107,8 +107,6 @@ public void run()
 {
 	JniMadeOf.setContext(m_context);
 	setPtr(createPtr(0));
-	initRenderer(m_ptr);
-
 	while(m_open)
 	{
 		//Suspend if needed (on event)
@@ -127,6 +125,7 @@ public void run()
 		if(m_canCreate)
 		{
 			initSurfaceRenderer(m_ptr, m_surface.getHolder().getSurface());
+			initRenderer(m_ptr);
 			onCreated();
 			m_isCreated = true;
 			m_canCreate = false;

@@ -12,6 +12,7 @@ class GridLayout : public Drawable
 {
 	public:
 		GridLayout(Updatable* parent);
+		~GridLayout();
 
 		/** \brief Add a widget to the GridLayout given a position
 		 * \param drawable The Drawable to add
@@ -46,6 +47,8 @@ class GridLayout : public Drawable
 		void onDraw(Render& render, const glm::mat4& mvp = glm::mat4(1.0f)){}
 
 		const Vector2f& getPadding() const {return m_padding;}
+
+		bool removeChild(Updatable* child);
 
 		static void childrenTransfListener(void* data);
 	private:

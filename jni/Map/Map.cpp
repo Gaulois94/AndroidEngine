@@ -148,8 +148,8 @@ void Map::startElementFiles(void *data, const char* name, const char** attrs)
 			StaticFile* sf = map->m_staticFiles[map->m_staticFiles.size()-1];
 
 			//Create a new StaticDatas
-			const char* name;
-			const char* type;
+			const char* name=NULL;
+			const char* type=NULL;
 			for(uint32_t i=0; attrs[i]; i+=2)
 			{
 				if(!strcmp(attrs[i], "name"))
@@ -174,7 +174,7 @@ void Map::startElementFiles(void *data, const char* name, const char** attrs)
 			DynamicFile* df = map->m_dynamicFiles[map->m_dynamicFiles.size()-1];
 
 			//Get common value between animation
-			const char* animName;
+			const char* animName=NULL;
 			for(uint32_t i=0; attrs[i]; i+=2)
 			{
 				if(!strcmp(attrs[i], "name"))
@@ -193,7 +193,7 @@ void Map::startElementFiles(void *data, const char* name, const char** attrs)
 			else if(!strcmp(name, "staticEntity"))
 			{
 				//get static animation values
-				uint32_t n, nX, posX, posY, spacingX, spacingY, sizeX, sizeY;
+				uint32_t n=0, nX=0, posX=0, posY=0, spacingX=0, spacingY=0, sizeX=0, sizeY=0;
 				for(uint32_t i=0; attrs[i]; i+=2)
 				{
 					//The position
@@ -260,8 +260,8 @@ void Map::startElementFiles(void *data, const char* name, const char** attrs)
 			//Get the last static entity
 			DynamicFile* df   = map->m_dynamicFiles[map->m_dynamicFiles.size()-1];
 			StaticEntity* se  = df->getLastStaticEntity();
-			const char* tileName;
-			const char* tileType;
+			const char* tileName=NULL;
+			const char* tileType=NULL;
 
 			for(uint32_t i=0; attrs[i]; i+=2)
 			{
@@ -344,7 +344,7 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 		if(!strcmp(name, "StaticTrace"))
 		{
 			//Get the size and the padding of it
-			uint32_t sizeX, sizeY, padX, padY;
+			uint32_t sizeX=0, sizeY=0, padX=0, padY=0;
 			uint32_t i;
 			const char* traceName = NULL;
 			for(i=0; attrs[i]; i+=2)
@@ -391,9 +391,9 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 		{
 			//Get information about is
 			char animName[50];
-			uint32_t fileID;
-			int32_t posX, posY;
-			uint32_t tileID;
+			uint32_t fileID=0;
+			int32_t posX=0, posY=0;
+			uint32_t tileID=0;
 
 			uint32_t i;
 			for(i=0; attrs[i]; i+=2)
@@ -439,7 +439,7 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 
 		else if(!strcmp(name, "StaticTile"))
 		{
-			uint32_t fileID, tileID, posX, posY;
+			uint32_t fileID=0, tileID=0, posX=0, posY=0;
 
 			for(uint32_t i=0; attrs[i]; i+=2)
 			{

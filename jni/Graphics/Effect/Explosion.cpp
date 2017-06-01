@@ -7,9 +7,9 @@ Explosion::Explosion(Updatable* parent, ExplosionMaterial* material, int nbParti
 	m_particles = (Particle*)malloc(sizeof(Particle)*nbParticles);
 	for(int i=0; i < nbParticles; i++)
 	{
-		float radius[]                   = {rand() / (float) RAND_MAX*0.25,
-											rand() / (float) RAND_MAX*0.25,
-											rand() / (float) RAND_MAX*0.25/5.0f
+		float radius[]                   = {rand() / (float) RAND_MAX*0.25f,
+											rand() / (float) RAND_MAX*0.25f,
+											rand() / (float) RAND_MAX*0.25f/5.0f
 										   };
 
 		float phi                        = rand() / (float) RAND_MAX*2*3.14 - 3.14;

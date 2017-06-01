@@ -20,7 +20,7 @@ class Camera : public Transformable
 
 		/** \brief Get the camera position
 		 * \return the camera position */
-		virtual glm::vec3 getPosition() const;
+		virtual glm::vec3 getPosition(bool useScale=true) const;
 
 		virtual void setPosition(const glm::vec3& m, bool useScale=false);
 

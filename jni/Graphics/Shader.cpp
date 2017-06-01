@@ -16,6 +16,7 @@ Shader::~Shader()
 
 Shader* Shader::loadFromFiles(File vertexFile, File fragFile)
 {
+	LOG_ERROR("LOADING SHADER");
 	std::string vertexCode;
 	std::string fragCode;
 
@@ -23,12 +24,14 @@ Shader* Shader::loadFromFiles(File vertexFile, File fragFile)
 	while((line = vertexFile.readLine()) != NULL)
 	{
 		vertexCode.append(line);	
+		LOG_ERROR("%s", line);
 		free(line);
 	}
 
 	while((line = fragFile.readLine()) != NULL)
 	{
 		fragCode.append(line);	
+		LOG_ERROR("%s", line);
 		free(line);
 	}
 
@@ -54,7 +57,6 @@ Shader* Shader::loadFromStrings(const std::string& vertexString, const std::stri
 		int length=0;
 		glGetProgramInfoLog(shader->m_programID, ERROR_MAX_LENGTH, &length, error);
 		LOG_ERROR("Could not link shader-> : \n %s", error);
-		LOG_ERROR("%s", vertexString.c_str());
 
 		delete shader;
 		return NULL;

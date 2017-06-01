@@ -107,7 +107,7 @@ class Updatable : public JniMadeOf
 		/** \brief Remove the child who is in the position indicate. It return true if the removing is correct, else it return false(maybe the position is wrong).
 		 * \param pos The child's position in the Updatable's child's list.
 		 * */
-		bool removeChild(unsigned int pos);
+		virtual bool removeChild(unsigned int pos);
 
 		/** \brief Return true if "child" is an Updatable's child, else it returns false.
 		 *  \param child The Updatable which can be an Updatable's child.
@@ -167,8 +167,10 @@ class Updatable : public JniMadeOf
 		virtual void addParentTransformable(const Updatable* parent);
 		virtual void delParentTransformable();
 
-		std::list <Updatable*> m_child; /**< Child's list. */
-		Updatable *m_parent; /**< The Updatable's parent. */
+		std::list<Updatable*>::iterator m_iterDelete;
+		bool                  m_hasErase=false;
+		std::list<Updatable*> m_child; /**< Child's list. */
+		Updatable *m_parent=NULL; /**< The Updatable's parent. */
 		bool m_updateFocus;
 		bool m_canUpdate;
 		bool m_canDraw;
@@ -176,7 +178,7 @@ class Updatable : public JniMadeOf
 		bool m_enableClipping = false;
 		Rectangle2f m_clip;
 
-		const Transformable* m_applyMatrix;
+		const Transformable* m_applyMatrix=NULL;
 		std::vector<const Updatable*> m_parentTransformables;
 
 		UpdatableListener* m_focusListener=NULL;

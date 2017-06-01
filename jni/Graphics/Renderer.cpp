@@ -104,8 +104,6 @@ bool Renderer::initializeContext()
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
-	Drawable::initShaders();
-
 	return true;
 }
 
@@ -145,12 +143,15 @@ void Renderer::initializeSurface(ANativeWindow* window)
 	eglQuerySurface(m_disp, m_surface, EGL_WIDTH, &m_width);
 	eglQuerySurface(m_disp, m_surface, EGL_HEIGHT, &m_height);
 
+	Drawable::initShaders();
+
 	setViewport(m_width, m_height);
 	m_start = true;
 }
 
 void Renderer::init()
 {
+	eglMakeCurrent(m_disp, m_surface, m_surface, m_context);
 }
 
 void Renderer::display()
@@ -209,8 +210,14 @@ void Renderer::update(Render& render)
 		delete ev;
 	}
 
+	Material::currentShader=NULL;
+	glUseProgram(0);
+
 	Render::update(render);
 	Render::updateGPU(render);
+
+	Material::currentShader=NULL;
+	glUseProgram(0);
 
 	struct timespec t;
 	clock_gettime(CLOCK_REALTIME, &t);

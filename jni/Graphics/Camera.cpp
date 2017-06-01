@@ -9,9 +9,9 @@ void Camera::lookAt(const glm::vec3& camera, const glm::vec3& target)
 	setOrientation(target - camera);
 }
 
-glm::vec3 Camera::getPosition() const
+glm::vec3 Camera::getPosition(bool useScale) const
 {
-	return -1.0f * Transformable::getPosition();
+	return -1.0f * Transformable::getPosition(useScale);
 }
 
 void Camera::move(const glm::vec3& m, bool useScale)
