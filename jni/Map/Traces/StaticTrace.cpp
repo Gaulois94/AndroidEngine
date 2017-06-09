@@ -12,16 +12,11 @@ StaticTrace::StaticTrace(Updatable* parent, const std::string& name, uint32_t si
 	}
 }
 
-void StaticTrace::onUpdate(Render& render)
-{
-	Trace::onUpdate(render);
-}
-
 Tile* StaticTrace::getTileWorldCoords(double x, double y)
 {
 	glm::mat4 invMvp = glm::inverse(getMatrix());
 	glm::vec4      v = invMvp * glm::vec4(x, y, 0.0, 1.0);
-	v.y = m_nbCasesY * m_sizeY + m_padY - v.y;
+	v.y              = m_nbCasesY * m_sizeY + m_padY - v.y;
 	return getTileTraceCoords(v.x, v.y);
 }
 
@@ -29,7 +24,6 @@ Tile* StaticTrace::getTileTraceCoords(int x, int y)
 {
 	if(x < 0 || y < 0 || x >= m_nbCasesX * m_sizeX - m_padX || y >= m_nbCasesY * m_sizeY - m_padY)
 		return NULL;
-
 	Tile* tile = m_tiles[(x - m_padX)/m_sizeX][(y - m_padY)/m_sizeY];
 	return tile;
 

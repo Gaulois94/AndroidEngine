@@ -21,6 +21,8 @@ class Tile : public Drawable
 		/** \brief tell if the tile can be destroyed or not.
 		 * return return if the tile can be destroyed*/
 		bool canDestroy();
+
+		void setTileInfo(void* info) {m_info = info;}
 	protected:
 		void* m_info;
 		bool m_canDestroy;

@@ -13,6 +13,9 @@
 #include "File.h"
 #include "JniMadeOf.h"
 
+#define VPOSITION     0
+#define VTEXTURECOORD 1
+
 /** \brief A graphic program.*/
 class Shader : JniMadeOf
 {
@@ -48,6 +51,8 @@ class Shader : JniMadeOf
 		GLuint m_programID;
 		GLuint m_vertexID;
 		GLuint m_fragID;
+
+		void bindAttributes();
 
 		/** \brief Bind the attributes key string by an ID */
 		static int loadShader(const std::string& code, int type);

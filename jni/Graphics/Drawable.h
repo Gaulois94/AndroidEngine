@@ -5,6 +5,8 @@
     #define BUFFER_OFFSET(offset) ((char*)NULL + (offset))
 #endif
 
+#define GL_GLEXT_PROTOTYPES
+
 #include "GroupTransformable.h"
 #include "Updatable.h"
 #include "Shader.h"
@@ -12,6 +14,7 @@
 #include "EventManager.h"
 #include "Render.h"
 #include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 #include "Listeners/Listener.h"
 
 /** \brief Basic class drawable */
@@ -68,8 +71,14 @@ class Drawable : public GroupTransformable, public Updatable
 
 		virtual Rectangle3f getGlobalRect() const;
 		virtual glm::mat4 getMatrix() const;
-	protected:
 
+		//Static functions for OES functions
+		//these ugly typenames are defined in GLES2/gl2ext.h
+		static PFNGLBINDVERTEXARRAYOESPROC bindVertexArrayOES;
+		static PFNGLDELETEVERTEXARRAYSOESPROC deleteVertexArraysOES;
+		static PFNGLGENVERTEXARRAYSOESPROC genVertexArraysOES;
+		static PFNGLISVERTEXARRAYOESPROC isVertexArrayOES;
+	protected:
 		virtual void delParentTransformable();
 		virtual void addParentTransformable(const Updatable* parent);
 		virtual void deleteVbos();
@@ -77,6 +86,7 @@ class Drawable : public GroupTransformable, public Updatable
 		GLuint m_vboID;
 		bool m_canDraw;
 		bool m_staticToCamera;
+
 };
 
 #endif

@@ -75,7 +75,6 @@ void Material::init(Render& render, const glm::mat4& mvp, const glm::mat4& model
 
     if(m_uGlobalClippingClip != -1)
     {
-
 		glUniform1i(m_uGlobalClippingClip, Material::globalEnableClipping);
         glUniform1f(m_uGlobalClippingX, Material::globalClipping.x);
         glUniform1f(m_uGlobalClippingY, Material::globalClipping.y);

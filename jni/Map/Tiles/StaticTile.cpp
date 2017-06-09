@@ -7,7 +7,6 @@ StaticTile::StaticTile(Updatable* parent, Material* mtl, const Texture* texture,
 
 void StaticTile::onDraw(Render& render, const glm::mat4& mvp)
 {
-	m_sprite.draw(render, mvp);	
 }
 
 void StaticTile::setMaterial(Material* material)

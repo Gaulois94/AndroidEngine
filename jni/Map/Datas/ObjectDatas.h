@@ -16,7 +16,7 @@ struct ObjectDatas : public TileData
 	createObjectPtr createObject;
 	std::vector<char*> CSVTileID;
 	std::vector<char*> CSVFileID;
-	void* info;
+	void* info=NULL;
 	uint32_t nbCasesX;
 	uint32_t nbCasesY;
 	uint32_t tileSizeX;

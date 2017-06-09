@@ -20,6 +20,7 @@ Updatable::~Updatable()
 		Updatable::objectFocused = NULL;
 
 	setParent(NULL);
+	clearChild();
 }
 
 void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
@@ -86,12 +87,8 @@ void Updatable::onFocus(const TouchEvent& te, Render& render, const glm::mat4& m
 {
 	Updatable::objectFocused = this;
 	Updatable::focusIsCheck = true;
-	LOG_DEBUG("Focus !");
 	if(m_focusListener)
-	{
-		LOG_DEBUG("FIRE !");
 		m_focusListener->fire();
-	}
 }
 
 void Updatable::keyUp(int32_t keyCode)
@@ -149,8 +146,7 @@ void Updatable::update(Render &render)
 	std::list<Updatable*>::iterator it = m_child.begin();
 	while(it!=m_child.end())
 	{
-		if(*it)
-			(*it)->update(render);
+		(*it)->update(render);
 		if(m_hasErase)
 		{
 			it = m_iterDelete;
@@ -163,15 +159,16 @@ void Updatable::update(Render &render)
 
 void Updatable::updateGPU(Render& render)
 {
-	if(!m_canDraw)
+	if(!m_canUpdate || !m_canDraw)
 		return;
 
 	bool restoreClip = false;
-	bool mEnableClip = Material::getGlobalEnableClipping();
+	bool mEnableClip = true;
 	Rectangle2f clip;
 
 	if(m_enableClipping)
 	{
+		mEnableClip = Material::getGlobalEnableClipping();
 		if(Material::getGlobalEnableClipping())
 		{
 			restoreClip = true;
@@ -190,8 +187,7 @@ void Updatable::updateGPU(Render& render)
 	}
 
 	for(std::list<Updatable*>::iterator it = m_child.begin(); it!=m_child.end(); ++it)
-		if(*it)
-			(*it)->updateGPU(render);
+		(*it)->updateGPU(render);
 
 	if(restoreClip)
 	{
@@ -214,8 +210,19 @@ void Updatable::updateTouchUp(const TouchEvent& te, Render& render, const glm::m
 		return;
 	}
 
-	for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); it++)
-		(*it)->updateTouchUp(te, render, mvp);
+	std::list<Updatable*>::iterator it = m_child.begin();
+	while(it!=m_child.end())
+	{
+		if(*it)
+			(*it)->updateTouchUp(te, render, mvp);
+		if(m_hasErase)
+		{
+			it = m_iterDelete;
+			m_hasErase = false;
+		}
+		else
+			it++;
+	}
 }
 
 void Updatable::onTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)

@@ -6,11 +6,11 @@
 #include "Graphics/Sprite.h"
 #include "Graphics/Widgets/Menu.h"
 #include "globalValues.h"
-#include "time.h"
-
-uint64_t currentTime=0;
+#include <dlfcn.h>
 
 Renderer* globalRenderer = NULL;
+
+uint64_t currentTime = 0;
 
 Renderer::Renderer(Updatable* parent) : Render(parent), m_disp(EGL_NO_DISPLAY), m_surface(EGL_NO_SURFACE), m_context(EGL_NO_CONTEXT),
 										m_conf(0), m_nbConf(0), m_format(0), m_width(0), m_window(0)
@@ -152,6 +152,11 @@ void Renderer::initializeSurface(ANativeWindow* window)
 void Renderer::init()
 {
 	eglMakeCurrent(m_disp, m_surface, m_surface, m_context);
+	void *libhandle                 = dlopen("libGLESv2.so", RTLD_LAZY);
+	Drawable::bindVertexArrayOES    = (PFNGLBINDVERTEXARRAYOESPROC) dlsym(libhandle, "glBindVertexArrayOES");
+	Drawable::deleteVertexArraysOES = (PFNGLDELETEVERTEXARRAYSOESPROC) dlsym(libhandle,	"glDeleteVertexArraysOES");
+	Drawable::genVertexArraysOES    = (PFNGLGENVERTEXARRAYSOESPROC)dlsym(libhandle,	"glGenVertexArraysOES");
+	Drawable::isVertexArrayOES      = (PFNGLISVERTEXARRAYOESPROC)dlsym(libhandle, "glIsVertexArrayOES");
 }
 
 void Renderer::display()
@@ -216,14 +221,14 @@ void Renderer::update(Render& render)
 	Render::update(render);
 	Render::updateGPU(render);
 
+    struct timeval start;
+
+	gettimeofday(&start,NULL);
+	LOG_DEBUG("FPS : %f", 1.0e6/(start.tv_usec - currentTime));
+	currentTime = start.tv_usec;
+
 	Material::currentShader=NULL;
 	glUseProgram(0);
-
-	struct timespec t;
-	clock_gettime(CLOCK_REALTIME, &t);
-
-	LOG_ERROR("FPS %f", 1.0e9/(t.tv_nsec - currentTime));
-	currentTime = t.tv_nsec;
 }
 
 void Renderer::initDraw()

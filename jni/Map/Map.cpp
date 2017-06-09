@@ -299,6 +299,7 @@ void Map::startElementObjects(void *data, const char* name, const char** attrs)
 				type = attrs[i+1];
 		}
 		objDatas->createObject = map->getObjectFunction(name, type);
+		objDatas->info = map->getObjectTileInfo(name, type);
 		map->m_objects.push_back(objDatas);
 	}
 
@@ -420,18 +421,18 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 				if(de)
 				{
 					//Then finally create the tile
-					map->foundTile(de->getNames()[tileID], de->getTypes()[tileID]);
 					Tile* tile = de->createDynamicAnim(NULL, de->material, df->getTexture(), *(de->getSubRects()), de->info, tileID, 8, posX, posY);
 					dt->addTile(tile, posX, posY);
+					map->foundTile(de->getNames()[tileID], de->getTypes()[tileID], tile, Vector2ui(posX, posY));
 				}
 				else
 				{
 					StaticEntity* se = df->getStaticEntity(name);
 					if(se)
 					{
-						map->foundTile(se->getNames()[tileID], se->getTypes()[tileID]);
 						Tile* tile = se->createStaticAnim(NULL, df->getTexture(), tileID, posX, posY);
 						dt->addTile(tile, posX, posY);
+						map->foundTile(se->getNames()[tileID], se->getTypes()[tileID], tile, Vector2ui(posX, posY));
 					}
 				}
 			}
@@ -458,9 +459,9 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 
 			if(sf)
 			{
-				map->foundTile(sf->getTileName(tileID), sf->getTileType(tileID));
 				Tile* tile = sf->createTile(NULL, tileID, false);
 				dt->addTile(tile, posX, posY);
+				map->foundTile(sf->getTileName(tileID), sf->getTileType(tileID), tile, Vector2ui(posX, posY));
 			}
 		}
 	}
@@ -505,13 +506,13 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 					//Get the file following the file ID (id 0 --> first file created)
 					StaticFile* sf  = map->m_staticFiles[(*fileID)[i]];
 
-					map->foundTile(sf->getTileName((*tileID)[i]), sf->getTileType((*tileID)[i]));
 					//And create this tile
 					Tile* tile      = sf->createTile(NULL, (*tileID)[i], false);
 
 					//If the tile is created
 					if(tile != NULL)
 						st->addTileInTraceCoord(tile, XML_NthColumn, i); //Add it
+					map->foundTile(sf->getTileName((*tileID)[i]), sf->getTileType((*tileID)[i]), tile, Vector2ui(XML_NthColumn, i));
 				}
 
 				//Then we look for objects
@@ -524,7 +525,6 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 						continue;
 
 					//Create this object
-					map->foundTile(objDatas->name, objDatas->type);
 					TileObject* obj = objDatas->createObject(NULL, objDatas->nbCasesX, objDatas->nbCasesY, objDatas->tileSizeX, objDatas->tileSizeY, objDatas->info);
 
 					uint32_t j;
@@ -559,6 +559,7 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 						}
 					}
 					st->addTileInTraceCoord(obj, XML_NthColumn, i);
+					map->foundTile(objDatas->name, objDatas->type, obj, Vector2ui(XML_NthColumn, i));
 				}
 			}
 		}
@@ -600,9 +601,9 @@ void Map::startElementTraces(void *data, const char* name, const char** attrs)
 					if(se)
 					{
 						//Need to be changed
-						map->foundTile(se->getNames()[(*tileID)[i]], se->getTypes()[(*tileID)[i]]);
 						Tile* tile = se->createStaticAnim(NULL, df->getTexture(), (*tileID)[i], 0, 0);
 						st->addTile(tile, XML_NthColumn, i);
+						map->foundTile(se->getNames()[(*tileID)[i]], se->getTypes()[(*tileID)[i]], tile, Vector2ui(XML_NthColumn, i));
 					}
 				}
 			}

@@ -1,6 +1,11 @@
 #include "Drawable.h"
 #include "nativeDrawable.h"
 
+PFNGLBINDVERTEXARRAYOESPROC    Drawable::bindVertexArrayOES;
+PFNGLDELETEVERTEXARRAYSOESPROC Drawable::deleteVertexArraysOES;
+PFNGLGENVERTEXARRAYSOESPROC    Drawable::genVertexArraysOES;
+PFNGLISVERTEXARRAYOESPROC      Drawable::isVertexArrayOES;
+
 Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : GroupTransformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_staticToCamera(false)
 {
 	setMaterial(m_material);
@@ -13,8 +18,6 @@ Drawable::~Drawable()
 
 void Drawable::updateGPU(Render& render)
 {
-	if(!m_canUpdate || !m_canDraw)
-		return;
 	draw(render);
 	Updatable::updateGPU(render);
 }

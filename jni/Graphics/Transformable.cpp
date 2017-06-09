@@ -230,13 +230,9 @@ Rectangle3f Transformable::mvpToRect(const glm::mat4& mvp) const
 		glm::vec4(0.0, 0.0, 0.0, 1.0), glm::vec4(0.0, m_defaultSize[1], 0.0, 1.0), 
 		glm::vec4(m_defaultSize[0], 0.0, 0.0, 1.0), glm::vec4(m_defaultSize[0], m_defaultSize[1], 0.0, 1.0), //Front face
 		
-		glm::vec4(0.0, 0.0, 0.0, 1.0), glm::vec4(0.0, m_defaultSize[1], 0.0, 1.0),
-	   	glm::vec4(m_defaultSize[0], 0.0, 0.0, 1.0), glm::vec4(m_defaultSize[0], m_defaultSize[1], 0.0, 1.0)}; //Will be the back face
+		glm::vec4(0.0, 0.0, m_defaultSize[2], 1.0), glm::vec4(0.0, m_defaultSize[1], m_defaultSize[2], 1.0),
+	   	glm::vec4(m_defaultSize[0], 0.0, m_defaultSize[2], 1.0), glm::vec4(m_defaultSize[0], m_defaultSize[1], m_defaultSize[2], 1.0)}; //Will be the back face
 
-
-	//Get the back face position
-	for(uint32_t i=4; i < 8; i++)
-		v[i] = v[i] + glm::vec4(0.0, 0.0, m_defaultSize[2], 0.0);
 
 	for(uint32_t i=0; i < 8; i++)
 	{
@@ -248,16 +244,11 @@ Rectangle3f Transformable::mvpToRect(const glm::mat4& mvp) const
 	
 	//Determine the maximum and minimum coord of the v[i] table
 	float xMin, yMin, zMin, xMax, zMax, yMax;
-	for(uint32_t i=0; i < 8; i++)
+	xMin = xMax = v[0][0];
+	yMin = yMax = v[0][1];
+	zMin = zMax = v[0][2];
+	for(uint32_t i=1; i < 8; i++)
 	{
-		if(i==0)
-		{
-			xMin = xMax = v[i][0];
-			yMin = yMax = v[i][1];
-			zMin = zMax = v[i][2];
-			continue;
-		}
-
 		if(v[i][0] < xMin)
 			xMin = v[i][0];
 		else if(v[i][0] > xMax)

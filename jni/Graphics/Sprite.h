@@ -2,12 +2,14 @@
 #define DEF_SPRITE_INCLUDE
 
 #define GLM_FORCE_RADIANS
+#define GL_GLEXT_PROTOTYPES
 
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtc/type_ptr.hpp>
 #include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 
 #include "Drawable.h"
 #include "Texture.h"
@@ -22,6 +24,8 @@ class Sprite : public Drawable
 		 * \param material The Sprite material.
 		 * \param texture A pointer to the Sprite texture.*/
 		Sprite(Updatable* parent, Material* material, const Texture* texture);
+
+		~Sprite();
 
 		/** \brief draw the sprite. If the texture is null, the function will draw a white square.
 		 * \param render The Render where the drawable will be drawn
@@ -45,7 +49,8 @@ class Sprite : public Drawable
 		 * \return the subtexture rect.*/
 		const FloatRect2& getSubTextureRect() const;
 	protected:
-		void initVbos(float* vertexCoords, float* textureCoords);
+		GLuint m_vao;
+		void initVbos(const float* vertexCoords, const float* textureCoords);
 		FloatRect2 m_subTextureRect;
 		const Texture* m_texture;
 };

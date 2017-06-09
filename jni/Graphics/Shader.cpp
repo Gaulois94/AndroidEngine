@@ -48,6 +48,8 @@ Shader* Shader::loadFromStrings(const std::string& vertexString, const std::stri
 	glAttachShader(shader->m_programID, shader->m_vertexID);
 	glAttachShader(shader->m_programID, shader->m_fragID);
 
+	shader->bindAttributes();
+
 	glLinkProgram(shader->m_programID);
 	int linkStatus;
 	glGetProgramiv(shader->m_programID, GL_LINK_STATUS, &linkStatus);
@@ -102,4 +104,10 @@ int Shader::getVertexID() const
 int Shader::getFragID() const
 {
 	return m_fragID;
+}
+
+void Shader::bindAttributes()
+{
+	glBindAttribLocation(m_programID, VPOSITION,     "vPosition");
+	glBindAttribLocation(m_programID, VTEXTURECOORD, "vTextureCoord");
 }

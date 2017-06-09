@@ -2,19 +2,39 @@
 
 Sprite::Sprite(Updatable* parent, Material* material, const Texture* texture) : Drawable(parent, material, Rectangle3f(0, 0, 0, 1, 1, 0)), m_subTextureRect(0.0f, 0.0f, 1.0f, 1.0f), m_texture(texture)
 {
-	float vertexCoords[] = {0.0f, 0.0f, 0.0f,
+	const float vertexCoords[] = {0.0f, 0.0f, 0.0f,
 							1.0f, 0.0f, 0.0f,
 							0.0f, 1.0f, 0.0f,
 						    1.0f, 1.0f, 0.0f
 						   };
 
-	float textureCoords[] = {0.0f, 0.0f,
+	const float textureCoords[] = {0.0f, 0.0f,
 							 1.0f, 0.0f,
 							 0.0f, 1.0f,
 							 1.0f, 1.0f
 							};
 
 	initVbos(vertexCoords, textureCoords);
+
+	//Init the VAO
+	genVertexArraysOES(1, &m_vao);
+	bindVertexArrayOES(m_vao);
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
+		{
+			glVertexAttribPointer(VPOSITION, 3, GL_FLOAT, false, 3*sizeof(float), NULL);
+			glEnableVertexAttribArray(VPOSITION);
+
+			glVertexAttribPointer(VTEXTURECOORD, 2, GL_FLOAT, false, 2*sizeof(float), BUFFER_OFFSET(4 * sizeof(float) * 3));
+			glEnableVertexAttribArray(VTEXTURECOORD);
+		}
+	}
+	bindVertexArrayOES(0);
+}
+
+Sprite::~Sprite()
+{
+	deleteVertexArraysOES(1, &m_vao);
 }
 
 void Sprite::onDraw(Render& render, const glm::mat4& mvp)
@@ -22,42 +42,31 @@ void Sprite::onDraw(Render& render, const glm::mat4& mvp)
 	if(!m_material)
 		return;
 
-	m_material->bindTexture(m_texture);
-	m_material->init(render, mvp, getMatrix());
- 	GLint vNormal = glGetAttribLocation(m_material->getShader()->getProgramID(), "vNormal");
-	if(vNormal != -1)
+	bindVertexArrayOES(m_vao);
 	{
-		glEnableVertexAttribArray(vNormal);
-		float normal[] = {0.0, 0.0, 1.0};
-		glVertexAttrib3fv(vNormal, normal);
-	}
+		m_material->bindTexture(m_texture);
+		m_material->init(render, mvp, getMatrix());
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
-	{
-		GLint vPosition     = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
-		GLint vTextureCoord = glGetAttribLocation(m_material->getShader()->getProgramID(), "vTextureCoord");
-
-		GLint uMvp          = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
-
-		glEnableVertexAttribArray(vPosition);
-		glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, 3*sizeof(float), NULL);
-
-		if(vTextureCoord != -1)
-		{
-			glEnableVertexAttribArray(vTextureCoord);
-			glVertexAttribPointer(vTextureCoord, 2, GL_FLOAT, false, 2*sizeof(float), BUFFER_OFFSET(4 * sizeof(float) * 3));
-		}
-
-		glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glDisableVertexAttribArray(vPosition);
-		if(vTextureCoord != -1)
-			glDisableVertexAttribArray(vTextureCoord);
+		/*  
+		GLint vNormal = glGetAttribLocation(m_material->getShader()->getProgramID(), "vNormal");
 		if(vNormal != -1)
-			glDisableVertexAttribArray(vNormal);
-	}	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	m_material->unbindTexture();
+		{
+			glEnableVertexAttribArray(vNormal);
+			float normal[] = {0.0, 0.0, 1.0};
+			glVertexAttrib3fv(vNormal, normal);
+		}
+		*/
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
+		{
+			GLint uMvp = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
+			glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		}	
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		m_material->unbindTexture();
+	}
+	bindVertexArrayOES(0);
 }
 
 void Sprite::setTexture(const Texture* texture, bool resetSubTextureRect)
@@ -92,7 +101,7 @@ const FloatRect2& Sprite::getSubTextureRect() const
 	return m_subTextureRect;
 }
 
-void Sprite::initVbos(float* vertexCoords, float* textureCoords)
+void Sprite::initVbos(const float* vertexCoords, const float* textureCoords)
 {
 	deleteVbos();
 	glGenBuffers(1, &m_vboID);

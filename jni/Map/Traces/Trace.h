@@ -21,7 +21,6 @@ class Trace : public Drawable
 		 * \param y the y position in world coords
 		 * \return Tile the tile at the position x, y. NULL if nothing.*/
 		virtual Tile* getTileWorldCoords(double x, double y)=0;
-
 		virtual Tile* getTileTraceCoords(int x, int y)=0;
 
 		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
