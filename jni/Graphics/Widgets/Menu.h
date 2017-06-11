@@ -20,6 +20,11 @@ class Menu : public Drawable
 		 * \param itemMenu the ItemMenu to be adding. It's transformation matrix will be automatically set, with it's parent*/
 		void addItemMenu(ItemMenu* itemMenu);
 
+		/** \brief Clear all ItemMenu
+		 *  It will set all the ItemMenu's parent to NULL as their ApplyTransformation
+		 * \param del should we delete them from the memory ? (calling delete)*/
+		void clearItems(bool del=false);
+
 		Rectangle3f getDefaultConf() const;
 		void onFocus(uint32_t, Render&);
 		void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));

@@ -60,7 +60,7 @@ void Drawable::draw(Render& render, const glm::mat4& transformation)
 
 void Drawable::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
+	for(std::vector<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
 		(*it)->moveEvent(te, render, mvp);
 
 	glm::mat4 t = mvp * getMatrix();

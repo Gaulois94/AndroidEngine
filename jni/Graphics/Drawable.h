@@ -8,7 +8,6 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include "GroupTransformable.h"
-#include "Updatable.h"
 #include "Shader.h"
 #include "Materials/Material.h"
 #include "EventManager.h"
@@ -16,6 +15,7 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include "Listeners/Listener.h"
+#include "Updatable.h"
 
 /** \brief Basic class drawable */
 class Drawable : public GroupTransformable, public Updatable

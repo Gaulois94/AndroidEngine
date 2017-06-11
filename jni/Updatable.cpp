@@ -38,12 +38,10 @@ void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat
 	{
 		if(Material::getGlobalEnableClipping())
 		{
-			restoreClip = true;
 			clip = Material::getGlobalClipping();
-
 			Rectangle2f r = getRectIntersect(clip, m_clip);
-
 			Material::setGlobalClipping(r);
+			restoreClip = true;
 		}
 
 		else
@@ -53,7 +51,7 @@ void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat
 		}
 	}
 
-	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); ++it)
+	for(std::vector<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); ++it)
 	{
 		(*it)->updateFocus(te, render, mvp);
 		if(Updatable::focusIsCheck == true)
@@ -68,14 +66,9 @@ void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat
 		return;
 	}
 
+	Material::enableGlobalClipping(mEnableClip);
 	if(restoreClip)
-	{
-		Material::enableGlobalClipping(mEnableClip);
 		Material::setGlobalClipping(clip);
-	}
-
-	else if(!mEnableClip)
-		Material::enableGlobalClipping(false);
 }
 
 bool Updatable::testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
@@ -93,7 +86,7 @@ void Updatable::onFocus(const TouchEvent& te, Render& render, const glm::mat4& m
 
 void Updatable::keyUp(int32_t keyCode)
 {
-	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
+	for(std::vector<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
 	{
 		(*it)->keyUp(keyCode);
 		if(Updatable::keyUpIsCheck == true)
@@ -105,7 +98,7 @@ void Updatable::keyUp(int32_t keyCode)
 
 void Updatable::keyDown(int32_t keyCode)
 {
-	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
+	for(std::vector<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
 	{
 		(*it)->keyDown(keyCode);
 		if(Updatable::keyDownIsCheck == true)
@@ -128,7 +121,7 @@ bool Updatable::onKeyDown(int32_t keyCode)
 
 void Updatable::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
-	for(std::list<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
+	for(std::vector<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
 		(*it)->moveEvent(te, render, mvp);
 
 	onMoveEvent(te, render, mvp);
@@ -143,7 +136,7 @@ void Updatable::update(Render &render)
 		return;
 
 	onUpdate(render);
-	std::list<Updatable*>::iterator it = m_child.begin();
+	std::vector<Updatable*>::iterator it = m_child.begin();
 	while(it!=m_child.end())
 	{
 		(*it)->update(render);
@@ -159,16 +152,15 @@ void Updatable::update(Render &render)
 
 void Updatable::updateGPU(Render& render)
 {
-	if(!m_canUpdate || !m_canDraw)
+	if(!m_canDraw)
 		return;
 
 	bool restoreClip = false;
-	bool mEnableClip = true;
+	bool mEnableClip = Material::getGlobalEnableClipping();
 	Rectangle2f clip;
 
 	if(m_enableClipping)
 	{
-		mEnableClip = Material::getGlobalEnableClipping();
 		if(Material::getGlobalEnableClipping())
 		{
 			restoreClip = true;
@@ -186,17 +178,12 @@ void Updatable::updateGPU(Render& render)
 		}
 	}
 
-	for(std::list<Updatable*>::iterator it = m_child.begin(); it!=m_child.end(); ++it)
+	for(std::vector<Updatable*>::iterator it = m_child.begin(); it!=m_child.end(); ++it)
 		(*it)->updateGPU(render);
 
+	Material::enableGlobalClipping(mEnableClip);
 	if(restoreClip)
-	{
-		Material::enableGlobalClipping(mEnableClip);
 		Material::setGlobalClipping(clip);
-	}
-
-	else if(!mEnableClip)
-		Material::enableGlobalClipping(false);
 }
 
 void Updatable::onUpdate(Render &render)
@@ -210,7 +197,7 @@ void Updatable::updateTouchUp(const TouchEvent& te, Render& render, const glm::m
 		return;
 	}
 
-	std::list<Updatable*>::iterator it = m_child.begin();
+	std::vector<Updatable*>::iterator it = m_child.begin();
 	while(it!=m_child.end())
 	{
 		if(*it)
@@ -240,7 +227,7 @@ void Updatable::addChild(Updatable *child, int pos)
 
 		else
 		{
-			std::list<Updatable*>::iterator it = m_child.begin();
+			std::vector<Updatable*>::iterator it = m_child.begin();
 			std::advance(it, pos);
 			m_child.insert(it, child);
 		}
@@ -282,7 +269,7 @@ void Updatable::setParent(Updatable *parent, int pos)
 
 void Updatable::clearChild()
 {
-	for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
+	for(std::vector<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
 	{
 		(*it)->delParentTransformable();
 		(*it)->m_parent = NULL;
@@ -294,7 +281,7 @@ bool Updatable::removeChild(Updatable *child)
 {
 	if(child->getParent() == this)
 	{
-		for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
+		for(std::vector<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
 		{
 			if(*it == child)
 			{
@@ -313,7 +300,7 @@ bool Updatable::removeChild(unsigned int pos)
 	if(pos >= m_child.size())
 		return false;
 
-	std::list<Updatable*>::iterator it = m_child.begin();
+	std::vector<Updatable*>::iterator it = m_child.begin();
 	std::advance(it, pos);
 
 	(*it)->setParent(NULL);
@@ -324,7 +311,7 @@ bool Updatable::isChild(const Updatable *child)
 {
 	bool isChild = false;
 
-	for(std::list<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
+	for(std::vector<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
 		if((*it) == child)
 		{
 			isChild = true;
@@ -400,7 +387,7 @@ Rectangle3f Updatable::getGlobalRect() const
 	if(m_child.size() > 0)
 	{
 		Rectangle3f rect = (*(m_child.begin()))->getGlobalRect();
-		std::list<Updatable*>::const_iterator it = m_child.begin();
+		std::vector<Updatable*>::const_iterator it = m_child.begin();
 		it++;
 		for(;it != m_child.end(); ++it)
 			rect = getRectAddiction(rect, (*it)->getGlobalRect());

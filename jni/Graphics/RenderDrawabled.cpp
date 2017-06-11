@@ -28,7 +28,7 @@ void RenderDrawabled::staticToCamera(bool s)
 Rectangle3f RenderDrawabled::getGlobalRect() const
 {
 	Rectangle3f rect = getRect();
-	for(std::list<Updatable*>::const_iterator it = m_child.begin(); it != m_child.end(); ++it)
+	for(std::vector<Updatable*>::const_iterator it = m_child.begin(); it != m_child.end(); ++it)
 		if((*it) != &m_render)
 			rect = getRectAddiction(rect, (*it)->getGlobalRect());
 	return rect;

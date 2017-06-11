@@ -14,6 +14,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
+#include <vector>
 
 class Render;
 
@@ -167,9 +168,9 @@ class Updatable : public JniMadeOf
 		virtual void addParentTransformable(const Updatable* parent);
 		virtual void delParentTransformable();
 
-		std::list<Updatable*>::iterator m_iterDelete;
+		std::vector<Updatable*>::iterator m_iterDelete;
 		bool                  m_hasErase=false;
-		std::list<Updatable*> m_child; /**< Child's list. */
+		std::vector<Updatable*> m_child; /**< Child's list. */
 		Updatable *m_parent=NULL; /**< The Updatable's parent. */
 		bool m_updateFocus;
 		bool m_canUpdate;

@@ -96,6 +96,8 @@ void Transformable::setScale(const glm::vec3 &v, bool keepPos)
 void Transformable::setDefaultPos(const glm::vec3 &p)
 {
 	m_defaultPos = p;
+	if(m_defaultPosOrigin != BOTTOM_LEFT)
+		setMVPMatrix();
 	if(m_changeCallback)
 		m_changeCallback->fire();
 }
@@ -103,6 +105,8 @@ void Transformable::setDefaultPos(const glm::vec3 &p)
 void Transformable::setDefaultSize(const glm::vec3 &s)
 {
 	m_defaultSize = s;
+	if(m_defaultPosOrigin != BOTTOM_LEFT)
+		setMVPMatrix();
 	if(m_changeCallback)
 		m_changeCallback->fire();
 }
@@ -115,6 +119,8 @@ void Transformable::setDefaultConf(const Rectangle3f &dc)
 		setDefaultPos(glm::vec3(dc.x, dc.y, dc.z));
 		setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
 	m_changeCallback = c;
+	if(m_defaultPosOrigin != BOTTOM_LEFT)
+		setMVPMatrix();
 	if(m_changeCallback)
 		m_changeCallback->fire();
 }
@@ -311,7 +317,7 @@ glm::mat4 Transformable::computeDefaultPositionOrigin()
 							 -m_defaultSize.x, 0.0f, 0.0f, 1.0f);
 		case TOP_LEFT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
-							 0.0f, 1.0f, 0.0f, 0.0f,
+							 0.0f, 1.0f, 0.0f, 0.0,
 							 0.0f, 0.0f, 1.0f, 0.0f,
 							 0.0f, -m_defaultSize.y, 0.0f, 1.0f);
 		case TOP_RIGHT:
