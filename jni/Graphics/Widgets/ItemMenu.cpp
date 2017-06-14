@@ -1,11 +1,10 @@
 #include "Widgets/ItemMenu.h"
 
-ItemMenu::ItemMenu(Updatable* parent, Drawable* item) : Drawable(parent, NULL, item->getDefaultConf()), Active(), m_item(item)
+ItemMenu::ItemMenu(Updatable* parent, Drawable* item) : Drawable(parent, NULL, item->getRect()), Active(), m_item(item)
 {
 	item->setParent(this);
 	item->setApplyTransformation(this);
 	item->setUpdateFocus(false);
-	setDefaultConf(m_item->getDefaultConf());
 }
 
 void ItemMenu::setUpdateConfig(const ActiveListener& fu)
