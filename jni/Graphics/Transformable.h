@@ -32,7 +32,7 @@ struct EulerRotation
 /** \brief define a default origin position.*/
 enum PositionOrigin
 {
-	TOP_LEFT, TOP_CENTER, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, BOTTOM_CENTER,
+	NO_POSITION, TOP_LEFT, TOP_CENTER, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, BOTTOM_CENTER,
 	CENTER, CENTER_LEFT, CENTER_RIGHT
 };
 
@@ -217,7 +217,7 @@ class Transformable : public JniMadeOf
 
 		float     m_theta;
 		float     m_phi;
-		PositionOrigin m_defaultPosOrigin=BOTTOM_LEFT;
+		PositionOrigin m_defaultPosOrigin=NO_POSITION;
 		Callback* m_changeCallback=NULL;
 };
 

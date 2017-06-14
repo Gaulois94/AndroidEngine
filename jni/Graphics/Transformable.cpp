@@ -308,54 +308,58 @@ glm::mat4 Transformable::computeDefaultPositionOrigin()
 	switch(m_defaultPosOrigin)
 	{
 		case BOTTOM_LEFT:
-			return glm::mat4(1.0f);
+			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+							 0.0f, 1.0f, 0.0f, 0.0f,
+							 0.0f, 0.0f, 1.0f, 0.0f,
+							 -m_defaultPos.x, -m_defaultPos.y, 0.0f, 1.0f);
 
 		case BOTTOM_RIGHT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultSize.x, 0.0f, 0.0f, 1.0f);
+							 -m_defaultPos.x - m_defaultSize.x, -m_defaultPos.y, 0.0f, 1.0f);
 		case TOP_LEFT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 0.0f, -m_defaultSize.y, 0.0f, 1.0f);
+							 -m_defaultPos.x, -m_defaultPos.y-m_defaultSize.y, 0.0f, 1.0f);
 		case TOP_RIGHT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultSize.x, -m_defaultSize.y, 0.0f, 1.0f);
+							 -m_defaultPos.x-m_defaultSize.x, -m_defaultPos.y-m_defaultSize.y, 0.0f, 1.0f);
 		case CENTER:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultSize.x/2.0f, -m_defaultSize.y/2.0f, 0.0f, 1.0f);
+							 -m_defaultPos.x-m_defaultSize.x/2.0f, -m_defaultPos.y-m_defaultSize.y/2.0f, 0.0f, 1.0f);
 		
 		case TOP_CENTER:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultSize.x/2.0f, -m_defaultSize.y, 0.0f, 1.0f);
+							 -m_defaultPos.x-m_defaultSize.x/2.0f, -m_defaultPos.y-m_defaultSize.y, 0.0f, 1.0f);
 
 		case BOTTOM_CENTER:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultSize.x/2.0f, 0.0f, 0.0f, 1.0f);
+							 -m_defaultPos.x-m_defaultSize.x/2.0f, -m_defaultPos.y, 0.0f, 1.0f);
 
 		case CENTER_LEFT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 0.0f, -m_defaultSize.y/2.0f, 0.0f, 1.0f);
+							 -m_defaultPos.x, -m_defaultSize.y/2.0f, -m_defaultPos.y, 1.0f);
 
 		case CENTER_RIGHT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultSize.x, -m_defaultSize.y/2.0f, 0.0f, 1.0f);
+							 -m_defaultPos.x-m_defaultSize.x, -m_defaultPos.y-m_defaultSize.y/2.0f, 0.0f, 1.0f);
+		default:
+			return glm::mat4(1.0f);
 	}
-
 	return glm::mat4(1.0f);
 }
 
