@@ -381,7 +381,7 @@ glm::mat4 Updatable::getApplyChildrenMatrix() const
 			return m_parent->getApplyChildrenMatrix();
 	}
 
-	return (m_applyMatrix) ? m_applyMatrix->Transformable::getMatrix() : glm::mat4(1.0f);
+	return (m_applyMatrix) ? m_applyMatrix->getMatrix() : glm::mat4(1.0f);
 }
 
 const Transformable* Updatable::getApplyChildrenTransformable() const
