@@ -60,6 +60,7 @@ class GridLayout : public Drawable
 		std::vector<std::vector<Vector2ui>> m_widgetsSize; /* <!All the widgets case taken */
 
 		Callback m_changeCallback;
+		bool     m_changeCalled=false;
 		Vector2f m_padding;
 };
 

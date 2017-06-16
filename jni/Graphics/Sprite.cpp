@@ -41,11 +41,13 @@ void Sprite::onDraw(Render& render, const glm::mat4& mvp)
 {
 	if(!m_material)
 		return;
+	glm::mat4 localMatrix = getMatrix();
+	glm::mat4 totalMatrix = mvp * localMatrix;
 
 	bindVertexArrayOES(m_vao);
 	{
 		m_material->bindTexture(m_texture);
-		m_material->init(render, mvp, getMatrix());
+		m_material->init(render, totalMatrix, localMatrix);
 
 		/*  
 		GLint vNormal = glGetAttribLocation(m_material->getShader()->getProgramID(), "vNormal");
@@ -60,7 +62,7 @@ void Sprite::onDraw(Render& render, const glm::mat4& mvp)
 		glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 		{
 			GLint uMvp = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
-			glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
+			glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(totalMatrix));
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}	
 		glBindBuffer(GL_ARRAY_BUFFER, 0);

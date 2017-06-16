@@ -10,7 +10,8 @@ ScrollWidget::ScrollWidget(Updatable* parent, const Rectangle2f& maxBound, const
 }
 
 ScrollWidget::~ScrollWidget()
-{}
+{
+}
 
 void ScrollWidget::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
@@ -88,7 +89,7 @@ void ScrollWidget::onMoveEvent(const TouchEvent& te, Render& render, const glm::
 		}
 
 		//Set the clip
-		m_childTrans.setPosition(glm::vec3(m_value.x, m_value.y, 0), true);
+		m_childTrans.setPosition(glm::vec3(m_value.x, m_value.y, 0));
 	}
 }
 
@@ -107,7 +108,7 @@ void ScrollWidget::setMaxBound(const Rectangle2f& r)
 		m_value.y = fmin(m_value.y, m_maxBound.y + m_maxBound.height);
 	}
 
-	m_childTrans.setPosition(glm::vec3(m_value.x, m_value.y, 0), true);
+	m_childTrans.setPosition(glm::vec3(m_value.x, m_value.y, 0));
 }
 
 void ScrollWidget::setMoveValue(const Vector2f& mv)

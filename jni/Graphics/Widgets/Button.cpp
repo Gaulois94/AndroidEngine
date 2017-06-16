@@ -70,7 +70,7 @@ void Button::centerText()
 {
     if(m_text)
 	{
-		m_text->setPositionOrigin(m_text->getDefaultPos() + m_text->getDefaultSize()/2.0f, true);
+		m_text->setPositionOrigin(m_text->getDefaultPos() + m_text->getDefaultSize()/2.0f);
 		m_text->setPosition(getDefaultPos() + getDefaultSize()/2.0f);
 	}
 }
@@ -126,7 +126,7 @@ bool Button::hasText() const
 	return (m_text != NULL);
 }
 
-void Button::setRequestSize(const glm::vec3& size, bool keepPos)
+void Button::setRequestSize(const glm::vec3& size)
 {
 	setDefaultSize(size);
 	setBackgroundScale();

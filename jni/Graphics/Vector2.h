@@ -17,7 +17,8 @@ class Vector2
 			y=0;
 		}
 
-		Vector2(const Vector2<T>& v)
+		template<typename S>
+		Vector2(const Vector2<S>& v)
 		{
 			x = v.x;
 			y = v.y;

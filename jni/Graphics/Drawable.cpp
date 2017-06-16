@@ -49,7 +49,7 @@ void Drawable::draw(Render& render, const glm::mat4& transformation)
 	if(m_material)
 		m_material->enableShader();
 
-	glm::mat4 mvp = transformation * getMatrix();
+	glm::mat4 mvp = transformation;
 	if(!m_staticToCamera)
 		mvp = render.getCamera().getMatrix() * mvp;
 	onDraw(render, mvp);
@@ -113,18 +113,6 @@ void Drawable::initShaders()
 	Java_com_gaulois94_Graphics_Drawable_loadShadersDrawable(JniMadeOf::jenv, 0, JniMadeOf::context);
 }
 
-void Drawable::addParentTransformable(const Updatable* parent)
-{
-	Updatable::addParentTransformable(parent);
-	setMVPMatrix();
-}
-
-void Drawable::delParentTransformable()
-{
-	Updatable::delParentTransformable();
-	setMVPMatrix();
-}
-
 Rectangle3f Drawable::getGlobalRect() const
 {
 	Rectangle3f rect = mvpToRect(getMatrix());
@@ -133,20 +121,12 @@ Rectangle3f Drawable::getGlobalRect() const
 	return rect;
 }
 
-glm::mat4 Drawable::getMatrix() const
+glm::mat4 Drawable::preMatrix() const
 {
-	glm::mat4 m = Transformable::getMatrix();
-	/*for(uint32_t i=0; i < m_parentTransformables.size(); i++)
-		if(m_parentTransformables[i]->getApplyChildrenTransformable())
-		{
-			glm::vec4 temp;
-			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
-		}
-	*/
-
 	if(m_applyTransformation)
-		return m;
+		return m_applyTransformation->preMatrix();
 
+	glm::mat4 m(1.0f);
 	const Updatable* p = m_parent;
 	while(p != NULL)
 	{

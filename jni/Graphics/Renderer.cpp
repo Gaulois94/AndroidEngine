@@ -224,7 +224,7 @@ void Renderer::update(Render& render)
     struct timeval start;
 
 	gettimeofday(&start,NULL);
-//	LOG_DEBUG("FPS : %f", 1.0e6/(start.tv_usec - currentTime));
+	LOG_ERROR("FPS : %f", 1.0e6/(start.tv_usec - currentTime));
 	currentTime = start.tv_usec;
 
 	Material::currentShader=NULL;

@@ -95,8 +95,11 @@ void Text::onDraw(Render& render, const glm::mat4& mvp)
 	if(m_font == NULL || m_text == NULL || m_material == NULL || !glIsBuffer(m_vboID))
 		return;
 
+	glm::mat4 localMatrix = getMatrix();
+	glm::mat4 totalMatrix = mvp * localMatrix;
+
 	m_material->bindTexture(m_font->getTexture());
-	m_material->init(render, mvp, getMatrix());
+	m_material->init(render, totalMatrix, localMatrix);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	{
 		GLint vPosition      = glGetAttribLocation(m_material->getShader()->getProgramID(), "vPosition");
@@ -110,7 +113,7 @@ void Text::onDraw(Render& render, const glm::mat4& mvp)
 
 		GLint uMvp           = glGetUniformLocation(m_material->getShader()->getProgramID(), "uMVP");
 
-		glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(mvp));
+		glUniformMatrix4fv(uMvp, 1, false, glm::value_ptr(totalMatrix));
 
 		glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, 3*sizeof(float), BUFFER_OFFSET(0));
 		if(vTextureCoord != -1)

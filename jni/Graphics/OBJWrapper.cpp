@@ -192,6 +192,8 @@ OBJWrapper::OBJWrapper(Updatable* parent, File& file) : Drawable(parent, NULL)
 
 void OBJWrapper::onDraw(Render& render, const glm::mat4& mvp)
 {
+	glm::mat4 localMatrix = getMatrix();
+	glm::mat4 totalMatrix = mvp * localMatrix;
 	for(std::map<std::string, OBJDatas*>::iterator itOBJ = m_objDatas.begin(); itOBJ != m_objDatas.end(); ++itOBJ)
 	{
 		OBJDatas* currentDatas = itOBJ->second;
@@ -207,12 +209,12 @@ void OBJWrapper::onDraw(Render& render, const glm::mat4& mvp)
 				if(!m_material)
 				{
 					currentMaterial->enableShader();
-					currentMaterial->init(render, mvp, getMatrix());
+					currentMaterial->init(render, totalMatrix, localMatrix);
 					shader = currentMaterial->getShader();
 				}
 				else
 				{
-					m_material->init(render, mvp, getMatrix());
+					m_material->init(render, totalMatrix, localMatrix);
 					shader = m_material->getShader();
 				}
 
@@ -223,7 +225,7 @@ void OBJWrapper::onDraw(Render& render, const glm::mat4& mvp)
 
 				//Send the uniform attribute
 				GLint mvpMatrixHandle = glGetUniformLocation(shader->getProgramID(), "uMVP");
-				glUniformMatrix4fv(mvpMatrixHandle, 1, false, glm::value_ptr(mvp));
+				glUniformMatrix4fv(mvpMatrixHandle, 1, false, glm::value_ptr(totalMatrix));
 
 				//Draw the triangles.
 				glDrawArrays(GL_TRIANGLES, offset, itSeries->second);

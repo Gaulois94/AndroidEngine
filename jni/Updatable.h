@@ -165,8 +165,6 @@ class Updatable : public JniMadeOf
 	protected:
 		//Functions used for Transformable trees. SHOULD BE TESTED
 		virtual void setChildrenTransformable(const Transformable* tr);
-		virtual void addParentTransformable(const Updatable* parent);
-		virtual void delParentTransformable();
 
 		std::vector<Updatable*>::iterator m_iterDelete;
 		bool                  m_hasErase=false;
@@ -180,7 +178,6 @@ class Updatable : public JniMadeOf
 		Rectangle2f m_clip;
 
 		const Transformable* m_applyMatrix=NULL;
-		std::vector<const Updatable*> m_parentTransformables;
 
 		UpdatableListener* m_focusListener=NULL;
 

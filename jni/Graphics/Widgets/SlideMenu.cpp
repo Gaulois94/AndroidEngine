@@ -15,6 +15,8 @@ SlideMenu::SlideMenu(Updatable* parent, float height, Drawable* backgroundItem, 
 
 SlideMenu::~SlideMenu()
 {
+	m_scrollWidget.setApplyTransformation(NULL);
+	m_scrollWidget.setParent(NULL);
 	for(uint32_t i=0; i < m_textsCreated.size(); i++)
 		delete m_textsCreated[i];
 

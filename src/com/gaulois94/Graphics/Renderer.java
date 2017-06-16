@@ -110,7 +110,7 @@ public void run()
 	while(m_open)
 	{
 		//Suspend if needed (on event)
-		try
+/*		try
 		{
 			if(m_suspend)
 			{
@@ -121,6 +121,7 @@ public void run()
 				}
 			}
 		}catch(InterruptedException e){}
+*/
 
 		if(m_canCreate)
 		{

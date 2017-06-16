@@ -18,7 +18,7 @@ JNIEXPORT void JNICALL Java_com_gaulois94_Graphics_Transformable_setPositionTran
 {
 	Transformable* trans = (Transformable*) transPtr;
 	jfloat* p = jenv->GetFloatArrayElements(position, 0);
-	trans->setPosition(glm::vec3(p[0], p[1], p[2]), useScale);
+	trans->setPosition(glm::vec3(p[0], p[1], p[2]));
 	jenv->ReleaseFloatArrayElements(position, p, 0);
 }
 

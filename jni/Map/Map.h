@@ -162,11 +162,24 @@ class Map : public Drawable
 		 * \return a pointer to a void*. NULL if not correct*/
 		void*                       getObjectTileInfo(const char* name, const char* type);
 
+		/** \brief get the first trace where a Tile is present at the position (x, y), (x, y) are world coordinates components
+		 * \param x the x component
+		 * \param y the y component
+		 * \param the Trace where a tile is present at the position (x, y)*/
+		Trace* getTraceWorldCoords(double x, double y);	
+
 		/** \brief get the tile on the coord x, y in pixels and world coords (and not OpenGL)
 		 * \param x the x component
 		 * \param y the y component
 		 * \return the Tile at this position. NULL if nothing*/
 		Tile* getTileWorldCoords(double x, double y);
+
+		/** \brief get the tile on the coord x, y in pixels and world coords (and not OpenGL)
+		 * \param x the x component
+		 * \param y the y component
+		 * \param trace a pointer to a pointer to a Trace to store the correspondant trace
+		 * \return the Tile at this position. NULL if nothing*/
+		Tile* getTileWorldCoords(double x, double y, Trace** trace);
 
 		/** \brief get the tile on the coord x, y in world coords in a specific trace
 		 * \param x the x component

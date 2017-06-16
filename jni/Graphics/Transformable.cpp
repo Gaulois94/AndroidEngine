@@ -1,15 +1,24 @@
 #include "Transformable.h"
 
-Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f), m_position(1.0f), m_positionOrigin(1.0f), m_applyTransformation(NULL), m_theta(0.0f), m_phi(0.0f)
+Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f), m_rotate(1.0f), m_scale(1.0f), m_applyMatrix(1.0f), m_applyTransformation(NULL), m_theta(0.0f), m_phi(0.0f)
 {
 	m_defaultPos = glm::vec3(defaultConf.x, defaultConf.y, defaultConf.z);
 	m_defaultSize = glm::vec3(defaultConf.width, defaultConf.height, defaultConf.depth);
 	setMVPMatrix();
 }
 
+Transformable::~Transformable()
+{
+	while(m_childrenTrans.size())
+		if(m_childrenTrans[0])
+			m_childrenTrans[0]->setApplyTransformation(NULL);
+	if(m_applyTransformation)
+		m_applyTransformation->removeTransfChild(this);
+}
+
 void Transformable::move(const glm::vec3 &v)
 {
-	m_position = glm::translate(m_position, v);
+	m_position += v;
 	setMVPMatrix();
 	onMove(v);
 }
@@ -19,14 +28,13 @@ void Transformable::onMove(const glm::vec3 &v)
 
 void Transformable::setPositionOrigin(const glm::vec3 &p)
 {
-	m_positionOrigin = glm::translate(glm::mat4(1.0f), -p);
+	m_positionOrigin = -p;
 	setMVPMatrix();
 }
 
 void Transformable::setPosition(const glm::vec3 &v)
 {
-	m_position = glm::mat4(1.0f);
-	m_position = glm::translate(m_position, v);
+	m_position = v;
 	setMVPMatrix();
 }
 
@@ -68,19 +76,13 @@ void Transformable::setScale(const glm::vec3 &v)
 void Transformable::setDefaultPos(const glm::vec3 &p)
 {
 	m_defaultPos = p;
-	if(m_defaultPosOrigin != BOTTOM_LEFT)
-		setMVPMatrix();
-	if(m_changeCallback)
-		m_changeCallback->fire();
+	setMVPMatrix();
 }
 
 void Transformable::setDefaultSize(const glm::vec3 &s)
 {
 	m_defaultSize = s;
-	if(m_defaultPosOrigin != BOTTOM_LEFT)
-		setMVPMatrix();
-	if(m_changeCallback)
-		m_changeCallback->fire();
+	setMVPMatrix();
 }
 
 void Transformable::setDefaultConf(const Rectangle3f &dc)
@@ -91,10 +93,6 @@ void Transformable::setDefaultConf(const Rectangle3f &dc)
 		setDefaultPos(glm::vec3(dc.x, dc.y, dc.z));
 		setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
 	m_changeCallback = c;
-	if(m_defaultPosOrigin != BOTTOM_LEFT)
-		setMVPMatrix();
-	if(m_changeCallback)
-		m_changeCallback->fire();
 }
 
 void Transformable::setSphericCoordinate(float r, float theta, float phi)
@@ -112,9 +110,50 @@ void Transformable::setSphericCoordinate(float r, float theta, float phi)
 	setPosition(glm::vec3(x, y, z));
 }
 
-void Transformable::setApplyTransformation(const Transformable* transformable)
+void Transformable::setApplyTransformation(Transformable* transformable)
 {
+	if(m_applyTransformation)
+		m_applyTransformation->removeTransfChild(this);
+
 	m_applyTransformation = transformable;
+	if(m_applyTransformation)
+		m_applyTransformation->addTransfChild(this);
+}
+
+void Transformable::removeTransfChild(Transformable* child)
+{
+	for(std::vector<Transformable*>::iterator it = m_childrenTrans.begin(); it != m_childrenTrans.end(); it++)
+		if(*it == child)
+		{
+			m_childrenTrans.erase(it);
+			child->m_applyTransformation = NULL;
+			child->resetChildrenTransMatrix();
+			break;
+		}
+}
+
+void Transformable::resetChildrenTransMatrix(const glm::mat4& mat)
+{
+	m_applyMatrix = mat;
+	glm::mat4 m = mat*m_mvpMatrix;
+	for(std::vector<Transformable*>::iterator it = m_childrenTrans.begin(); it != m_childrenTrans.end(); it++)
+		if(*it)
+			(*it)->resetChildrenTransMatrix(m);
+
+	if(m_changeCallback)
+	{
+		m_changeCallback->fire();
+	}
+}
+
+void Transformable::addTransfChild(Transformable* child)
+{
+	if(child)
+	{
+		m_childrenTrans.push_back(child);
+		child->resetChildrenTransMatrix(m_applyMatrix*m_mvpMatrix);
+	}
+
 }
 
 void Transformable::rotatePhi(float phi)
@@ -134,14 +173,14 @@ glm::vec3 Transformable::getScale() const
 
 glm::vec3 Transformable::getPosition() const
 {
-	glm::vec3 v = glm::vec3(m_position[3][0], m_position[3][1], m_position[3][2]);
+	glm::vec3 v = m_position;
 	v = v + m_defaultPos;
 	return v;
 }
 
 glm::vec3 Transformable::getPositionOrigin() const
 {
-	glm::vec3 v = glm::vec3(-m_positionOrigin[3][0], -m_positionOrigin[3][1], -m_positionOrigin[3][2]);
+	glm::vec3 v = -m_positionOrigin;
 	return v;
 }
 
@@ -163,8 +202,18 @@ Rectangle3f Transformable::getDefaultConf() const
 glm::mat4 Transformable::getMatrix() const
 {
 	if(m_applyTransformation)
-		return (m_applyTransformation->getMatrix()) * m_mvpMatrix;
+		return preMatrix() * m_applyMatrix * m_mvpMatrix;
+	return preMatrix() * m_mvpMatrix;
+}
+
+const glm::mat4& Transformable::getInternalMatrix() const
+{
 	return m_mvpMatrix;
+}
+
+glm::mat4 Transformable::preMatrix() const
+{
+	return glm::mat4(1.0f);
 }
 
 SphericCoord Transformable::getSphericCoord() const
@@ -206,7 +255,6 @@ Rectangle3f Transformable::mvpToRect(const glm::mat4& mvp) const
 		
 		glm::vec4(0.0, 0.0, m_defaultSize[2], 1.0), glm::vec4(0.0, m_defaultSize[1], m_defaultSize[2], 1.0),
 	   	glm::vec4(m_defaultSize[0], 0.0, m_defaultSize[2], 1.0), glm::vec4(m_defaultSize[0], m_defaultSize[1], m_defaultSize[2], 1.0)}; //Will be the back face
-
 
 	for(uint32_t i=0; i < 8; i++)
 	{
@@ -266,65 +314,78 @@ void Transformable::setDefaultPositionOrigin(PositionOrigin p)
 
 void Transformable::setMVPMatrix()
 {	
-    m_mvpMatrix = ((m_scale*computeDefaultPositionOrigin()) * m_positionOrigin * m_position) * m_rotate * m_scale;
+	glm::mat4 posM(1.0f);
+	posM = glm::translate(posM, m_positionOrigin*getScale() + m_position);
+	posM = computeDefaultPositionOrigin() * posM;
+	
+    m_mvpMatrix = posM * m_rotate * m_scale;
+	for(std::vector<Transformable*>::iterator it = m_childrenTrans.begin(); it != m_childrenTrans.end(); it++)
+		if(*it)
+			(*it)->resetChildrenTransMatrix(m_applyMatrix * m_mvpMatrix);
 	if(m_changeCallback)
-		m_changeCallback->fire();
+	{
+		Callback* c = m_changeCallback;
+		m_changeCallback = NULL;
+		c->fire();
+		m_changeCallback = c;
+	}
 }
 
 glm::mat4 Transformable::computeDefaultPositionOrigin()
 {
+	glm::vec3 s = getScale();
 	switch(m_defaultPosOrigin)
 	{
 		case BOTTOM_LEFT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultPos.x, -m_defaultPos.y, 0.0f, 1.0f);
+							 -m_defaultPos.x*s.x, -m_defaultPos.y*s.y, 0.0f, 1.0f);
 
 		case BOTTOM_RIGHT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultPos.x - m_defaultSize.x, -m_defaultPos.y, 0.0f, 1.0f);
+							 (-m_defaultPos.x - m_defaultSize.x)*s.x, -m_defaultPos.y*s.y, 0.0f, 1.0f);
 		case TOP_LEFT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultPos.x, -m_defaultPos.y-m_defaultSize.y, 0.0f, 1.0f);
+							 -m_defaultPos.x*s.x, (-m_defaultPos.y-m_defaultSize.y)*s.y, 0.0f, 1.0f);
 		case TOP_RIGHT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultPos.x-m_defaultSize.x, -m_defaultPos.y-m_defaultSize.y, 0.0f, 1.0f);
+							 (-m_defaultPos.x-m_defaultSize.x)*s.x, (-m_defaultPos.y-m_defaultSize.y)*s.y, 0.0f, 1.0f);
 		case CENTER:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultPos.x-m_defaultSize.x/2.0f, -m_defaultPos.y-m_defaultSize.y/2.0f, 0.0f, 1.0f);
+							 (-m_defaultPos.x-m_defaultSize.x/2.0f)*s.x, (-m_defaultPos.y-m_defaultSize.y/2.0f)*s.y, 0.0f, 1.0f);
 		
 		case TOP_CENTER:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultPos.x-m_defaultSize.x/2.0f, -m_defaultPos.y-m_defaultSize.y, 0.0f, 1.0f);
+							 (-m_defaultPos.x-m_defaultSize.x/2.0f)*s.x, (-m_defaultPos.y-m_defaultSize.y)*s.y, 0.0f, 1.0f);
 
 		case BOTTOM_CENTER:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultPos.x-m_defaultSize.x/2.0f, -m_defaultPos.y, 0.0f, 1.0f);
+							 (-m_defaultPos.x-m_defaultSize.x/2.0f)*s.x, (-m_defaultPos.y)*s.y, 0.0f, 1.0f);
 
 		case CENTER_LEFT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultPos.x, -m_defaultSize.y/2.0f, -m_defaultPos.y, 1.0f);
+							 (-m_defaultPos.x - m_defaultSize.x/2.0f)*s.x, (-m_defaultSize.y/2.0f -m_defaultPos.y)*s.y, 0.0, 1.0f);
 
 		case CENTER_RIGHT:
 			return glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 							 0.0f, 1.0f, 0.0f, 0.0f,
 							 0.0f, 0.0f, 1.0f, 0.0f,
-							 -m_defaultPos.x-m_defaultSize.x, -m_defaultPos.y-m_defaultSize.y/2.0f, 0.0f, 1.0f);
+							 (-m_defaultPos.x-m_defaultSize.x)*s.x, (-m_defaultPos.y-m_defaultSize.y/2.0f)*s.y, 0.0f, 1.0f);
 		default:
 			return glm::mat4(1.0f);
 	}

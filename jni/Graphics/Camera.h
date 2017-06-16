@@ -20,14 +20,14 @@ class Camera : public Transformable
 
 		/** \brief Get the camera position
 		 * \return the camera position */
-		virtual glm::vec3 getPosition(bool useScale=true) const;
+		virtual glm::vec3 getPosition() const;
 
-		virtual void setPosition(const glm::vec3& m, bool useScale=false);
+		virtual void setPosition(const glm::vec3& m);
 
 		/** \brief Set the camera position
 		 * \param pos the camera position
 		 * \param useScale the camera position is multiply by the scale. You can set this parameter to false for nullify the effect of the scale*/
-		virtual void move(const glm::vec3& pos, bool useScale=false);
+		virtual void move(const glm::vec3& pos);
 
 		/** \brief Set the camera orientation
 		 * \param orientation The x, y and z angle orientation */

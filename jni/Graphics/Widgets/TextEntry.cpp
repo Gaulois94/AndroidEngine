@@ -21,11 +21,14 @@ void TextEntry::onUpdate(Render& render)
 
 void TextEntry::onDraw(Render& render, const glm::mat4& mvp)
 {
-	m_rectangle.draw(render, getMatrix());
+	glm::mat4 localMatrix = getMatrix();
+	glm::mat4 totalMatrix = mvp * localMatrix;
+
+	m_rectangle.draw(render, localMatrix);
 	Rectangle3f rect = m_rectangle.getRect();
 	m_textDrawable.getMaterial()->setClipping(Rectangle2f(rect.x, rect.y, rect.width, rect.height));
 	m_textDrawable.getMaterial()->enableClipping(true);
-		m_textDrawable.draw(render, getMatrix());
+		m_textDrawable.draw(render, localMatrix);
 	m_textDrawable.getMaterial()->enableClipping(false);
 
 	if(m_isWriting)
@@ -99,14 +102,14 @@ void TextEntry::updateTextPosition()
 	Rectangle3f rect = m_rectangle.getInnerRect();
 
 	if(charPos.x < -textPos.x)
-		m_textDrawable.setPosition(glm::vec3(charPos.x, -charPos.y, 0.0), false);
+		m_textDrawable.setPosition(glm::vec3(charPos.x, -charPos.y, 0.0));
 
 	else if(charPos.x > textPos.x + rect.width-1.0/CURSOR_SCALE)
-		m_textDrawable.setPosition(glm::vec3(-charPos.x + rect.width-1.0/CURSOR_SCALE, -charPos.y, 0.0), false);
+		m_textDrawable.setPosition(glm::vec3(-charPos.x + rect.width-1.0/CURSOR_SCALE, -charPos.y, 0.0));
 	else
 		m_textDrawable.setPosition(glm::vec3(m_textDrawable.getPosition().x, -charPos.y, 0.0));
 
-	m_cursor.setPosition((glm::vec3(charPos.x, 0.0, 0.0) + glm::vec3(m_textDrawable.getPosition().x, 0.0, 0.0))*glm::vec3(CURSOR_SCALE, 1, 1), true);
+	m_cursor.setPosition(glm::vec3(charPos.x, 0.0, 0.0) + glm::vec3(m_textDrawable.getPosition().x, 0.0, 0.0) * m_textDrawable.getScale());
 }
 
 void TextEntry::setFont(const Font* font)

@@ -5,6 +5,7 @@ GridLayout::GridLayout(Updatable* parent) : Drawable(parent, NULL), m_changeCall
 
 GridLayout::~GridLayout()
 {
+	m_changeCalled = true;
 	for(uint32_t i=0; i < m_widgets.size(); i++)
 		for(uint32_t j=0; j < m_widgets[i].size(); j++)
 			if(m_widgets[i][j])
@@ -117,7 +118,6 @@ void GridLayout::resetPosition()
 		{
 			if(m_widgets[i][j] && m_widgetsSize[i][j].x != 0)
 			{
-				m_widgets[i][j]->setChangeCallback(NULL);
 				if(m_rescale)
 				{
 					/* Need to get the widgets size (all column and row size aren't the same...*/
@@ -128,7 +128,7 @@ void GridLayout::resetPosition()
 
 					for(uint32_t j2=0; j2 < m_widgetsSize[i][j].y; j2++)
 						currentSizeY+=crSize[i][j+j2].y;
-					m_widgets[i][j]->setRequestSize(glm::vec3(currentSizeX, currentSizeY, 1.0), true);
+					m_widgets[i][j]->setRequestSize(glm::vec3(currentSizeX, currentSizeY, 1.0));
 				}
 
 				glm::vec3 widgetDefaultSize = m_widgets[i][j]->getDefaultSize();
@@ -138,7 +138,6 @@ void GridLayout::resetPosition()
 
 				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos() * m_widgets[i][j]->getInnerRect().getSize() / widgetDefaultSize);
 //				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos());
-				m_widgets[i][j]->setChangeCallback(&m_changeCallback);
 			}
 			currentPosY+=crSize[i][j].y + m_padding.y;
 		}
@@ -266,7 +265,11 @@ Rectangle3f GridLayout::getGlobalRect() const
 void GridLayout::childrenTransfListener(void* data)
 {
 	GridLayout* self = (GridLayout*)data;
+	if(self->m_changeCalled == true)
+		return;
+	self->m_changeCalled = true;
 	self->resetPosition();
+	self->m_changeCalled = false;
 }
 
 bool GridLayout::removeChild(Updatable* child)

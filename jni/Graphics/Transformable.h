@@ -8,6 +8,7 @@
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
 #include <cmath>
+#include <vector>
 #include "logger.h"
 #include "JniMadeOf.h"
 #include "Rectangle3.h"
@@ -45,6 +46,8 @@ class Transformable : public JniMadeOf
 		/** \brief create an unity matrix
 		 * \param defaultConf the default size and position of this transformable */
 		Transformable(const Rectangle3f& defaultConf=Rectangle3f(0, 0, 0, 0, 0, 0));
+
+		~Transformable();
 
 		/** \brief translate the transformable
 		 * \param v the vector from where the object must be translated
@@ -107,7 +110,7 @@ class Transformable : public JniMadeOf
 
 		/** \brief set the applyTransformation. This variable is used if you want to transform he object only a few times with the same type of matrix
 		 * \param transformable the new Transformable variable*/
-		void setApplyTransformation(const Transformable* transformable);
+		void setApplyTransformation(Transformable* transformable);
 
 		/** \brief move the object from a rotation in spherical coordinate by phi value
 		 * \param phi the rotation of the object */
@@ -146,6 +149,12 @@ class Transformable : public JniMadeOf
 		/** \brief get the result matrix of all the transformations (applyTransformation, position, scale, rotation)
 		 * \return the result matrix */
 		virtual glm::mat4 getMatrix() const;
+
+		/** \brief get the result matrix of all the transformations except applyTransformation (position, scale, rotation)
+		 * \return the internal matrix */
+		const glm::mat4& getInternalMatrix() const;
+
+		virtual glm::mat4 preMatrix() const;
 
 		/** \brief get the applyTransformation. This variable is used if you want to transform he object only a few times with the same type of matrix
 		 * \return the apply transformation*/
@@ -190,6 +199,8 @@ class Transformable : public JniMadeOf
 		/** \brief This function is used for setting the size of the transformable. Used for complicated Drawable that doesn't want to scale bruptely the object entirely.
 		 * \param v the new size to apply. Basically, the size will be divised by the default size of the object. Remember that the Object is generally scaled. Use keepPos for keeping the transformable on the correct position*/
 		virtual void setRequestSize(const glm::vec3& v);
+
+		Callback* getCurrentCallback() {return m_changeCallback;}
 	protected:
 		/** \brief create the new matrix result from the position, the scale and the rotation. */
 		void setMVPMatrix();
@@ -203,14 +214,23 @@ class Transformable : public JniMadeOf
 		 * \param p the new default position*/
 		virtual void setDefaultPos(const glm::vec3& p);
 
+		/** \brief add a Transformable where trans->getApplyTransformation() == this.
+		 * \param trans the child to add*/
+		void addTransfChild(Transformable* trans);
+
+		void removeTransfChild(Transformable* child);
+		void resetChildrenTransMatrix(const glm::mat4& mat = glm::mat4(1.0f));
+
 		glm::mat4 computeDefaultPositionOrigin();
 
 		glm::mat4 m_mvpMatrix;
 		glm::mat4 m_rotate;
 		glm::mat4 m_scale;
-		glm::mat4 m_position;
-		glm::mat4 m_positionOrigin;
-		Transformable const* m_applyTransformation;
+		glm::vec3 m_position;
+		glm::vec3 m_positionOrigin;
+		glm::mat4 m_applyMatrix;
+		Transformable* m_applyTransformation;
+		std::vector<Transformable*> m_childrenTrans;
 
 		glm::vec3 m_defaultSize;
 		glm::vec3 m_defaultPos;

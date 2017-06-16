@@ -253,27 +253,18 @@ void Updatable::setParent(Updatable *parent, int pos)
 {
 
 	if(m_parent)
-	{
-		delParentTransformable();
 		m_parent->removeChild(this);
-	}
 	
 	m_parent = parent;	
 
 	if(parent)
-	{
-		addParentTransformable(parent);
 		m_parent->addChild(this, pos);
-	}
 }
 
 void Updatable::clearChild()
 {
 	for(std::vector<Updatable*>::iterator it = m_child.begin(); it != m_child.end(); ++it)
-	{
-		(*it)->delParentTransformable();
 		(*it)->m_parent = NULL;
-	}
 	m_child.clear();
 }
 
@@ -366,22 +357,6 @@ void Updatable::setChildrenTransformable(const Transformable* tr)
 	m_applyMatrix = tr;
 }
 
-void Updatable::addParentTransformable(const Updatable* parent)
-{
-	m_parentTransformables = parent->m_parentTransformables;
-	m_parentTransformables.push_back(parent);
-
-	for(auto* it : m_child)
-		it->addParentTransformable(this);
-}
-
-void Updatable::delParentTransformable()
-{
-	m_parentTransformables.clear();
-	for(auto* it : m_child)
-		it->addParentTransformable(this);
-}
-
 Rectangle3f Updatable::getGlobalRect() const
 {
 	if(m_child.size() > 0)
@@ -400,8 +375,12 @@ glm::mat4 Updatable::getApplyChildrenMatrix() const
 {
 	if(m_parent)
 	{
-		return m_parent->getApplyChildrenMatrix() * ((m_applyMatrix) ? m_applyMatrix->Transformable::getMatrix() : glm::mat4(1.0f));
+		if(m_applyMatrix)
+			return m_parent->getApplyChildrenMatrix() * m_applyMatrix->getMatrix();
+		else
+			return m_parent->getApplyChildrenMatrix();
 	}
+
 	return (m_applyMatrix) ? m_applyMatrix->Transformable::getMatrix() : glm::mat4(1.0f);
 }
 
