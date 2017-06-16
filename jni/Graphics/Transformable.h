@@ -50,28 +50,28 @@ class Transformable : public JniMadeOf
 		 * \param v the vector from where the object must be translated
 		 * \param useScale tell if the move statement should take care of the actual scale
 		 * */
-		virtual void move(const glm::vec3 &v, bool useScale=false);
+		virtual void move(const glm::vec3 &v);
 
 		/** \brief Function called during a translation
 		 * \param v the vector or the translation
 		 * \param useScale if the translation should take care of the scale*/
-		virtual void onMove(const glm::vec3 &v, bool useScale=false);
+		virtual void onMove(const glm::vec3 &v);
 
 		/** \brief Set the position of the object
 		 * \param v the new position of the object
 		 * \param useScale Because of the scale, the position of the object will be multiply by the object scale. That's why, if you don't want this effect, you must set this parameter to false for dividing the position and get the real one (considering the scale) */
-		virtual void setPosition(const glm::vec3 &v, bool useScale=false);
+		virtual void setPosition(const glm::vec3 &v);
 
 		/** \brief set the position origin of the transformable (another matrix which set the position of the position matrix)
 		 * \param p the new position origin
 		 * \param useScale Same as setPosition param*/
-		virtual void setPositionOrigin(const glm::vec3 &p, bool useScale=false);
+		virtual void setPositionOrigin(const glm::vec3 &p);
 
 		/** \brief rotate the object
 		 * \param angle the angle of the rotation in radian
 		 * \param v the axis of the rotation
 		 * \param origin the origin of the rotation */
-		virtual void rotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f), bool useScale=false);
+		virtual void rotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f));
 
 		/** \brief Function called during a rotation
 		 * \param angle the angle of the rotation in radian
@@ -83,12 +83,12 @@ class Transformable : public JniMadeOf
 		 * \param angle the angle of the new rotation in radian
 		 * \param v the axis of the rotation
 		 * \param origin the origin of the rotation */
-		virtual void setRotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f), bool useScale=false);
+		virtual void setRotate(float angle, const glm::vec3 &v, const glm::vec3& origin=glm::vec3(0.0f));
 
 		/** \brief scale the object
 		 * \param v values of the scale (x, y, z)
 		 * \param keepPos Cancel the scale set position (true) or not (false)*/
-		virtual void scale(const glm::vec3 &v, bool keepPos=true);
+		virtual void scale(const glm::vec3 &v);
 
 		/** \brief function called during a scaling
 		 * \param v values of the scale (x, y, z)*/
@@ -97,7 +97,7 @@ class Transformable : public JniMadeOf
 		/** \brief set the scale the object
 		 * \param v values of the scale (x, y, z)
 		 * \param keepPos Cancel the scale set position (true) or not (false)*/
-		virtual void setScale(const glm::vec3 &v, bool keepPos=true);
+		virtual void setScale(const glm::vec3 &v);
 
 		/** \brief set the coordinates of the object with spheric parameters
 		 * \param r the radius from the origin to the position
@@ -120,12 +120,12 @@ class Transformable : public JniMadeOf
 		/** \brief return the position of the object
 		 * \param useScale if set to true, the matrix position will be multiplied by the scale
 		 * \return the position of the object, considering or not the object scale*/
-		virtual glm::vec3 getPosition(bool useScale=true) const;
+		virtual glm::vec3 getPosition() const;
 
 		/** \brief Get the origin position of this object
 		 * \param useScale if set to true, the matrix position will be multiplied by the scale
 		 * \return the position origin of this object*/
-		virtual glm::vec3 getPositionOrigin(bool useScale=false) const;
+		virtual glm::vec3 getPositionOrigin() const;
 
 		/** \brief return the size of the transformable with a scale at (1, 1, 1)
 		 * \return the size by default of the object*/
@@ -189,7 +189,7 @@ class Transformable : public JniMadeOf
 
 		/** \brief This function is used for setting the size of the transformable. Used for complicated Drawable that doesn't want to scale bruptely the object entirely.
 		 * \param v the new size to apply. Basically, the size will be divised by the default size of the object. Remember that the Object is generally scaled. Use keepPos for keeping the transformable on the correct position*/
-		virtual void setRequestSize(const glm::vec3& v, bool keepPos=true);
+		virtual void setRequestSize(const glm::vec3& v);
 	protected:
 		/** \brief create the new matrix result from the position, the scale and the rotation. */
 		void setMVPMatrix();

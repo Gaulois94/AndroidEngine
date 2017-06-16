@@ -54,7 +54,7 @@ class TextEntry : public Drawable, public TextInterface
 
 		const Rectangle& getBackground() const;
 		const Text& getTextDrawable() const;
-		void setRequestSize(const glm::vec3& scale, bool keepPos=true);
+		void setRequestSize(const glm::vec3& scale);
 	private:
 		bool m_firstFocus=false;
 		Material* m_textMaterial;

@@ -187,7 +187,7 @@ void TextEntry::setHiddenChar(bool h)
 	setText(getText());
 }
 
-void TextEntry::setRequestSize(const glm::vec3& size, bool keepPos)
+void TextEntry::setRequestSize(const glm::vec3& size)
 {
 	m_rectangle.setScale(size);
 	setDefaultSize(glm::vec3(size.x, size.y, 0.0));

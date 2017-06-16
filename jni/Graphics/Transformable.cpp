@@ -7,57 +7,35 @@ Transformable::Transformable(const Rectangle3f& defaultConf) : m_mvpMatrix(1.0f)
 	setMVPMatrix();
 }
 
-void Transformable::move(const glm::vec3 &v, bool useScale)
+void Transformable::move(const glm::vec3 &v)
 {
-	if(useScale == false)
-		m_position = glm::translate(m_position, v/getScale());
-	else
-		m_position = glm::translate(m_position, v);
+	m_position = glm::translate(m_position, v);
 	setMVPMatrix();
-	onMove(v, useScale);
+	onMove(v);
 }
 
-void Transformable::onMove(const glm::vec3 &v, bool useScale)
+void Transformable::onMove(const glm::vec3 &v)
 {}
 
-void Transformable::setPositionOrigin(const glm::vec3 &p, bool useScale)
+void Transformable::setPositionOrigin(const glm::vec3 &p)
 {
-	if(useScale == false)
-		m_positionOrigin = glm::translate(glm::mat4(1.0f), -p/getScale());
-	else
-		m_positionOrigin = glm::translate(glm::mat4(1.0f), -p);
+	m_positionOrigin = glm::translate(glm::mat4(1.0f), -p);
 	setMVPMatrix();
 }
 
-void Transformable::setPosition(const glm::vec3 &v, bool useScale)
+void Transformable::setPosition(const glm::vec3 &v)
 {
 	m_position = glm::mat4(1.0f);
-	if(useScale == false)
-		m_position = glm::translate(m_position, v/getScale());
-	else
-		m_position = glm::translate(m_position, v);
+	m_position = glm::translate(m_position, v);
 	setMVPMatrix();
 }
 
-void Transformable::rotate(float angle, const glm::vec3 &v, const glm::vec3 &origin, bool useScale)
+void Transformable::rotate(float angle, const glm::vec3 &v, const glm::vec3 &origin)
 {
 	glm::vec3 o = getPositionOrigin() + origin;
-	if(useScale)
-	{
-		m_rotate = glm::translate(m_rotate, o);
-		m_rotate = glm::rotate(m_rotate, angle, v);
-		m_rotate = glm::translate(m_rotate, -o);
-	}
-
-	else
-	{
-		glm::vec3 s = getScale();
-		m_rotate = glm::translate(m_rotate, o);
-		m_rotate = glm::scale(m_rotate, glm::vec3(1.0f/s.x, 1.0f/s.y, 1.0f/s.z));
-		m_rotate = glm::rotate(m_rotate, angle, v);
-		m_rotate = glm::scale(m_rotate, s);
-		m_rotate = glm::translate(m_rotate, -o);
-	}
+	m_rotate = glm::translate(m_rotate, o);
+	m_rotate = glm::rotate(m_rotate, angle, v);
+	m_rotate = glm::translate(m_rotate, -o);
 	setMVPMatrix();
 	onRotate(angle, v, origin);
 }
@@ -65,21 +43,15 @@ void Transformable::rotate(float angle, const glm::vec3 &v, const glm::vec3 &ori
 void Transformable::onRotate(float angle, const glm::vec3 &v, const glm::vec3 &origin)
 {}
 
-void Transformable::setRotate(float angle, const glm::vec3 &v, const glm::vec3 &origin, bool useScale)
+void Transformable::setRotate(float angle, const glm::vec3 &v, const glm::vec3 &origin)
 {
 	m_rotate = glm::mat4(1.0f);
-	rotate(angle, v, origin, useScale);
+	rotate(angle, v, origin);
 }
 
-void Transformable::scale(const glm::vec3 &v, bool keepPos)
+void Transformable::scale(const glm::vec3 &v)
 {
 	m_scale = glm::scale(m_scale, v);
-	if(keepPos)
-	{
-		m_position[3][0] = m_position[3][0] / m_scale[0][0];
-		m_position[3][1] = m_position[3][1] / m_scale[1][1];
-		m_position[3][1] = m_position[3][1] / m_scale[1][1];
-	}
 	setMVPMatrix();
 	onScale(v);
 }
@@ -87,10 +59,10 @@ void Transformable::scale(const glm::vec3 &v, bool keepPos)
 void Transformable::onScale(const glm::vec3 &v)
 {}
 
-void Transformable::setScale(const glm::vec3 &v, bool keepPos)
+void Transformable::setScale(const glm::vec3 &v)
 {
 	m_scale = glm::mat4(1.0f);
-	scale(v, keepPos);
+	scale(v);
 }
 
 void Transformable::setDefaultPos(const glm::vec3 &p)
@@ -160,20 +132,16 @@ glm::vec3 Transformable::getScale() const
 	return glm::vec3(m_scale[0][0], m_scale[1][1], m_scale[2][2]);
 }
 
-glm::vec3 Transformable::getPosition(bool useScale) const
+glm::vec3 Transformable::getPosition() const
 {
 	glm::vec3 v = glm::vec3(m_position[3][0], m_position[3][1], m_position[3][2]);
 	v = v + m_defaultPos;
-	if(useScale)
-		v = v * getScale();
 	return v;
 }
 
-glm::vec3 Transformable::getPositionOrigin(bool useScale) const
+glm::vec3 Transformable::getPositionOrigin() const
 {
 	glm::vec3 v = glm::vec3(-m_positionOrigin[3][0], -m_positionOrigin[3][1], -m_positionOrigin[3][2]);
-	if(useScale)
-		v = v * getScale();
 	return v;
 }
 
@@ -298,7 +266,7 @@ void Transformable::setDefaultPositionOrigin(PositionOrigin p)
 
 void Transformable::setMVPMatrix()
 {	
-    m_mvpMatrix = m_scale * (computeDefaultPositionOrigin() * m_positionOrigin * m_position) * m_rotate;
+    m_mvpMatrix = ((m_scale*computeDefaultPositionOrigin()) * m_positionOrigin * m_position) * m_rotate * m_scale;
 	if(m_changeCallback)
 		m_changeCallback->fire();
 }
@@ -363,13 +331,13 @@ glm::mat4 Transformable::computeDefaultPositionOrigin()
 	return glm::mat4(1.0f);
 }
 
-void Transformable::setRequestSize(const glm::vec3& v, bool keepPos)
+void Transformable::setRequestSize(const glm::vec3& v)
 {
 	const glm::vec3& ds = getDefaultSize();
 	glm::vec3 s  = glm::vec3(v.x / ((ds.x != 0) ? ds.x : 1),
 							 v.y / ((ds.y != 0) ? ds.y : 1),
 							 v.z / ((ds.z != 0) ? ds.z : 1));
-	setScale(s, keepPos);
+	setScale(s);
 
 }
 
