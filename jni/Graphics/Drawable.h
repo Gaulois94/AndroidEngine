@@ -70,7 +70,7 @@ class Drawable : public GroupTransformable, public Updatable
 		static void initShaders();
 
 		virtual Rectangle3f getGlobalRect() const;
-		virtual glm::mat4 getMatrix() const;
+		virtual glm::mat4 preMatrix() const;
 
 		//Static functions for OES functions
 		//these ugly typenames are defined in GLES2/gl2ext.h

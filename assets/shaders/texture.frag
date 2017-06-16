@@ -24,7 +24,6 @@ void main()
 	//You have local clipping 
 	if(uLocalClipping.clip)
 	{
-		discard;
 		if(varyModelPosition.x < uLocalClipping.x || varyModelPosition.y < uLocalClipping.y 
 		   || varyModelPosition.x > uLocalClipping.x +uLocalClipping.width || varyModelPosition.y > uLocalClipping.y + uLocalClipping.height)
 			discard;

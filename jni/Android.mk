@@ -4,6 +4,7 @@ cmd-strip :=
 include $(CLEAR_VARS)
 LOCAL_C_INCLUDES += $(NDK_APP_PROJECT_PATH)/jni/Graphics/
 LOCAL_C_INCLUDES += $(NDK_APP_PROJECT_PATH)/../expat-android/jni/lib/
+LOCAL_C_INCLUDES += $(NDK_APP_PROJECT_PATH)/../addon/include
 LOCAL_MODULE := engine
 LOCAL_CFLAGS := -Wall --std=c++11 -g
 APP_OPTIM := debug

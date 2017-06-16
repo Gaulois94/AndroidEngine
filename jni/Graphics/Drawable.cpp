@@ -133,20 +133,12 @@ Rectangle3f Drawable::getGlobalRect() const
 	return rect;
 }
 
-glm::mat4 Drawable::getMatrix() const
+glm::mat4 Drawable::preMatrix() const
 {
-	glm::mat4 m = Transformable::getMatrix();
-	/*for(uint32_t i=0; i < m_parentTransformables.size(); i++)
-		if(m_parentTransformables[i]->getApplyChildrenTransformable())
-		{
-			glm::vec4 temp;
-			m = m_parentTransformables[i]->getApplyChildrenTransformable()->getMatrix() * m;
-		}
-	*/
-
 	if(m_applyTransformation)
-		return m;
+		return m_applyTransformation->preMatrix();
 
+	glm::mat4 m(1.0f);
 	const Updatable* p = m_parent;
 	while(p != NULL)
 	{

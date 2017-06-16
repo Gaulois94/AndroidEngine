@@ -4,6 +4,7 @@ float Material::maskColor[4];
 Rectangle2f Material::globalClipping;
 bool Material::globalEnableClipping=false;
 const Shader* Material::currentShader=NULL;
+const Texture* Material::currentTexture=NULL;
 
 Material::Material(const Shader *shader) : m_shader(shader), m_texture(NULL), m_vboID(0), m_isUsingShader(false)
 {
@@ -86,14 +87,14 @@ void Material::init(Render& render, const glm::mat4& mvp, const glm::mat4& model
 void Material::bindTexture(const Texture* texture)
 {
 	m_texture = texture;
-	if(texture)
+	if(texture && texture != Material::currentTexture)
 		glBindTexture(GL_TEXTURE_2D, texture->getID());
 }
 
 void Material::unbindTexture()
 {
 	m_texture = NULL;
-	glBindTexture(GL_TEXTURE_2D, 0);
+//	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Material::disableShader()

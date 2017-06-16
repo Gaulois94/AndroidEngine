@@ -678,6 +678,17 @@ void* Map::getObjectTileInfo(const char* name, const char* type)
 	return NULL;
 }
 
+Trace* Map::getTraceWorldCoords(double x, double y)
+{
+	Tile* tile=NULL;
+	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
+	{
+		if((tile = (*it)->getTileWorldCoords(x, y)) != NULL)
+			return *it;
+	}
+	return NULL;
+}
+
 Tile* Map::getTileWorldCoords(double x, double y)
 {
 	Tile* tile=NULL;
@@ -686,6 +697,23 @@ Tile* Map::getTileWorldCoords(double x, double y)
 		if((tile = (*it)->getTileWorldCoords(x, y)) != NULL)
 			return tile;
 	}
+	return NULL;
+}
+
+Tile* Map::getTileWorldCoords(double x, double y, Trace** trace)
+{
+	Tile* tile=NULL;
+	for(std::vector<Trace*>::reverse_iterator it = m_traces.rbegin(); it != m_traces.rend(); it++)
+	{
+		if((tile = (*it)->getTileWorldCoords(x, y)) != NULL)
+		{
+			if(trace)
+				*trace = *it;
+			return tile;
+		}
+	}
+	if(trace)
+		*trace = NULL;
 	return NULL;
 }
 

@@ -75,6 +75,7 @@ class Material : public JniMadeOf
 		 * \return the local clipping*/
 		static bool getGlobalEnableClipping();
 
+		static const Texture* currentTexture;
 		static const Shader* currentShader;
 	protected:
 		virtual void getAttributs();

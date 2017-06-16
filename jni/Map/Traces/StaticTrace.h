@@ -2,6 +2,7 @@
 #define  STATICTRACE_INC
 
 #include "Map/Traces/Trace.h"
+#include "Vector2.h"
 
 /** \class StaticTrace
  * \brief StaticTrace class. It is to manage tiles which have a pattern position.*/
@@ -23,6 +24,7 @@ class StaticTrace : public Trace
 
 		virtual Tile* getTileTraceCoords(int x, int y);
 		virtual Tile* getTileWorldCoords(double x, double y);
+		Vector2i      getTileCoords(double x, double y) const;
 		void addTile(Tile* tile, uint32_t x, uint32_t y);
 		void addTileInTraceCoord(Tile* tile, uint32_t x, uint32_t y);
 	private:
