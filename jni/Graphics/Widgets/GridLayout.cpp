@@ -118,6 +118,7 @@ void GridLayout::resetPosition()
 		{
 			if(m_widgets[i][j] && m_widgetsSize[i][j].x != 0)
 			{
+				m_widgets[i][j]->setChangeCallback(NULL);
 				if(m_rescale)
 				{
 					/* Need to get the widgets size (all column and row size aren't the same...*/
@@ -128,16 +129,18 @@ void GridLayout::resetPosition()
 
 					for(uint32_t j2=0; j2 < m_widgetsSize[i][j].y; j2++)
 						currentSizeY+=crSize[i][j+j2].y;
+
 					m_widgets[i][j]->setRequestSize(glm::vec3(currentSizeX, currentSizeY, 1.0));
 				}
 
 				glm::vec3 widgetDefaultSize = m_widgets[i][j]->getDefaultSize();
-				widgetDefaultSize.x = widgetDefaultSize.x == 0 ? 1.0 : widgetDefaultSize.x;
-				widgetDefaultSize.y = widgetDefaultSize.y == 0 ? 1.0 : widgetDefaultSize.y;
-				widgetDefaultSize.z = widgetDefaultSize.z == 0 ? 1.0 : widgetDefaultSize.z;
+				widgetDefaultSize.x = (widgetDefaultSize.x == 0 ? 1.0 : widgetDefaultSize.x);
+				widgetDefaultSize.y = (widgetDefaultSize.y == 0 ? 1.0 : widgetDefaultSize.y);
+				widgetDefaultSize.z = (widgetDefaultSize.z == 0 ? 1.0 : widgetDefaultSize.z);
 
 				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos() * m_widgets[i][j]->getInnerRect().getSize() / widgetDefaultSize);
 //				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos());
+				m_widgets[i][j]->setChangeCallback(&m_changeCallback);
 			}
 			currentPosY+=crSize[i][j].y + m_padding.y;
 		}

@@ -91,8 +91,8 @@ void Transformable::setDefaultConf(const Rectangle3f &dc)
 	Callback* c = m_changeCallback;
 	m_changeCallback = NULL;
 		setDefaultPos(glm::vec3(dc.x, dc.y, dc.z));
-		setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
 	m_changeCallback = c;
+	setDefaultSize(glm::vec3(dc.width, dc.height, dc.depth));
 }
 
 void Transformable::setSphericCoordinate(float r, float theta, float phi)

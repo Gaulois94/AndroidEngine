@@ -129,6 +129,7 @@ bool Button::hasText() const
 void Button::setRequestSize(const glm::vec3& size)
 {
 	setDefaultSize(size);
+	setScale(glm::vec3(1.0, 1.0, 1.0));
 	setBackgroundScale();
 	if(m_text)
 	{
