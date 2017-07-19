@@ -6,7 +6,7 @@ PFNGLDELETEVERTEXARRAYSOESPROC Drawable::deleteVertexArraysOES;
 PFNGLGENVERTEXARRAYSOESPROC    Drawable::genVertexArraysOES;
 PFNGLISVERTEXARRAYOESPROC      Drawable::isVertexArrayOES;
 
-Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : GroupTransformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_canDraw(true), m_staticToCamera(false)
+Drawable::Drawable(Updatable* parent, Material* material, const Rectangle3f& defaultConf) : GroupTransformable(defaultConf), Updatable(parent), m_material(material), m_vboID(0), m_staticToCamera(false)
 {
 	setMaterial(m_material);
 }
@@ -18,6 +18,9 @@ Drawable::~Drawable()
 
 void Drawable::updateGPU(Render& render)
 {
+	if(!m_canDraw)
+		return;
+
 	draw(render);
 	Updatable::updateGPU(render);
 }
@@ -27,16 +30,16 @@ bool Drawable::testFocus(const TouchEvent& te, Render& render, const glm::mat4& 
 	if(!m_staticToCamera)
 	{
 		Rectangle3f rect = getRect(mvp);
-		if(Material::getGlobalEnableClipping())
-			return touchInRect(getRectIntersect(rect, Rectangle3f(Material::getGlobalClipping(), 0.0, 0.0)), te.pid);
+//		if(Material::getGlobalEnableClipping())
+//			return touchInRect(getRectIntersect(rect, Rectangle3f(Material::getGlobalClipping(), 0.0, 0.0)), te.pid);
 		return touchInRect(rect, te.pid);
 	}
 
 	else
 	{
 		Rectangle3f rect = getRect(mvp*glm::inverse(render.getCamera().getMatrix()));
-		if(Material::getGlobalEnableClipping())
-			return touchInRect(getRectIntersect(rect, Rectangle3f(Material::getGlobalClipping(), 0.0, 0.0)), te.pid);
+//		if(Material::getGlobalEnableClipping())
+//			return touchInRect(getRectIntersect(rect, Rectangle3f(Material::getGlobalClipping(), 0.0, 0.0)), te.pid);
 		return touchInRect(rect, te.pid);
 	}
 }

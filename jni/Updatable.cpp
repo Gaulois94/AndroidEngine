@@ -28,20 +28,16 @@ void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat
 	if(!m_updateFocus || !m_canUpdate || Updatable::focusIsCheck)
 		return;
 
-
 	//Handle clipping. Might change the onUpdate outcome
-	bool restoreClip = false;
 	bool mEnableClip = Material::getGlobalEnableClipping();
-	Rectangle2f clip;
+	Rectangle2f clip = Material::getGlobalClipping();
 
 	if(m_enableClipping)
 	{
-		if(Material::getGlobalEnableClipping())
+		if(mEnableClip)
 		{
-			clip = Material::getGlobalClipping();
 			Rectangle2f r = getRectIntersect(clip, m_clip);
 			Material::setGlobalClipping(r);
-			restoreClip = true;
 		}
 
 		else
@@ -55,20 +51,18 @@ void Updatable::updateFocus(const TouchEvent& te, Render& render, const glm::mat
 	{
 		(*it)->updateFocus(te, render, mvp);
 		if(Updatable::focusIsCheck == true)
-			return;
+			break;
 	}
 
-	if(testFocus(te, render, mvp))
+	if(!Updatable::focusIsCheck && testFocus(te, render, mvp))
 	{
 		onFocus(te, render, mvp);
 		Updatable::objectFocused = this;
 		Updatable::focusIsCheck = true;
-		return;
 	}
 
 	Material::enableGlobalClipping(mEnableClip);
-	if(restoreClip)
-		Material::setGlobalClipping(clip);
+	Material::setGlobalClipping(clip);
 }
 
 bool Updatable::testFocus(const TouchEvent& te, Render& render, const glm::mat4& mvp)
@@ -81,7 +75,10 @@ void Updatable::onFocus(const TouchEvent& te, Render& render, const glm::mat4& m
 	Updatable::objectFocused = this;
 	Updatable::focusIsCheck = true;
 	if(m_focusListener)
+	{
+		m_focusListener->setThis(this);
 		m_focusListener->fire();
+	}
 }
 
 void Updatable::keyUp(int32_t keyCode)

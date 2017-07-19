@@ -64,17 +64,17 @@ void Active::deselectIt()
 
 void Active::activeIt()
 {
-	m_fireActive.fire();
+	m_fireActive.fire(this);
 	if(m_isActive == false)
-		m_fireChange.fire();
+		m_fireChange.fire(this);
 	m_isActive = true;
 }
 
 void Active::disactiveIt()
 {
-	m_fireDisactive.fire();
+	m_fireDisactive.fire(this);
 	if(m_isActive == true)
-		m_fireChange.fire();
+		m_fireChange.fire(this);
 	m_isActive = false;
 }
 

@@ -30,7 +30,9 @@ void ScrollWidget::updateFocus(const TouchEvent& te, Render& render, const glm::
 			return;
 		}
 		else
+		{
 			disactiveIt();
+		}
 
 		if(!m_enableClipping)
 			Drawable::updateFocus(te, render, mvp);

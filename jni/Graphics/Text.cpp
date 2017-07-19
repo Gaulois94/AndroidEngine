@@ -95,6 +95,9 @@ void Text::onDraw(Render& render, const glm::mat4& mvp)
 	if(m_font == NULL || m_text == NULL || m_material == NULL || !glIsBuffer(m_vboID))
 		return;
 
+	if(!m_canDraw)
+		return;
+
 	glm::mat4 localMatrix = getMatrix();
 	glm::mat4 totalMatrix = mvp * localMatrix;
 

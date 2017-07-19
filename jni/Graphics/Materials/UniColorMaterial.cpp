@@ -23,8 +23,10 @@ UniColorMaterial::~UniColorMaterial()
 void UniColorMaterial::init(Render& render, const glm::mat4& mvp, const glm::mat4& modelMatrix)
 {
 	Material::init(render, mvp, modelMatrix);
-	glUniform4fv(m_uColor, 1, m_color);
-	glUniform1i(m_uUseUniColor, true);
+	if(m_uColor != -1)
+		glUniform4fv(m_uColor, 1, m_color);
+	if(m_uUseUniColor != -1)
+		glUniform1i(m_uUseUniColor, true);
 }
 
 void UniColorMaterial::disableShader()

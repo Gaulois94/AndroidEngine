@@ -32,108 +32,108 @@ import android.hardware.SensorEventListener;
 
 public class Renderer extends Render implements SurfaceHolder.Callback, Runnable, SensorEventListener
 {
-protected SurfaceView m_surface;
-protected Thread m_thread;
-protected Boolean m_open;
-protected Boolean m_isCreated;
-protected Boolean m_canCreate;
-protected boolean m_suspend;
-protected Context m_context;
+	protected SurfaceView m_surface;
+	protected Thread m_thread;
+	protected Boolean m_open;
+	protected Boolean m_isCreated;
+	protected Boolean m_canCreate;
+	protected boolean m_suspend;
+	protected Context m_context;
 
-public Renderer(Context context)
-{
-	super(0);
-	m_context     = context;
-	m_canCreate   = false;
-	m_open        = false;
-	m_thread      = null;
-	m_isCreated   = false;
-	m_suspend     = false;
-
-	m_surface     = new SurfaceView(context)
+	public Renderer(Context context)
 	{
-		@Override
-		public boolean onTouchEvent(MotionEvent e)
+		super(0);
+		m_context     = context;
+		m_canCreate   = false;
+		m_open        = false;
+		m_thread      = null;
+		m_isCreated   = false;
+		m_suspend     = false;
+
+		m_surface     = new SurfaceView(context)
 		{
-			return touchEvent(e);
-		}
-	};
-	m_surface.getHolder().addCallback(this);
-	m_surface.getHolder().setFormat(PixelFormat.RGBA_8888);
-}
-
-public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
-{
-	GLES20.glViewport(0, 0, w, h);
-	setViewportRenderer(m_ptr, w, h);
-	onChanged(m_surface.getHolder().getSurfaceFrame());
-}
-
-public void surfaceCreated(SurfaceHolder holder)
-{
-	if(holder.getSurface() != null && holder.getSurface().isValid() && holder.getSurfaceFrame().bottom != 0 && holder.getSurfaceFrame().right != 0)
-	{
-		if(m_isCreated == false)
-			m_canCreate = true;
+			@Override
+			public boolean onTouchEvent(MotionEvent e)
+			{
+				return touchEvent(e);
+			}
+		};
+		m_surface.getHolder().addCallback(this);
+		m_surface.getHolder().setFormat(PixelFormat.RGBA_8888);
 	}
-}
 
-//Need to be override if ndk is used
-public long createPtr(long parent)
-{
-	return createRenderer(parent);
-}
-
-public void surfaceDestroyed(SurfaceHolder holder)
-{
-	m_isCreated = false;
-	onDestroyed();
-}
-
-public void onCreated()
-{
-}
-
-public void onChanged(Rect rect)
-{
-}
-
-public void onDestroyed()
-{
-	destroySurfaceRenderer(m_ptr);
-}
-
-public void run()
-{
-	JniMadeOf.setContext(m_context);
-	setPtr(createPtr(0));
-	while(m_open)
+	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
 	{
-		//Suspend if needed (on event)
-/*		try
+		GLES20.glViewport(0, 0, w, h);
+		setViewportRenderer(m_ptr, w, h);
+		onChanged(m_surface.getHolder().getSurfaceFrame());
+	}
+
+	public void surfaceCreated(SurfaceHolder holder)
+	{
+		if(holder.getSurface() != null && holder.getSurface().isValid() && holder.getSurfaceFrame().bottom != 0 && holder.getSurfaceFrame().right != 0)
 		{
-			if(m_suspend)
+			if(m_isCreated == false)
+				m_canCreate = true;
+		}
+	}
+
+	//Need to be override if ndk is used
+	public long createPtr(long parent)
+	{
+		return createRenderer(parent);
+	}
+
+	public void surfaceDestroyed(SurfaceHolder holder)
+	{
+		m_isCreated = false;
+		onDestroyed();
+	}
+
+	public void onCreated()
+	{
+	}
+
+	public void onChanged(Rect rect)
+	{
+	}
+
+	public void onDestroyed()
+	{
+		destroySurfaceRenderer(m_ptr);
+	}
+
+	public void run()
+	{
+		JniMadeOf.setContext(m_context);
+		setPtr(createPtr(0));
+		while(m_open)
+		{
+			//Suspend if needed (on event)
+		/*	try
 			{
 				synchronized(this)
 				{
-					while(m_suspend)
+					if(m_suspend)
+					{
 						wait();
+					}
 				}
+			}catch(InterruptedException e){}
+			*/
+	
+
+			if(m_canCreate)
+			{
+				initSurfaceRenderer(m_ptr, m_surface.getHolder().getSurface());
+				initRenderer(m_ptr);
+				onCreated();
+				m_isCreated = true;
+				m_canCreate = false;
 			}
-		}catch(InterruptedException e){}
-*/
 
-		if(m_canCreate)
-		{
-			initSurfaceRenderer(m_ptr, m_surface.getHolder().getSurface());
-			initRenderer(m_ptr);
-			onCreated();
-			m_isCreated = true;
-			m_canCreate = false;
-		}
-
-		if(m_isCreated)
-			draw();
+			if(m_isCreated)
+				draw();
 		}
 	}
 
@@ -162,6 +162,7 @@ public void run()
 				float x = 2*e.getX(pID) / width - 1;
 				//Y are mirrored
 				float y = -2*e.getY(pID) / height + 1;
+
 
 				switch(e.getAction())
 				{
@@ -272,4 +273,5 @@ public void run()
 	{
 		System.loadLibrary("engine");
 	}
+
 }

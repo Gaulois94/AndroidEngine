@@ -17,6 +17,7 @@ class Listener
 		Listener(){}
 		virtual ~Listener(){}
 		void fire() {if(m_func) m_func(m_obj, m_param);}
+		void fire(T* obj) {if(m_func) m_func(obj, m_param);}
 		void setThis(T* obj) {m_obj = obj;}
 	private:
 		void (*m_func)(T*, void*)=NULL;
@@ -24,8 +25,8 @@ class Listener
 		void* m_param=NULL;	
 };
 
-typedef Listener<Active> ActiveListener;
-typedef Listener<Drawable> DrawableListener;
+typedef Listener<Active>    ActiveListener;
+typedef Listener<Drawable>  DrawableListener;
 typedef Listener<Updatable> UpdatableListener;
 
 #endif

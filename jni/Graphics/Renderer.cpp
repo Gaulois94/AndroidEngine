@@ -172,6 +172,7 @@ void Renderer::clear()
 
 void Renderer::updateFocus(const TouchEvent& te)
 {
+	Updatable::focusIsCheck = false;
 	Render::updateFocus(te, *this);
 	Updatable::focusIsCheck = false;
 }
@@ -185,12 +186,13 @@ void Renderer::update(Render& render)
 		switch(ev->type)
 		{
 			case TOUCH_DOWN:
+				LOG_DEBUG("TOUCH DOWN EVENT");
 				updateFocus(ev->touchEvent);
 				break;
 
 			case TOUCH_UP:
-				if(Updatable::objectFocused)
-					updateTouchUp(ev->touchEvent, *this);
+				LOG_DEBUG("TOUCH UP EVENT");
+				updateTouchUp(ev->touchEvent, *this);
 				break;
 
 			case KEYDOWN:
@@ -211,6 +213,7 @@ void Renderer::update(Render& render)
 				break;
 		}
 
+		Material::enableGlobalClipping(false);
 		m_events.pop_front();
 		delete ev;
 	}
@@ -223,11 +226,14 @@ void Renderer::update(Render& render)
 
     struct timeval start;
 
+/*
 	gettimeofday(&start,NULL);
 	LOG_ERROR("FPS : %f", 1.0e6/(start.tv_usec - currentTime));
 	currentTime = start.tv_usec;
+*/
 
 	Material::currentShader=NULL;
+//	Material::enableGlobalClipping(false);
 	glUseProgram(0);
 }
 

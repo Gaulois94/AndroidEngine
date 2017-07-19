@@ -82,7 +82,6 @@ class Drawable : public GroupTransformable, public Updatable
 		virtual void deleteVbos();
 		Material* m_material;
 		GLuint m_vboID;
-		bool m_canDraw;
 		bool m_staticToCamera;
 
 };
