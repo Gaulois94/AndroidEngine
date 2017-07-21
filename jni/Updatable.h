@@ -66,8 +66,8 @@ class Updatable : public JniMadeOf
 		 * \return if the key was handled or not. Should be true if override*/
 		virtual bool onKeyDown(int32_t keyCode);
 
-		virtual void moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
-		virtual void onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+		virtual bool moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
+		virtual bool onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 
 		/** \brief Update the Updatable and its children.
 		 *  \param render the render from where the updatable could interact

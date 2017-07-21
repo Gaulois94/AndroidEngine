@@ -40,7 +40,7 @@ void ScrollWindow::onTouchUp(const TouchEvent& te, Render& render, const glm::ma
 	disactiveIt();
 }
 
-void ScrollWindow::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+bool ScrollWindow::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	if(isActive())
 	{
@@ -64,7 +64,9 @@ void ScrollWindow::onMoveEvent(const TouchEvent& te, Render& render, const glm::
 
 		//Move the camera
 		getRenderTexture().getCamera().setPosition(glm::vec3(1 + gRect.x + m_value.x, 1+gRect.y + m_value.y, 0.0));
+		return true;
 	}
+	return false;
 }
 
 void ScrollWindow::onUpdate(Render &render)

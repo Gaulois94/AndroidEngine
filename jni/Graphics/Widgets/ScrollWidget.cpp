@@ -70,7 +70,7 @@ void ScrollWidget::onTouchUp(const TouchEvent& te, Render& render, const glm::ma
 	}
 }
 
-void ScrollWidget::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+bool ScrollWidget::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	if(m_activeScroll && isActive())
 	{
@@ -92,7 +92,9 @@ void ScrollWidget::onMoveEvent(const TouchEvent& te, Render& render, const glm::
 
 		//Set the clip
 		m_childTrans.setPosition(glm::vec3(m_value.x, m_value.y, 0));
+		return true;
 	}
+	return false;
 }
 
 void ScrollWidget::setMaxBound(const Rectangle2f& r)

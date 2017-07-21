@@ -61,6 +61,7 @@ void Drawable::draw(Render& render, const glm::mat4& transformation)
 //		m_material->disableShader();
 }
 
+/*  
 void Drawable::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	for(std::vector<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
@@ -70,6 +71,15 @@ void Drawable::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& 
 	if(m_staticToCamera)
 		t = glm::inverse(render.getCamera().getMatrix()) * t;
 	onMoveEvent(te, render, t);
+}
+*/
+
+glm::mat4 Drawable::computeMatrix(Render& render, const glm::mat4& mvp)
+{
+	glm::mat4 t = mvp * getMatrix();
+	if(m_staticToCamera)
+		t = glm::inverse(render.getCamera().getMatrix()) * t;
+	return t;
 }
 
 void Drawable::onMove(const glm::vec3& v, bool useScale)

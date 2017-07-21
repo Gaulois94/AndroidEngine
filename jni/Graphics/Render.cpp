@@ -25,12 +25,12 @@ void Render::updateFocus(const TouchEvent& te, Render& render, const glm::mat4& 
 		Updatable::updateFocus(te, *this, mvp*m_camera.getMatrix());
 }
 
-void Render::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+bool Render::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	if(m_alert)
-		m_alert->moveEvent(te, *this, mvp*m_camera.getMatrix());
+		return m_alert->moveEvent(te, *this, mvp*m_camera.getMatrix());
 	else
-		Updatable::moveEvent(te, *this, mvp*m_camera.getMatrix());
+		return Updatable::moveEvent(te, *this, mvp*m_camera.getMatrix());
 }
 
 void Render::updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)

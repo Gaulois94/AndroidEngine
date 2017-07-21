@@ -285,4 +285,5 @@ bool GridLayout::removeChild(Updatable* child)
 					m_widgets[i][j] = NULL;
 					return true;
 				}
+	return false;
 }

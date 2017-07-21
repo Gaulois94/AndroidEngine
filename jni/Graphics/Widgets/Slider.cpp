@@ -36,7 +36,7 @@ void Slider::onDraw(Render& render, const glm::mat4& mvp)
 {
 }
 
-void Slider::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+bool Slider::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	if(m_cursor.isActive())
 	{
@@ -46,7 +46,7 @@ void Slider::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& 
 			m_hasStartMoving = true;
 		}
 
-		Rectangle3f rect = mvpToRect(mvp);
+		Rectangle3f rect = mvpToRect(computeMatrix(render, mvp));
 
 		if(rect.width != 0 && rect.height != 0)
 		{
@@ -60,11 +60,13 @@ void Slider::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& 
 			m_value = fmax(m_value, m_minValue);
 
 			updateCursorPosition();
+			return true;
 		}
 
 	}
 	else
 		m_hasStartMoving = true;
+	return false;
 }
 
 void Slider::setOrientation(const Orientation& orientation)

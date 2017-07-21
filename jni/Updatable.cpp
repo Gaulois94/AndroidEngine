@@ -116,16 +116,19 @@ bool Updatable::onKeyDown(int32_t keyCode)
 	return false;
 }
 
-void Updatable::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+bool Updatable::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	for(std::vector<Updatable*>::reverse_iterator it = m_child.rbegin(); it != m_child.rend(); it++)
-		(*it)->moveEvent(te, render, mvp);
+		if((*it)->moveEvent(te, render, mvp))
+			return true;
 
-	onMoveEvent(te, render, mvp);
+	return onMoveEvent(te, render, mvp);
 }
 
-void Updatable::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
-{}
+bool Updatable::onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+{
+	return false;
+}
 
 void Updatable::update(Render &render)
 {

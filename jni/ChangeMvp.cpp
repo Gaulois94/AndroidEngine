@@ -14,12 +14,12 @@ void ChangeMvp::updateFocus(const TouchEvent& te, Render& render, const glm::mat
 	Updatable::updateFocus(te, render, mvp*m);
 }
 
-void ChangeMvp::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
+bool ChangeMvp::moveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp)
 {
 	glm::mat4 m = m_trans.getMatrix();
 	if(m_staticToCamera)
 		m = glm::inverse(render.getCamera().getMatrix()) * m;
-	Updatable::moveEvent(te, render, mvp*m);
+	return Updatable::moveEvent(te, render, mvp*m);
 }
 
 void ChangeMvp::updateTouchUp(const TouchEvent& te, Render& render, const glm::mat4& mvp)
