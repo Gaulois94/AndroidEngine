@@ -48,6 +48,9 @@ class ScrollWidget : public Active, public Drawable
 		const Vector2f& getScrollSpeed() const{return m_scrollSpeed;}
 
 		virtual void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f)){}
+		
+		void setDefaultSize(const glm::vec3& size) {Drawable::setDefaultSize(size);}
+		void setDefaultPos(const glm::vec3& pos) {Drawable::setDefaultPos(pos);}
 	private:
 		Transformable m_childTrans;
 		uint32_t m_onFocusCount;

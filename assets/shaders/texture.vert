@@ -1,3 +1,5 @@
+precision mediump float;
+
 attribute vec3 vPosition;
 attribute vec2 vTextureCoord;
 uniform mat4 uMVP;
@@ -12,5 +14,5 @@ void main()
 	gl_Position       = uMVP * vec4(vPosition, 1.0);
 	varyPosition      = gl_Position;
 	vary_textureCoord = vTextureCoord;
-	varyModelPosition = uModelMatrix * vec4(vPosition, 1.0);
-};
+	varyModelPosition = vec4(vPosition, 1.0);
+}

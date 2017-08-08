@@ -11,7 +11,7 @@ struct Clipping
 
 varying vec3 varyNormal;
 varying vec3 varyN;
-varying vec4 varyModelPosition;
+varying vec3 varyModelPosition;
 varying vec3 varyCameraPos;
 varying mat4 varyCameraMVP;
 
@@ -63,4 +63,4 @@ void main()
 	highp vec3 Ip  = (uAmbientColor * uDiffuseColor + uDiffuseColor * df + uSpecularColor * sf)/pow(distance, 2.0)*intensity;;
 
 	gl_FragColor = vec4(Ip, uTransparent);
-};
+}

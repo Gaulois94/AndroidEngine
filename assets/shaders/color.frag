@@ -42,9 +42,10 @@ void main()
 		   || varyPosition.x > uGlobalClipping.x +uGlobalClipping.width || varyPosition.y > uGlobalClipping.y + uGlobalClipping.height)
 			discard;
 	}
+	
 
 	if(uUseUniColor)
-		gl_FragColor = uUniColor;
+		gl_FragColor   = uUniColor;
 	else
 		gl_FragColor = varyColor;
 
@@ -57,4 +58,4 @@ void main()
 		else if(uMaskColor == textColor)
 			discard;
 	}
-};
+}

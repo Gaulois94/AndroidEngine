@@ -17,9 +17,9 @@ uniform mat4 uTransposeInverseMVP;
 void main()
 {
 	gl_Position   = uMVP * vec4(vPosition, 1.0);
-	varyModelPosition = (uModelMatrix * vec4(vPosition, 1.0)).xyz;
+	varyModelPosition = vPosition;
 	varyNormal    = (uTransposeInverseMVP*vec4(vNormal, 0.0)).xyz;
 	varyN         = gl_Position.xyz;
 	varyCameraPos = (-uInverseCameraMVP*uTransformationMVP*vec4(vPosition, 1.0)).xyz;
 	varyCameraMVP = uCameraMVP;
-};
+}

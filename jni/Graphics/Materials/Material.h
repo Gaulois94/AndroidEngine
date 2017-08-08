@@ -78,7 +78,7 @@ class Material : public JniMadeOf
 		static const Texture* currentTexture;
 		static const Shader* currentShader;
 	protected:
-		virtual void getAttributs();
+		void getAttributs();
 
 		const Shader* m_shader;
 		const Texture* m_texture;

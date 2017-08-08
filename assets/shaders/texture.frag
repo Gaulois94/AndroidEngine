@@ -9,12 +9,16 @@ struct Clipping
 	float height;
 };
 
+#define RGBA 0
+#define BW   1
+
 varying vec2 vary_textureCoord;
 
 uniform Clipping uLocalClipping;
 uniform Clipping uGlobalClipping;
 uniform sampler2D uTexture;
 uniform float uOpacity;
+uniform int uColorMode;
 varying vec4 varyModelPosition;
 varying vec4 varyPosition;
 
@@ -40,4 +44,10 @@ void main()
 	gl_FragColor = texture2D(uTexture, vary_textureCoord);
 	if(uOpacity > 0.0)
 		gl_FragColor.a = uOpacity;
-};
+
+	if(uColorMode == BW)
+	{
+		float intensity = 0.21 * gl_FragColor.r + 0.72 * gl_FragColor.g + 0.07 * gl_FragColor.b;
+		gl_FragColor = vec4(intensity, intensity, intensity, gl_FragColor.a);
+	}
+}
