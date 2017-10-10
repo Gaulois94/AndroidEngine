@@ -8,7 +8,7 @@ Slider::Slider(Updatable *parent, Material* backgroundMaterial, Material* cursor
 	m_cursor.setPosition(glm::vec3(0.0, 0.0, 0.0));
 
 	if(m_orientation == VERTICAL)
-		m_cursor.setScale(glm::vec3(1.0f ,pourcentageGlobalRectangle * 0.01f, 1.0f));
+		m_cursor.setScale(glm::vec3(1.0f, pourcentageGlobalRectangle * 0.01f, 1.0f));
 	else
 		m_cursor.setScale(glm::vec3(pourcentageGlobalRectangle * 0.01f, 1.0f, 1.0f));
 
@@ -25,11 +25,6 @@ void Slider::onUpdate(Render& render)
 
 	if(m_hasStartMoving && !m_cursor.isActive())
 		m_hasStartMoving = false;
-}
-
-void Slider::draw(Render& render, const glm::mat4& mvp)
-{
-	Drawable::draw(render, mvp);
 }
 
 void Slider::onDraw(Render& render, const glm::mat4& mvp)

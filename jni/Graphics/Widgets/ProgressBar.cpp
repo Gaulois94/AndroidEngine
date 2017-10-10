@@ -8,7 +8,7 @@ ProgressBar::ProgressBar(Updatable* parent, Material* backgroundMtl, Material* c
 
 void ProgressBar::onDraw(Render& render, const glm::mat4& mvp)
 {
-	m_background.draw(render, mvp);
+	m_background.onDraw(render, mvp);
 	if(m_cursorMtl)
 	{
 		//Save the old value of this material
@@ -35,13 +35,12 @@ void ProgressBar::onDraw(Render& render, const glm::mat4& mvp)
 			}
 		}
 
-		m_cursorRectangle.draw(render, mvp);
+		m_cursorRectangle.onDraw(render, mvp);
 
 		//Restore the clipping
 		m_cursorMtl->enableClipping(cursorEnableClipping);
 		m_cursorMtl->setClipping(cursorClipping);
 	}
 	else
-		m_background.draw(render, mvp);
-	
+		m_background.onDraw(render, mvp);
 }

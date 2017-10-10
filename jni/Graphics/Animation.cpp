@@ -21,7 +21,8 @@ void Animation::onUpdate(Render& render)
 
 void Animation::setSubNSpriteCoords(uint32_t n)
 {
-	m_currentN = n % m_maxN;
+	if(m_maxN > 0)
+		m_currentN = n % m_maxN;
 }
 
 void Animation::setInAnimation(bool inAnimation, int reset)

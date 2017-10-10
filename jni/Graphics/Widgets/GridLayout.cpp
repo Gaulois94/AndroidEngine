@@ -74,7 +74,7 @@ void GridLayout::resetPosition()
 	float maxSizeZ = 0;
 	for(uint32_t i=0; i < m_widgets.size(); i++)
 	{
-		float maxSizeY = 0;
+		float maxSizeX = 0;
 		for(uint32_t j=0; j < m_widgets[i].size(); j++)
 		{
 			if(m_widgets[i][j] && (m_widgetsSize[i][j].x != 0 || m_widgetsSize[i][j].y != 0))
@@ -83,26 +83,35 @@ void GridLayout::resetPosition()
 				Vector2ui& caseSize = m_widgetsSize[i][j];
 
 				//Update the cr table and get the maxSizeX for row
-				float maxSizeX = 0;
 				if(caseSize.x != 0)
-					maxSizeX = colRect.width / (float)caseSize.x;
-				maxSizeY       = (caseSize.y != 0) ? fmax(colRect.height / (float)caseSize.y, maxSizeY) : maxSizeY;
-				for(uint32_t k=0; k < j; k++)
-				{
-					maxSizeX       = fmax(crSize[i][k].x, maxSizeX);
-					crSize[i][k].x = maxSizeX;
-				}
+					maxSizeX = fmax(maxSizeX, colRect.width / (float)caseSize.x);
 
-				//Update the cr table from column
+				float maxSizeY = 0;
+				if(caseSize.y != 0)
+					maxSizeY = colRect.height / caseSize.y;
+
+				//Determine the maxY for each row (remember that we are looking column by column)
+				for(uint32_t k=0; k < i; k++)
+					maxSizeY       = fmax(crSize[k][j].y, maxSizeY);
+
 				for(uint32_t k=0; k < i; k++)
 					crSize[k][j].y = maxSizeY;
 
-				maxSizeZ = fmax(colRect.depth, maxSizeZ);
-				for(uint32_t i2=0; i2 < m_widgetsSize[i][j].x; i2++)
-					crSize[i+i2][j].x = maxSizeX;
+				//Update the cr table from column
+				for(uint32_t k=0; k < j; k++)
+					crSize[i][k].x = maxSizeX;
 
-				for(uint32_t j2=0; j2 < m_widgetsSize[i][j].y; j2++)
-					crSize[i][j+j2].y = maxSizeY;
+				//Update the cr table for THIS widget
+				for(uint32_t i2=0; i2 < m_widgetsSize[i][j].x; i2++)
+				{
+					for(uint32_t j2=0; j2 < m_widgetsSize[i][j].y; j2++)
+					{
+						crSize[i+i2][j+j2].x = maxSizeX;
+						crSize[i+i2][j+j2].y = maxSizeY;
+					}
+				}
+
+				maxSizeZ = fmax(colRect.depth, maxSizeZ);
 			}
 		}
 	}
@@ -138,8 +147,8 @@ void GridLayout::resetPosition()
 				widgetDefaultSize.y = (widgetDefaultSize.y == 0 ? 1.0 : widgetDefaultSize.y);
 				widgetDefaultSize.z = (widgetDefaultSize.z == 0 ? 1.0 : widgetDefaultSize.z);
 
-				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos() * m_widgets[i][j]->getInnerRect().getSize() / widgetDefaultSize);
-//				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos());
+//				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos() * m_widgets[i][j]->getInnerRect().getSize() / widgetDefaultSize);
+				m_widgets[i][j]->setPosition(glm::vec3(currentPosX, currentPosY, 0.0f) - m_widgets[i][j]->getDefaultPos());
 				m_widgets[i][j]->setChangeCallback(&m_changeCallback);
 			}
 			currentPosY+=crSize[i][j].y + m_padding.y;

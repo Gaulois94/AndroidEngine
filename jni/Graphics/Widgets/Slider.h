@@ -22,7 +22,6 @@ class Slider : public Drawable
 		~Slider();
 
 		void onUpdate(Render& render);
-		void draw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 		void onDraw(Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 		bool onMoveEvent(const TouchEvent& te, Render& render, const glm::mat4& mvp=glm::mat4(1.0f));
 

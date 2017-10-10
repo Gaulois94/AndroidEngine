@@ -4,13 +4,16 @@ Rectangle::Rectangle(Updatable* parent, Material* material, const glm::vec2& siz
 {
 	free(buffer);
 	buffer=NULL;
-	glm::vec3 normalCoord[] = {
+	glm::vec3 normalCoord[] = 
+	{
 		glm::vec3(0, 0, 1),
 		glm::vec3(0, 0, 1),
 		glm::vec3(0, 0, 1),
 		glm::vec3(0, 0, 1)
 	};
 	setNormalCoord(normalCoord);
+	setDefaultPos(glm::vec3(0.0, 0.0, 0.0));
+	setDefaultSize(glm::vec3(m_size, 0.0));
 }
 
 glm::vec3* Rectangle::initVertex(const glm::vec2& size)
